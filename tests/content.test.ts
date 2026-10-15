@@ -32,7 +32,7 @@ import { REVELATIONS } from '../src/content/story';
 describe('révélations de l’assemblée', () => {
   it('conditions et effets valides', () => {
     const fake = structuredClone(CONTENT);
-    fake.train.objects.push({ id: '__rev', sec: 'machines', name: 'rev', sprite: 'table', x: 0, y: 80, actions: REVELATIONS.map((r) => ({ label: r.label, if: r.if, fx: r.fx })) });
+    fake.train.objects.push({ id: '__rev', sec: 'machines', name: 'rev', sprite: 'table', x: 0, y: 80, actions: REVELATIONS.map((r) => ({ label: typeof r.label === 'string' ? r.label : (r.label[0]?.text ?? 'révélation'), if: r.if, fx: r.fx })) });
     const errors = validateContent(fake, new Set(Object.keys(SPRITES)));
     expect(errors).toEqual([]);
   });

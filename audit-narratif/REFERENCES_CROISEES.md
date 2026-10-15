@@ -1,0 +1,204 @@
+# Références croisées (généré)
+
+Fichier généré par `audit-narratif/outils/xref.audit.test.ts`. Ne pas modifier à la main.
+
+## Drapeaux lus mais jamais posés
+- _collapse_pending ← lu par code:src/app/App.ts ; code:src/engine/game.ts
+- _sleeping ← lu par code:src/engine/game.ts
+- assemblee ← lu par code:src/app/App.ts
+- castel_couverte ← lu par rev:rev_theo [if] ; code:src/content/story.ts
+- conseil ← lu par code:src/app/App.ts
+- depart ← lu par code:src/app/App.ts
+- expedition_depart ← lu par code:src/app/App.ts
+- reveil ← lu par code:src/app/App.ts
+- theo_mort ← lu par npc:theo horaire 00:00→p_lit ; code:src/content/story.ts
+- vasseur_aide ← lu par obj:filtration «Installer le relais K3»
+
+## Drapeaux posés mais jamais lus
+- annonces_lues ← posé par obj:annonces «Lire»
+- antenne ← posé par up:up_antenne
+- bagages_fouilles ← posé par once:bagages
+- bricole_bandage ← posé par once:etabli
+- caisses_depot ← posé par once:caisses_depot
+- carte_vue ← posé par obj:carte_reseau «Étudier la carte»
+- castel_a_reveler ← posé par dlg:castel.aveu3 «Le conseil devra l’entendre.»
+- castel_couvert ← posé par dlg:castel.aveu3 «Ça restera entre nous.»
+- clairval_entendu ← posé par obj:radio «Écouter 4,7 MHz»
+- epave_fouillee ← posé par once:epave
+- etabli_depot_fouille ← posé par once:etabli_depot
+- expedition_finie ← posé par code:src/app/App.ts
+- filtration_reparee ← posé par dlg:vasseur.k3_2 ; obj:filtration «Installer le relais K3» ; motion:k3_radio=filtration
+- garcon_noe ← posé par dlg:marchetti.lettre2
+- guichet_fouille ← posé par once:guichet
+- loquet_vu ← posé par obj:porte_chargement «Examiner»
+- marchetti_menace ← posé par dlg:marchetti.aveu2 «Le conseil en entendra parler ce soir.»
+- mere_revelee_conseil ← posé par arg:clandestin.m_mere
+- once ← posé par moteur
+- pied_pris ← posé par once:etagere
+- radio_a_reveler ← posé par dlg:castel.radio_aveu3 «Vous n’aviez pas le droit de décider pou» ; dlg:castel.radio_aveu3 «Je comprends. Mais ça ne pourra pas rest»
+- radio_gardee ← posé par motion:k3_radio=radio
+- revele_detournement ← posé par arg:rationnement.r_detournement
+- sait_depart ← posé par obj:console_cabine «Lire le pupitre»
+- salon_deleste ← posé par up:up_delestage
+- tiroir_marchetti ← posé par once:bureau_reserve
+- trousse_prise ← posé par once:caisse_outils
+- vasseur_a_reveler ← posé par dlg:vasseur.pompe_aveu2 «Le conseil doit savoir.»
+- vote_clandestin ← posé par moteur
+- vote_direction ← posé par moteur
+- vote_k3_radio ← posé par moteur
+
+## Entrées du carnet : sources
+- c_alarmes [clue] ← obj:alarmes «Lire le journal d'alarmes»
+- c_socle_vide [clue] ← obj:filtration «Ouvrir l'armoire»
+- c_pompe_secours [clue] ← obj:pompe_secours «Examiner»
+- c_carnet_entretien [clue] ← obj:etabli «Lire le carnet d'entretien»
+- c_bon_sortie [clue] ← obj:bons_sortie «Consulter les bons»
+- c_couchette_theo [clue] ← obj:couchette_theo «Fouiller la couchette»
+- c_carnet_theo [clue] ← obj:casier_theo «Ouvrir avec la clé» ; obj:casier_theo «Crocheter» ; obj:casier_theo «Forcer au pied-de-biche»
+- c_relais_radio [clue] ← obj:radio «Examiner le poste»
+- c_registre_radio [clue] ← obj:bureau_castel «Fouiller le tiroir»
+- c_tableau_rations [clue] ← obj:tableau_rations «Lire»
+- c_registre_cabine0 [clue] ← obj:bureau_reserve «Lire le registre»
+- c_compteur_eau [clue] ← obj:citerne «Lire le compteur»
+- c_gardemanger_salon [clue] ← obj:gardemanger «Ouvrir»
+- c_lettre_marchetti [clue] ← obj:bureau_reserve «Fouiller le tiroir»
+- c_cache [clue] ← obj:mur_caisses «Déplacer les caisses» ; obj:mur_caisses «Déplacer les caisses (20 min)»
+- c_medaillon_mara [clue] ← dlg:mara.medaillon ; obj:bureau_sorel «Rapprocher les deux moitiés»
+- c_medaillon_sorel [clue] ← obj:bureau_sorel «Examiner le bureau»
+- c_billet_cabine0 [clue] ← dlg:start_controleur.d «Au travail.»
+- c_registre_passagers [clue] ← obj:bureau_controle «Consulter le registre des passagers»
+- c_cabine_horaire [clue] ← obj:console_cabine «Consulter le journal de bord»
+- c_lettre_madame [clue] ← dlg:villiers.ouvrir
+- c_mur_messages [clue] ← obj:mur_messages «Lire les messages»
+- c_traces_theo [clue] ← obj:traces «Examiner»
+- c_armoire_k [clue] ← obj:armoire_k «Ouvrir l'armoire»
+- c_voix_clairval [clue] ← obj:radio «Écouter 4,7 MHz»
+- c_emission_clairval [clue] ← obj:recepteur «Écouter»
+- c_vayn2 [clue] ← code:src/app/App.ts
+- t_castel_version [testimony] ← dlg:castel.nuit2
+- t_castel_aveu [testimony] ← dlg:castel.aveu2
+- t_vasseur_theo [testimony] ← dlg:vasseur.theo
+- t_vasseur_pompe [testimony] ← dlg:vasseur.pompe_aveu
+- t_noe_saut [testimony] ← dlg:noe.nuit_ok
+- t_hotesse_castel [testimony] ← dlg:josefa.nuit_ok
+- t_agathe_soute [testimony] ← dlg:agathe.nuit_ok
+- t_rosa_portions [testimony] ← dlg:rosa.theo
+- t_marchetti_version [testimony] ← dlg:marchetti.comptes
+- t_marchetti_aveu [testimony] ← dlg:marchetti.aveu
+- t_villiers_theo [testimony] ← dlg:villiers.theo_ok ; obj:secretaire «Fouiller la correspondance»
+- t_vic_k3 [testimony] ← dlg:vic.theo «Merci, Vic.» ; dlg:vic.theo_paye
+- t_mara_theo [testimony] ← dlg:mara.theo
+- t_mara_clairval [testimony] ← dlg:mara.clairval
+- t_mara_mere [testimony] ← dlg:mara.pourquoi
+- t_sorel_fille [testimony] ← dlg:sorel.photo
+- t_theo_recit [testimony] ← dlg:theo.recit3
+- t_anselme [testimony] ← dlg:anselme.histoire
+- f_pompe_morte [fact] ← déduction:c_pompe_secours+c_bon_sortie ; déduction:c_pompe_secours+c_carnet_entretien
+- f_k3_radio [fact] ← déduction:c_socle_vide+c_relais_radio ; déduction:c_socle_vide+c_carnet_theo
+- f_panne [fact] ← déduction:f_pompe_morte+f_k3_radio
+- f_chronologie [fact] ← déduction:t_noe_saut+t_hotesse_castel ; déduction:t_noe_saut+t_castel_aveu
+- f_theo_cachait [fact] ← déduction:t_rosa_portions+c_cache ; déduction:c_carnet_theo+c_cache
+- f_detournement [fact] ← déduction:c_registre_cabine0+c_compteur_eau ; déduction:c_registre_cabine0+c_gardemanger_salon ; déduction:c_billet_cabine0+c_gardemanger_salon
+- f_echange_antibio [fact] ← dlg:marchetti.aveu ; dlg:villiers.eau ; déduction:f_detournement+c_lettre_marchetti
+- f_mere [fact] ← obj:bureau_sorel «Rapprocher les deux moitiés» ; déduction:c_medaillon_mara+c_medaillon_sorel
+- f_signal_cache [fact] ← déduction:c_registre_radio+c_relais_radio ; déduction:c_registre_radio+t_mara_clairval
+- f_depot [fact] ← obj:armoire_k «Ouvrir l'armoire» ; déduction:c_carnet_theo+t_vic_k3
+
+## Entrées jamais utilisées dans une condition, une déduction ou une hypothèse
+- c_armoire_k
+- c_voix_clairval
+- c_vayn2
+- t_marchetti_version
+- t_marchetti_aveu
+
+## Objectifs : comment ils se terminent
+- q_main.machines « Comprendre l'arrêt du train (voiture des machines, en tête). » ← obj:alarmes «Lire le journal d'alarmes»
+- q_main.panne « Trouver ce qui a fait tomber la filtration. » ← dlg:vasseur.k3_2 ; obj:filtration «Installer le relais K3» ; motion:k3_radio=filtration
+- q_main.theo « Retrouver la trace de Théo Lagarde. » ← dlg:castel.aveu2 ; dlg:theo.rencontre ; obj:casier_theo «Ouvrir avec la clé» ; obj:casier_theo «Crocheter» ; obj:casier_theo «Forcer au pied-de-biche» ; obj:traces «Examiner» ; code:src/app/App.ts
+- q_main.reserves « Comprendre où part l'eau de la réserve. » ← motion:rationnement=audit [if]
+- q_main.conseil « Assister au conseil de 17:00 (cantine). » ← code:src/app/App.ts
+- q_main.dormir « Dormir avant l'expédition de l'aube (votre couchette). » ← scripted:expedition_depart ; code:src/app/App.ts
+- q_main.expedition « Expédition : trouver un relais K3 et revenir avant 12:00. » ← code:src/app/App.ts
+- q_main.theo_dehors « Retrouver Théo : traces vers le talus, à l'est du dépôt. » ← **JAMAIS COMPLÉTÉ**
+- q_main.assemblee « Assister à l'assemblée de 15:00. » ← code:src/app/App.ts
+- q_mara.trouver « Trouver qui se cache dans la soute. » ← dlg:mara.rencontre2 ; dlg:mara.cellule ; obj:mur_caisses «Déplacer les caisses» ; obj:mur_caisses «Déplacer les caisses (20 min)»
+- q_mara.confiance « Gagner la confiance de Mara. » ← dlg:mara.pourquoi
+- q_mara.mere « Retrouver la personne qu'elle cherche. » ← obj:bureau_sorel «Rapprocher les deux moitiés»
+- q_mara.reunion « Réunir la mère et la fille… ou se taire. » ← dlg:castel.cellule_mere ; dlg:sorel.mere2 ; dlg:mara.revele2 ; dlg:mara.revele_cellule2 ; arg:clandestin.m_mere
+- q_mara.proteger « Décider de son sort avant la fouille de 16:00. » ← dlg:mara.cacher_ok
+- q_ration.enquete « Découvrir qui prend la ration en trop. » ← dlg:noe.rations ; obj:cache_noe «Fouiller»
+- q_ration.decider « Décider quoi dire à Rosa. » ← dlg:rosa.denonce ; dlg:rosa.couvre ; dlg:rosa.vic
+- qp_controleur.registre « Consulter le registre des passagers (bureau du Contrôle). » ← obj:bureau_controle «Consulter le registre des passagers»
+- qp_controleur.cabine0 « Découvrir ce que désigne la « cabine 0 ». » ← obj:bureau_reserve «Lire le registre»
+- qp_controleur.cabine « Inspecter la cabine de conduite avec votre passe. » ← obj:console_cabine «Consulter le journal de bord»
+- qp_controleur.choix « Dénoncer le trafic au conseil… ou le garder pour vous. » ← dlg:marchetti.aveu2 «Je garde ça pour moi. Mais vous me devez» ; rev:rev_trafic
+- qp_passager.sorel « Parler à la docteure Sorel de l'état de Lou. » ← dlg:sorel.lou
+- qp_passager.trouver « Trouver des antibiotiques, d'une manière ou d'une autre. » ← dlg:marchetti.lou_ok ; dlg:vic.acheter «Antibiotiques — 30 jetons» ; dlg:vic.acheter «Antibiotiques — 20 jetons (prix d’ami)»
+- qp_passager.soigner « Donner les antibiotiques à Lou. » ← obj:lit_lou «Donner les antibiotiques»
+- qp_majordome.remettre « Remettre la lettre à Marchetti… ou en décider autrement. » ← dlg:marchetti.lettre ; obj:poele «Brûler la lettre de Madame» ; rev:rev_lettre
+- qp_majordome.garcon « Comprendre de quel « garçon » parle Madame. » ← dlg:marchetti.lettre2
+- qp_mecanicien.voir « Relire le carnet d'entretien (établi de l'atelier). » ← obj:etabli «Lire le carnet d'entretien»
+- qp_mecanicien.vasseur « En parler à Vasseur. » ← dlg:vasseur.pompe_aveu2 «J’avouerai devant le conseil que j’ai si» ; dlg:vasseur.pompe_aveu2 «Je te couvre. Le carnet reste comme il e» ; dlg:vasseur.pompe_aveu2 «On dira que c’est Théo qui a signé. Il n»
+- qp_mecanicien.choix « Avouer, couvrir Vasseur… ou accuser quelqu'un d'autre. » ← dlg:vasseur.pompe_aveu2 «J’avouerai devant le conseil que j’ai si» ; dlg:vasseur.pompe_aveu2 «Je te couvre. Le carnet reste comme il e» ; dlg:vasseur.pompe_aveu2 «On dira que c’est Théo qui a signé. Il n» ; rev:rev_aveu
+
+## Missions : démarrage
+- q_main ← dlg:start_controleur.d «Au travail.» ; dlg:start_passager.d «Aller voir ce qui se passe.» ; dlg:start_majordome.d «Aller voir Madame.» ; dlg:start_mecanicien.d «Y aller.»
+- q_mara ← (démarre par un objectif)
+- q_ration ← dlg:rosa.ration
+- qp_controleur ← dlg:start_controleur.d «Au travail.»
+- qp_passager ← dlg:start_passager.d «Aller voir ce qui se passe.»
+- qp_majordome ← dlg:villiers.lettre
+- qp_mecanicien ← dlg:start_mecanicien.d «Y aller.»
+
+## Conséquences : sources
+- cq_mara_capturee ← timed:fouille_capture@d1@16:00
+- cq_mara_cachee ← dlg:mara.cacher_ok
+- cq_mara_accueil ← motion:clandestin=accueil
+- cq_mara_cellule ← motion:clandestin=cellule
+- cq_mara_expulsee ← motion:clandestin=expulsion
+- cq_mere_reunie ← dlg:castel.cellule_mere ; dlg:sorel.mere2 ; dlg:mara.revele2 ; dlg:mara.revele_cellule2 ; arg:clandestin.m_mere ; rev:rev_mere
+- cq_mere_tue ← dlg:mara.secret
+- cq_marchetti_destitue ← motion:rationnement=audit [if] ; rev:rev_trafic
+- cq_marchetti_couvert ← dlg:marchetti.aveu2 «Je garde ça pour moi. Mais vous me devez»
+- cq_rationnement_egal ← motion:rationnement=egal
+- cq_rationnement_quota ← motion:rationnement=quota
+- cq_rationnement_audit ← motion:rationnement=audit
+- cq_k3_rendu ← motion:k3_radio=filtration
+- cq_filtration ← dlg:vasseur.k3_2 ; obj:filtration «Installer le relais K3» ; motion:k3_radio=filtration
+- cq_ration_noe_denonce ← dlg:rosa.denonce
+- cq_ration_couvert ← dlg:rosa.couvre
+- cq_ration_vic ← dlg:rosa.vic
+- cq_vasseur_exposee ← rev:rev_pompe
+- cq_malo_aveu ← dlg:vasseur.pompe_aveu2 «J’avouerai devant le conseil que j’ai si» ; rev:rev_aveu
+- cq_malo_couvre ← dlg:vasseur.pompe_aveu2 «Je te couvre. Le carnet reste comme il e»
+- cq_malo_accuse_theo ← dlg:vasseur.pompe_aveu2 «On dira que c’est Théo qui a signé. Il n»
+- cq_lou_soignee ← obj:lit_lou «Donner les antibiotiques»
+- cq_lou_cede ← **JAMAIS DÉCLENCHÉE**
+- cq_lettre_remise ← dlg:marchetti.lettre [if]
+- cq_lettre_remise_lue ← dlg:marchetti.lettre [if]
+- cq_lettre_brulee ← obj:poele «Brûler la lettre de Madame»
+- cq_lettre_revelee ← rev:rev_lettre
+- cq_theo_sauve ← code:src/app/App.ts
+- cq_theo_laisse ← code:src/app/App.ts
+- cq_theo_mort ← **JAMAIS DÉCLENCHÉE**
+- cq_comp_blesse ← code:src/app/App.ts
+- cq_comp_mort ← code:src/engine/game.ts
+- cq_eau_tour ← obj:citerne «Verser le jerrican» ; code:src/app/App.ts
+- cq_signal_rouge ← obj:leviers «Mettre le signal au rouge»
+- cq_castel_trahie ← rev:rev_theo [if]
+- cq_mere_trahie ← rev:rev_mere [if]
+- cq_radio_publique ← arg:clandestin.m_clairval ; arg:k3_radio.k_castel ; arg:direction.d_radio_castel ; rev:rev_radio
+- cq_sterilisateur ← up:up_sterilisateur
+- cq_pompe ← up:up_pompe
+- cq_hydro ← up:up_hydro
+- cq_delestage ← up:up_delestage
+- cq_calfeutrage ← up:up_calfeutrage
+
+## Lecteurs des entrées clés
+- f_mere lu par : dlg:castel.cellule2 «C’est la fille de la docteure Sorel.» ; dlg:sorel.hub «Votre fille est vivante. Elle est à bord» ; dlg:mara.cellule «Ta mère est à bord. C’est la docteure So» ; dlg:mara.hub «Ta mère… je crois savoir qui c’est.» ; dlg:mara.hub «Je ne dirai rien à personne. Ni sur toi,» ; obj:bureau_sorel «Rapprocher les deux moitiés» ; arg:clandestin.m_mere ; arg:clandestin.m_mere_marchetti ; quest:q_mara.reunion (visible) ; rev:rev_mere
+- f_signal_cache lu par : arg:k3_radio.k_castel ; arg:direction.d_radio_castel ; rev:rev_radio
+- f_detournement lu par : dlg:marchetti.cabine0 «Deux jerricans, deux nuits par semaine, » ; dlg:marchetti.lou «Je sais pour la « cabine 0 ». Une boîte » ; dlg:villiers.hub «Votre garde-manger est plein de l’eau de» ; motion:rationnement=audit [if] ; arg:rationnement.r_detournement ; arg:rationnement.r_trafic_castel ; quest:qp_controleur.choix (visible) ; rev:rev_trafic
+- f_k3_radio lu par : obj:radio «Retirer le K3» ; arg:expedition.e_filtration ; motion:k3_radio
+- f_panne lu par : arg:expedition.e_filtration
+- t_theo_recit lu par : dlg:theo.train «Raconte-moi cette nuit-là.» ; dlg:theo.hub «Qu’est-ce qui s’est passé, Théo ?» ; arg:direction.d_theo ; rev:rev_theo
+- t_mara_clairval lu par : dlg:mara.hub «D’où viens-tu ?» ; obj:radio «Écouter» (texte) ; timed:soir_radio@d1@21:00 [if] ; arg:clandestin.m_clairval ; arg:k3_radio.k_clairval

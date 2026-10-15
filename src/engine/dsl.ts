@@ -14,6 +14,7 @@
 //   "up:sterilisateur"  "comp:mara"  "zone:exterior"  "ev:conseil1"
 //   "hyp:q_theo=h_theo_dehors"  "seen:castel.radio"  "obj:filtration=repare"  "door:d_soute=open"
 //   "mode:onelife"  "true"  "false"  "at:castel=ad_securite" (PNJ à un point)
+//   "dead:mara"                  personnage mort pendant une expédition (absent à bord)
 // Combinaisons : & (et), | (ou), ! (non), parenthèses.
 //
 // EFFETS : voir applyFx() dans game.ts (set:, inc:, give:, take:, entry:, trust:, res:, time:, ...)
@@ -189,6 +190,7 @@ function evalAtom(n: Extract<CondNode, { t: 'atom' }>, ctx: CondContext): boolea
     case 'obj': return op ? cmp(ctx.objState(arg), op, val ?? '') : ctx.objState(arg) !== '';
     case 'door': return op ? cmp(ctx.doorState(arg), op, val ?? '') : ctx.doorState(arg) === 'open';
     case 'at': return op ? cmp(ctx.npcAt(arg), op, val ?? '') : ctx.npcAt(arg) !== '';
+    case 'dead': return ctx.flag('compagnon_mort') === arg;
     default:
       throw new Error(`Condition inconnue : ${key}`);
   }

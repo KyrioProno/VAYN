@@ -158,7 +158,7 @@ export interface QuestDef {
   desc: string;
   personal?: CharId;
   main?: boolean;
-  objectives: { id: string; text: string; if?: Cond }[];
+  objectives: { id: string; text: string; if?: Cond; doneIf?: Cond }[];
 }
 
 export interface ConseqDef { id: string; text: string; observed?: Record<string, string> }

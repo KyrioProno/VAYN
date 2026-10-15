@@ -21,7 +21,7 @@ export const TIMED: TimedEventDef[] = [
   { id: 'fouille_sorel', at: 'd1@16:00', if: 'f:mara_libre', fx: ['toast:Castel fouille la soute pour la forme : la fille de la docteure est sous sa protection.'] },
   { id: 'rappel_conseil', at: 'd1@16:30', fx: ['warn:Le conseil des quatre se réunit à 17:00 à la cantine.'] },
   { id: 'conseil', at: 'd1@17:00', fx: ['ev:conseil'] },
-  { id: 'soir_radio', at: 'd1@21:00', if: 'e:c_relais_radio & !f:k3_retire_radio', fx: ['toast:21:00. L’heure de Clairval, d’après Mara. La radio est en salle radio.'] },
+  { id: 'soir_radio', at: 'd1@21:00', if: 'e:c_relais_radio & !f:k3_retire_radio', fx: ['if:e:t_mara_clairval?toast:21:00. L’heure de Clairval, d’après Mara. La radio est en salle radio.', 'if:!e:t_mara_clairval?toast:21:00. Depuis 21 h, quelque chose revient sur 4,7 MHz. La radio est en salle radio.'] },
   { id: 'soir', at: 'd1@21:30', fx: ['toast:La nuit tombe sur Saint-Aubin. L’expédition part à l’aube : il faudra dormir.'] },
   { id: 'couvre_feu', at: 'd1@23:45', if: '!f:dort', fx: ['ev:couvre_feu'] },
   // --- Jour 2

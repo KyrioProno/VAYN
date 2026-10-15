@@ -6,8 +6,8 @@ export const MARA: DialogueDef = {
   id: 'mara', npc: 'mara',
   start: [
     { if: 'zone:exterior', go: 'ext' },
-    { if: '!seen:mara.rencontre', go: 'rencontre' },
     { if: 'f:mara_capturee & !f:mara_libre', go: 'cellule' },
+    { if: '!seen:mara.rencontre & !seen:mara.cellule', go: 'rencontre' },
     { go: 'hub' },
   ],
   nodes: {
@@ -17,12 +17,12 @@ export const MARA: DialogueDef = {
     ]),
     rencontre_douce: s('… Théo ? Il n’est pas revenu. Il devait revenir avant l’aube. Il revient toujours.', 'rencontre2'),
     rencontre_dure: s('Non ! Pas lui. S’il te plaît. Je n’ai rien volé. Presque rien.', 'rencontre2'),
-    rencontre2: s('Je m’appelle Mara. Ça fait dix jours que je vis derrière ces caisses.', 'hub', { fx: ['obj:q_mara.trouver'] }),
-    cellule: n('Mara serre les barreaux. « Tu vas les laisser me jeter dehors ? »', [
+    rencontre2: s('Je m’appelle Mara. Ça fait neuf jours que je vis derrière ces caisses.', 'hub', { fx: ['obj:q_mara.trouver'] }),
+    cellule: n('Mara serre les barreaux. Petite, le capuche posé sur les barreaux comme un chapeau trop grand. « Toi, c’est bien une du train ? Tu vas les laisser me jeter dehors ? »', [
       c('Je vais parler au conseil.', 'hub', { fx: ['trust:mara+1'] }),
-      c('Ta mère est à bord. C’est la docteure Sorel.', 'revele', { if: 'e:f_mere & !f:mere_reunie' }),
+      c('Ta mère est à bord. C’est la docteure Sorel.', 'revele_cellule', { if: 'e:f_mere & !f:mere_reunie' }),
       bye('Je repasserai.'),
-    ]),
+    ], { fx: ['met:mara', 'obj:q_mara.trouver'] }),
     hub: n([
       { if: 'f:mere_reunie', text: 'Mara a enlevé sa capuche. Elle a les yeux de sa mère.' },
       { if: 'true', text: 'Mara vous observe, prête à fuir.' },
@@ -36,10 +36,10 @@ export const MARA: DialogueDef = {
       c('Tu viendrais avec moi, dehors ?', 'expe', { if: 'ev:conseil & !ev:expedition_depart' }),
       bye(),
     ]),
-    clairval: s('Du barrage de Clairval. On est quarante, là-haut. Il y a de l’eau, des turbines, des serres. Chaque soir à 21 h, on émet sur 4,7 mégahertz. Tu ne me crois pas. Personne ne me croit.', 'hub', { fx: ['entry:t_mara_clairval'] }),
+    clairval: s('Du barrage de Clairval. On est quarante, là-haut. Il y a de l’eau, des turbines, des serres. Chaque soir, à partir de 21 h, on réémet en boucle jusqu’au matin, sur 4,7 mégahertz. Tu ne me crois pas. Personne ne me croit.', 'hub', { fx: ['entry:t_mara_clairval'] }),
     theo: s('C’est lui qui m’a trouvée. Il m’apportait à manger, sa deuxième portion. Il voulait que j’entende Clairval à la radio, mais quelqu’un avait cassé le poste. Il a dit qu’il allait « emprunter une pièce, juste une nuit ».', 'theo2', { fx: ['entry:t_mara_theo', 'trust:mara+1'] }),
     theo2: s('Après, j’ai entendu crier, vers minuit. Et puis plus rien. Il n’est jamais revenu.', 'hub'),
-    pourquoi: s('Je cherche quelqu’un. Ma mère. Elle s’appelle Hélène. Je ne connais pas son nom de famille d’aujourd’hui — j’avais douze ans quand on a été séparées.', 'pourquoi2', { fx: ['entry:t_mara_mere', 'obj:q_mara.confiance'] }),
+    pourquoi: s('Je cherche quelqu’un. Ma mère. Elle s’appelle Hélène. Je ne connais pas son nom de famille d’aujourd’hui — j’avais douze ans quand on a été séparées. Là-haut, à Clairval, un réfugié de Lyon m’a juré qu’une médecin appelée Hélène montait dans le VAYN. J’ai mis trois semaines à le croire. Alors j’ai fait la route jusqu’ici… et on m’a dit que le train s’arrêtait à Saint-Aubin. J’ai attendu sur le quai. Une fois. Puis je suis montée par la porte de chargement, un soir où le convoi dormait.', 'pourquoi2', { fx: ['entry:t_mara_mere', 'obj:q_mara.confiance'] }),
     pourquoi2: n('Elle sort de sous sa capuche une moitié de médaillon en laiton, gravée « M… ».', [
       c('Je peux la garder ? Je la retrouverai.', 'medaillon', { if: 'trust:mara>=1' }),
       c('Je vais chercher. Garde-la.', 'hub'),
@@ -48,8 +48,10 @@ export const MARA: DialogueDef = {
       { if: 'char:majordome', text: 'Elle hésite, puis vous la tend. Vous la retournez dans vos gants : vous avez déjà vu sa jumelle. Sur un bureau, à l’infirmerie, posée sur une photo.' },
       { if: 'true', text: 'Elle hésite longtemps. Puis elle vous la tend. « Si tu la perds, je te tue. »' },
     ], 'hub', { fx: ['give:medaillon', 'entry:c_medaillon_mara', 'trust:mara+1'] }),
-    revele: pc('Ta mère s’appelle Hélène Sorel. Elle est médecin. Elle est à bord, à trois voitures d’ici. Elle a l’autre moitié du médaillon.', 'revele2'),
+    revele: pc('Ta mère s’appelle Hélène Sorel. Elle est médecin. Elle est à bord, à l’infirmerie. Elle a l’autre moitié du médaillon.', 'revele2'),
     revele2: nar('Mara ne dit rien. Ses mains tremblent. Puis elle se lève et vous suit sans un mot jusqu’à l’infirmerie, où une femme en blouse lâche le dossier qu’elle tenait.', 'hub', { fx: ['set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'obj:q_mara.reunion', 'trust:mara+3', 'trust:sorel+3', 'qdone:q_mara'] }),
+    revele_cellule: s('Mara ne dit rien. Ses mains tremblent derrière les barreaux. « …Ma mère ? » Vous hochez la tête. Elle se rassoit, le front contre le fer froid.', 'revele_cellule2'),
+    revele_cellule2: nar('La docteure Sorel déboule dans le poste de sécurité, ouvre la cellule elle-même — elle a la clé, et personne n’ose lui demander pourquoi — et emmène la gamine à l’infirmerie sans un mot. Mara ne lâche pas sa main.', 'hub', { fx: ['set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'obj:q_mara.reunion', 'trust:mara+3', 'trust:sorel+3', 'qdone:q_mara'] }),
     secret: s('… Merci. Je ne suis pas prête. Pas encore. Si elle ne me reconnaît pas… je préfère ne pas savoir.', 'hub', { fx: ['set:mere_tue', 'conseq:cq_mere_tue'] }),
     cacher: n('Me cacher où ? Tout le train me cherche.', [
       c('Aux dortoirs, au milieu des autres. Noé et moi, on s’en occupe.', 'cacher_ok', { if: 'char:passager | trust:noe>=2', tag: 'Réseau' }),
@@ -58,7 +60,7 @@ export const MARA: DialogueDef = {
     ]),
     cacher_ok: nar('Une couverture sur les épaules, la capuche baissée, Mara traverse le train derrière vous. Personne ne regarde une passagère de plus.', 'hub', { fx: ['set:mara_cachee_ailleurs', 'conseq:cq_mara_cachee', 'obj:q_mara.proteger', 'trust:mara+1'] }),
     expe: n([
-      { if: 'trust:mara>=1', text: 'Dehors ? Je suis passée par Saint-Aubin pour monter dans ce train. Je connais le dépôt, le talus… et les chiens. Oui. Je viens.' },
+      { if: 'trust:mara>=1', text: 'Dehors ? Je suis passée par Saint-Aubin en suivant ce train, pas pour y monter. Je connais le dépôt, le talus… et les chiens. Oui. Je viens.' },
       { if: 'true', text: 'Avec toi ? Je ne te connais pas.' },
     ], [back('D’accord.')]),
     ext: n([
@@ -122,7 +124,7 @@ export const NOE: DialogueDef = {
     nuit_fin: { route: [{ if: 'char:passager | trust:noe>=1', go: 'nuit_ok' }, { go: 'hub' }] },
     nuit_ok: s('Il boitait pas, à ce moment-là. Il courait vite. Comme quelqu’un qui a peur.', 'hub', { fx: ['entry:t_noe_saut'] }),
     nuit_ration: nar('Noé fait disparaître la ration dans son short avec une vitesse de prestidigitateur.', 'nuit', { fx: ['take:ration', 'trust:noe+2'] }),
-    rations: s('… Tu promets que tu dis rien ? C’est pour la fille de la soute. Derrière les caisses. Théo lui apportait à manger, et maintenant Théo est plus là, alors c’est moi.', 'rations2', { fx: ['set:noe_parle_cache', 'set:ration_coupable', 'obj:q_ration.enquete'] }),
+    rations: s('… Tu promets que tu dis rien ? C’est pour la fille de la soute. Derrière les caisses. Moi, j’en ajoutais un peu le matin ; Théo aussi, avant lui. Maintenant qu’il est plus là, il n’y a plus que moi.', 'rations2', { fx: ['set:noe_parle_cache', 'set:ration_coupable', 'obj:q_ration.enquete'] }),
     rations2: n('Il vous fixe, le menton tremblant.', [
       c('Je promets. Tu as bien fait.', 'hub', { fx: ['trust:noe+2'] }),
       c('Il va falloir le dire à Rosa.', 'hub', { fx: ['trust:noe-1'] }),
@@ -176,7 +178,7 @@ export const VIC: DialogueDef = {
       c('Payer 3 jetons.', 'theo_paye', { if: '!char:passager & tok>=3', fx: ['tok:-3'] }),
       back('Trop cher.'),
     ]),
-    theo_paye: s('Il y a trois jours, Théo m’a demandé un relais K3. Je n’en avais pas. Il a parlé du dépôt de la gare, comme on parle d’une mauvaise idée.', 'hub', { fx: ['entry:t_vic_k3'] }),
+    theo_paye: s('Il y a trois jours, Théo m’a demandé un relais K3. Je n’en avais pas. Il voulait savoir où on trouve ces relais : dans les dépôts de signalisation, m’a-t-il dit. Comme on parle d’une mauvaise idée.', 'hub', { fx: ['entry:t_vic_k3'] }),
   },
 };
 
@@ -194,7 +196,7 @@ export const AGATHE: DialogueDef = {
       { if: 'true', text: 'Rien vu, rien entendu. Les gens qui voient des choses, ici, finissent par avoir des ennuis.' },
     ], undefined, { next: 'nuit_fin' }),
     nuit_fin: { route: [{ if: 'char:passager | trust:agathe>=1 | char:mecanicien', go: 'nuit_ok' }, { go: 'nuit_non' }] },
-    nuit_ok: s('Vers l’arrière, hein. Pas vers les dortoirs. Les dortoirs, c’est devant la soute.', 'hub', { fx: ['entry:t_agathe_soute'] }),
+    nuit_ok: s('Vers l’arrière, donc. Ils ont traversé les dortoirs sans s’arrêter ; après, il n’y a que l’administration… et le Salon.', 'hub', { fx: ['entry:t_agathe_soute'] }),
     nuit_non: n('Elle hausse les épaules.', [
       c('Je t’offre un peu de tabac, pour le dos.', 'nuit_tabac', { if: 'has:tabac' }),
       back('Tant pis.'),
@@ -265,7 +267,7 @@ export const VILLIERS: DialogueDef = {
     theo_fin: { route: [{ if: 'char:majordome | trust:villiers>=1', go: 'theo_ok' }, { go: 'hub' }] },
     theo_ok: s('Ne faites pas cette tête. Je ne lui ai rien fait. Je n’ai pas besoin de faire quoi que ce soit, d’ordinaire.', 'hub', { fx: ['entry:t_villiers_theo'] }),
     eau: s('Je paie, mon ami. Avec ce qui manque le plus à bord : des médicaments. Marchetti les porte à l’infirmerie. Chaque litre que je bois a sauvé un enfant. Pouvez-vous en dire autant ?', 'hub', { fx: ['set:villiers_confrontee', 'entry:f_echange_antibio'] }),
-    ouvrir: nar('Dans l’office, au-dessus de la bouilloire, la cire se ramollit. « Plus une goutte ne sortira de mon garde-manger tant que ce garçon parlera de ce qu’il a vu. Arrangez-vous pour qu’il se taise. Le prix habituel. — C. de V. » Quel garçon ?', 'hub', { fx: ['take:lettre_madame', 'give:lettre_ouverte', 'entry:c_lettre_madame', 'time:15'] }),
+    ouvrir: nar('Dans l’office, au-dessus de la bouilloire, la cire se ramollit. « Plus une goutte ne sortira de mon garde-manger tant que ce garçon parlera de ce qu’il a vu. Arrangez-vous pour qu’il se taise. Le prix habituel. — C. de V. » Quel garçon ?', 'hub', { fx: ['take:lettre_madame', 'give:lettre_ouverte', 'set:lettre_lue', 'entry:c_lettre_madame', 'time:15'] }),
   },
 };
 
@@ -274,9 +276,13 @@ export const THEO: DialogueDef = {
   start: [{ if: 'zone:train', go: 'train' }, { if: '!seen:theo.rencontre', go: 'rencontre' }, { go: 'hub' }],
   nodes: {
     train: n([
+      { if: 'char:mecanicien & e:f_pompe_morte & !f:vasseur_couverte', text: 'Théo grimace en souriant. « Malo. Tu sais pour la pompe ? Elle n’avait pas le choix. Dis-lui que je n’en ai jamais douté. »' },
       { if: 'char:mecanicien', text: 'Théo grimace en souriant. « Malo. Dis à Vasseur que je lui dois une pompe. Et à Mara… dis-lui que je suis désolé pour la radio. »' },
       { if: 'true', text: 'Théo somnole, la jambe sanglée. Il vous remercie d’un hochement de tête.' },
-    ], [bye()]),
+    ], [
+      c('Raconte-moi cette nuit-là.', 'recit', { if: '!e:t_theo_recit' }),
+      bye(),
+    ]),
     rencontre: s([
       { if: 'char:mecanicien', text: 'Malo ? … Bon sang, Malo. Je savais que si quelqu’un venait, ce serait toi.' },
       { if: 'true', text: 'Vous venez du VAYN ? Il n’est pas parti ? Dieu merci…' },
@@ -293,7 +299,10 @@ export const THEO: DialogueDef = {
     recit2: s('Castel m’a surpris en sortant de la salle radio. Il a dit qu’il me mettrait en cellule, qu’il dirait que j’avais saboté le train. J’ai paniqué. Je me suis dit : je trouve un K3 au dépôt, je répare tout, et personne ne saura.', 'recit3'),
     recit3: s('La poutre a cédé sur ma jambe. J’ai rampé jusqu’ici. Anselme m’a ramassé. C’est tout. C’est bête, hein ?', 'hub', { fx: ['entry:t_theo_recit'] }),
     mara: s('Elle va bien ? Vraiment ? … Alors ça valait le coup. Presque.', 'hub', { fx: ['set:theo_mara_dit'] }),
-    soigne: nar('Vous nettoyez la plaie, serrez un bandage propre. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.', 'hub', { fx: ['take:bandage_comp', 'set:theo_soigne', 'time:15'] }),
+    soigne: n([
+      { if: 'has:bandage_comp', text: 'Vous videz la trousse de secours : antiseptique, gaze, bandage propre. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
+      { if: 'true', text: 'Vous faites de votre mieux avec ce que vous avez. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
+    ], undefined, { next: 'hub', fx: ['if:has:bandage_comp?take:bandage_comp', 'if:!has:bandage_comp & has:antibio?take:antibio', 'if:!has:bandage_comp & !has:antibio?take:bandage', 'set:theo_soigne', 'time:15'] }),
     ramener: n([
       { if: 'f:theo_soigne | comp:vasseur | comp:castel', text: 'Il se redresse en serrant les dents. « Allons-y. Doucement. »' },
       { if: 'true', text: 'Je ne tiendrai pas debout sans un vrai pansement, ou quelqu’un de costaud pour me porter.' },
@@ -317,7 +326,10 @@ export const ANSELME: DialogueDef = {
     ]),
     rencontre2: s('Le gamin à la jambe cassée ? Il est là. Je l’ai traîné hors du talus avant que les chiens s’en chargent. Entrez. Doucement.', 'hub', { fx: ['trust:anselme+1'] }),
     rencontre_mefiant: s('Personne ne passe par Saint-Aubin. Plus maintenant. Mais vous n’avez pas l’air de pillards. Pas assez maigres.', 'hub'),
-    hub: n('Anselme garde son fusil en travers des genoux. Derrière lui, les leviers luisent de graisse.', [
+    hub: n([
+      { if: 'f:mara_expulsee', text: 'Anselme garde son fusil en travers des genoux. « La petite du barrage ? Je l’ai installée près du poêle, avec de l’eau et une couverture. Elle n’a pas voulu rester : avant l’aube, elle remontait vers la vallée. »' },
+      { if: 'true', text: 'Anselme garde son fusil en travers des genoux. Derrière lui, les leviers luisent de graisse.' },
+    ], [
       c('Depuis quand êtes-vous ici ?', 'histoire', { if: '!e:t_anselme' }),
       c('Le récepteur, là, il capte Clairval ?', 'radio', { once: true }),
       c('Pouvez-vous mettre le signal au rouge ? Le train s’arrêterait ici.', 'signal', { if: '!f:anselme_accord' }),

@@ -188,10 +188,15 @@ const OBJECTS: ObjectDef[] = [
     id: 'chiens', sec: 'talus', name: 'Meute de chiens', sprite: 'dogs', x: 210, y: 112, block: [40, 46], visible: '!f:chiens_partis',
     important: 'true',
     actions: [
-      A('Observer', { text: 'Cinq chiens maigres, couchés en travers du talus. Le plus gros vous fixe. Ils ne sont pas encore agressifs. Pas encore.' }),
+      A('Observer', {
+        text: [
+          { if: 'f:chiens_alertes', text: 'Cinq chiens maigres, déjà debout sur le talus, museaux levés : ils ont entendu du bruit à la gare et ils tournent la tête vers l’ouest. Le plus gros vous fixe. Ils ne sont pas encore agressifs. Pas encore.' },
+          { if: 'true', text: 'Cinq chiens maigres, couchés en travers du talus. Le plus gros vous fixe. Ils ne sont pas encore agressifs. Pas encore.' },
+        ],
+      }),
       A('Leur jeter une ration', { if: 'has:ration', time: 5, fx: ['take:ration', 'set:chiens_partis'], text: 'Vous lancez la ration loin sur la gauche. La meute s\'y précipite en grondant. Le passage est libre.' }),
       A('Leur jeter une conserve ouverte', { if: 'has:conserve & !has:ration', time: 5, fx: ['take:conserve', 'set:chiens_partis'], text: 'L\'odeur des haricots suffit. Les chiens se battent pour la boîte. Vous passez.' }),
-      A('Laisser Mara faire', { if: 'comp:mara', time: 5, fx: ['set:chiens_partis', 'trust:mara+1'], text: 'Mara s\'accroupit et siffle doucement, trois notes. Le gros chien remue la queue. « Ils me connaissent. Je suis passée par ici, il y a dix jours. »' }),
+      A('Laisser Mara faire', { if: 'comp:mara', time: 5, fx: ['set:chiens_partis', 'trust:mara+1'], text: 'Mara s\'accroupit et siffle doucement, trois notes. Le gros chien remue la queue. « Ils me connaissent. Je suis passée ici plusieurs fois ; ils ne voulaient pas de moi. »' }),
       A('Laisser Castel les disperser', { if: 'comp:castel', time: 5, fx: ['set:chiens_partis', 'set:coup_de_feu'], text: 'Castel tire en l\'air. La meute détale dans les fourrés. L\'écho roule longtemps sur la vallée.' }),
       A('Attendre qu\'ils s\'éloignent (45 min)', { time: 45, fx: ['set:chiens_partis'], text: 'Vous attendez, immobile, le cœur battant. La meute finit par se lever et disparaître vers les bois. Le temps, lui, a filé.' }),
       A('Forcer le passage', { danger: true, time: 5, fx: ['set:chiens_partis', 'stat:health-22', 'cstat:comp-20'], text: 'Vous foncez en criant. Les chiens attaquent. Des crocs, du sang, puis la meute recule enfin. Vous êtes passé, à quel prix.' }),

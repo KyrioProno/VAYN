@@ -42,7 +42,7 @@ export function councilFlow(app: App, motions: MotionDef[], opts: { title: strin
       clear(box);
       if (!list.length) box.append(h('div', { class: 'empty' }, 'Vous n’avez rien de plus à révéler devant tout le monde.'));
       for (const r of list) {
-        box.append(btn([h('b', { class: chosen.has(r.id) ? 'chk on' : 'chk' }, r.label), h('small', null, r.desc)], () => {
+        box.append(btn([h('b', { class: chosen.has(r.id) ? 'chk on' : 'chk' }, g.text(r.label)), h('small', null, g.text(r.desc))], () => {
           if (chosen.has(r.id)) chosen.delete(r.id);
           else chosen.add(r.id);
           app.sfx('tick');

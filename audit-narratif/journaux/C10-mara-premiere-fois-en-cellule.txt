@@ -1,0 +1,31 @@
+[J1 07:00]   ▸ start_controleur : « Au travail. »
+[J1 07:00] 💬 start_controleur : Jour 147, 07:00. Bureau du Contrôle. Le train est immobile depuis sept heures, et le silen ‖ Fontaine ! La filtration est morte, le pilote automatique refuse de repartir, et Théo Laga ‖ Je veux un rapport avant le conseil de 17:00. Et pas de panique dans les voitures. Vous sa ‖ Castel repart vers son poste sans attendre de réponse. Dans votre poche, un billet de prem
+[J1 16:10] Rosa referme la grille.
+[J1 16:10] Mara : point=ad_cellule ; rencontrée=true
+[J1 16:12]   ✗ choix « Doucement » absent dans mara.cellule ; choix : Je vais parler au conseil. / Je repasserai.
+[J1 16:12] 💬 mara : Mara serre les barreaux. Petite, le capuche posé sur les barreaux comme un chapeau trop gr
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
+[J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
+[J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
+[J1 17:00] Conseil : motion « Le relais de la radio » non présentée
+[J1 17:00] Va dormir.
+[J2 06:30] Expédition : compagnon aucun, matériel {"ration":1}
+[J2 06:30] 💬 depart_quai : Jour 148, 06:30. La portière de la soute s’ouvre sur le quai désert. L’air sent le fer mou ‖ Le VAYN repartira à 12:00, avec ou sans vous. Les sirènes préviendront à 11:00, 11:30 et 1
+[J2 06:31] Retour à bord : —
+[J2 12:00] Départ du train (12:00).
+[J2 15:00] Assemblée : train_roule=true (le départ a-t-il eu lieu ?)
+[J2 15:00] Assemblée : révélations dispo [aucune], faites [aucune] ; direction → sud (votes {"castel":"sud","vasseur":"sud","marchetti":"sud","sorel":"clairval"} ; args dispo aucun)
+
+NOTIFICATIONS
+J1 07:00 Nouvelle mission : Le train arrêté
+J1 07:00 Nouvelle mission : La ligne fantôme
+J1 07:00 Indice : Billet « cabine 0 »
+J1 16:10 Castel annonce une fouille de la soute à 16:00.
+J1 16:10 Castel a trouvé une clandestine dans la soute ! Elle est en cellule.
+J1 16:12 Nouvelle mission : La voix de Clairval
+J1 17:00 Le conseil des quatre se réunit à 17:00 à la cantine.
+J2 12:00 Sirène du VAYN : départ dans une heure.
+J2 12:00 Deuxième sirène : départ dans trente minutes.
+J2 12:00 Dernier appel ! Le VAYN part dans dix minutes.
+J2 15:00 Mission terminée : Le train arrêté
+J2 15:00 Indice : « Ne vous arrêtez pas à Clairval »

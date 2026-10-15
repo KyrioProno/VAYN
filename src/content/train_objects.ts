@@ -39,11 +39,12 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
   // ================================================================ MACHINES
   {
     id: 'console_cabine', sec: 'machines', name: 'Pupitre de conduite', sprite: 'cab_console', x: 44, y: 78, block: [40, 10],
-    important: '!f:console_lue',
+    // Le pupitre est derrière la porte de la cabine : on ne le signale que si elle est ouverte.
+    important: '!f:console_lue & door:d_cabine=open',
     actions: [
       A('Lire le pupitre', {
         fx: ['set:console_lue', 'set:sait_depart'],
-        text: 'ARRÊT DE SÉCURITÉ — CIRCUIT EAU. Reprise automatique : J2 12:00 (fenêtre de départ maximale atteinte). Le pilote automatique repartira, que la filtration soit réparée ou non.',
+        text: 'ARRÊT DE SÉCURITÉ — CIRCUIT EAU. Reprise automatique : demain 12:00 (fenêtre de départ maximale atteinte). Le pilote automatique repartira, que la filtration soit réparée ou non.',
       }),
       A('Consulter le journal de bord', {
         fx: ['entry:c_cabine_horaire', 'obj:qp_controleur.cabine'],
@@ -220,7 +221,7 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
       A('Fouiller la couchette', {
         time: 10,
         fx: ['entry:c_couchette_theo', 'set:dessin_vu'],
-        text: 'Lit fait au carré. Son sac de nuit et sa frontale ont disparu. Sous l\'oreiller, un dessin d\'enfant : un grand mur d\'eau, et « MERCI THÉO » d\'une écriture maladroite.',
+        text: 'Lit fait au carré. Son sac de nuit et sa frontale ont disparu. Sous l\'oreiller, un dessin maladroit : un grand mur d\'eau, et « MERCI THÉO », écrit au feutre, de biais.',
       }),
     ],
   },
@@ -255,7 +256,7 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
       }),
       A('Donner les antibiotiques', {
         if: 'has:antibio & !f:lou_soignee', time: 5,
-        fx: ['take:antibio', 'set:lou_soignee', 'conseq:cq_lou_soignee', 'obj:qp_passager.soigner', 'trust:sorel+1'],
+        fx: ['take:antibio', 'set:lou_soignee', 'conseq:cq_lou_soignee', 'obj:qp_passager.soigner', 'qdone:qp_passager', 'trust:sorel+1'],
         text: [
           { if: 'char:passager', text: 'Vous lui faites avaler le premier comprimé. « C\'est amer », dit-elle. Vous riez, et vous ne savez pas pourquoi vous pleurez en même temps.' },
           { if: 'true', text: 'Vous confiez la boîte à l\'infirmière de garde. La petite aura sa dose ce soir.' },
@@ -349,7 +350,7 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
     important: '!e:c_tableau_rations',
     actions: [
       A('Lire', {
-        fx: ['entry:c_tableau_rations', 'obj:q_ration.enquete'],
+        fx: ['entry:c_tableau_rations'],
         text: [
           { if: 'char:controleur', text: 'Vous refaites les comptes de tête. Les distributions ne collent pas avec la baisse de la citerne : il manque environ quatre jerricans par semaine. Ce n\'est pas de l\'évaporation, c\'est une habitude.' },
           { if: 'true', text: 'Les chiffres à la craie ne tombent pas juste : la citerne baisse plus vite que les distributions. Quelqu\'un se sert.' },
@@ -382,7 +383,7 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
       A('Lire le compteur', {
         time: 5,
         fx: ['entry:c_compteur_eau'],
-        text: 'Un compteur mécanique à rouleaux, avec un enregistreur à papier. Chaque nuit, vers 23 h, un trait : environ quatre-vingts litres. Aucune distribution à cette heure-là.',
+        text: 'Un compteur mécanique à rouleaux, avec un enregistreur à papier. Deux nuits sur sept, vers 23 h, un trait : deux jerricans, une quarantaine de litres. Aucune distribution à cette heure-là.',
       }),
       A('Verser le jerrican', {
         if: 'has:jerrican_plein', time: 5,
@@ -402,8 +403,8 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
         time: 10,
         fx: ['entry:c_registre_cabine0', 'obj:qp_controleur.cabine0'],
         text: [
-          { if: 'char:controleur', text: 'Sorties nocturnes : « cabine 0 — 4 jerricans, 6 conserves ». Paraphe P.M. Le même tampon que sur votre billet. Une cabine fantôme qu\'on ravitaille deux fois par semaine.' },
-          { if: 'true', text: 'Colonnes propres, écriture appliquée. Et, deux fois par semaine, la nuit : « cabine 0 — 4 jerricans, 6 conserves ». Paraphe : P.M.' },
+          { if: 'char:controleur', text: 'Sorties nocturnes : « cabine 0 — 2 jerricans, 6 conserves ». Paraphe P.M. Le même tampon que sur votre billet. Une cabine fantôme qu\'on ravitaille deux fois par semaine — quatre jerricans, au total.' },
+          { if: 'true', text: 'Colonnes propres, écriture appliquée. Et, deux fois par semaine, la nuit : « cabine 0 — 2 jerricans, 6 conserves ». Paraphe : P.M.' },
         ],
       }),
       A('Fouiller le tiroir', {
@@ -469,7 +470,10 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
       A('Fouiller', {
         if: '!f:cachette_noe_vue', time: 5,
         fx: ['set:cachette_noe_vue', 'set:ration_coupable', 'obj:q_ration.enquete'],
-        text: 'Sous la couchette, une boîte à biscuits : deux rations emballées dans du papier journal, et un dessin de barrage, le même que dans l\'atelier. Noé met des vivres de côté — pour quelqu\'un.',
+        text: [
+          { if: 'f:dessin_vu', text: 'Sous la couchette, une boîte à biscuits : deux rations emballées dans du papier journal, et un dessin de barrage — le même que celui trouvé sous l\'oreiller de Théo. Noé met des vivres de côté — pour quelqu\'un.' },
+          { if: 'true', text: 'Sous la couchette, une boîte à biscuits : deux rations emballées dans du papier journal, et un dessin de barrage, aux tours fines, avec une phrase en dessous : « MERCI THÉO ». Noé met des vivres de côté — pour quelqu\'un.' },
+        ],
       }),
       A('Examiner', { if: 'f:cachette_noe_vue', text: 'La boîte à biscuits de Noé. Vous la remettez exactement en place.' }),
     ],
@@ -500,7 +504,7 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
       A('Se réchauffer (30 min)', { time: 30, fx: ['stat:rest+5'], text: 'La chaleur vous engourdit les doigts, puis l\'esprit.' }),
       A('Brûler la lettre de Madame', {
         if: 'has:lettre_madame | has:lettre_ouverte', danger: true,
-        fx: ['take:lettre_madame', 'take:lettre_ouverte', 'set:lettre_brulee', 'conseq:cq_lettre_brulee', 'obj:qp_majordome.remettre'],
+        fx: ['take:lettre_madame', 'take:lettre_ouverte', 'set:lettre_brulee', 'conseq:cq_lettre_brulee', 'obj:qp_majordome.remettre', 'qdone:qp_majordome'],
         text: 'La cire rose fond en premier. Puis le papier se recroqueville, et avec lui vingt ans de loyauté.',
       }),
     ],
@@ -568,10 +572,17 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
       }),
       A('Écouter 4,7 MHz', {
         if: '!f:k3_retire_radio & clock>=21:00', time: 20,
-        fx: ['entry:t_mara_clairval', 'set:clairval_entendu'],
+        fx: ['entry:c_voix_clairval', 'set:clairval_entendu'],
         text: 'Du souffle. Puis une voix d\'homme, fatiguée, en boucle : « …Clairval, barrage… nous sommes quarante… venez par la vallée… » Une boucle enregistrée ? Ou un appel vivant ?',
       }),
-      A('Écouter', { if: '!f:k3_retire_radio & clock<21:00', text: 'Du souffle sur toutes les fréquences. Mara parlait de 21 h.' }),
+      A('Écouter', {
+        if: '!f:k3_retire_radio & clock<21:00',
+        text: [
+          { if: 'e:t_mara_clairval', text: 'Du souffle sur toutes les fréquences. Mara parlait de 21 h.' },
+          { if: 'e:c_registre_radio', text: 'Du souffle sur toutes les fréquences. Le journal de Castel parlait de 21 h.' },
+          { if: 'true', text: 'Du souffle sur toutes les fréquences. Rien, à cette heure-ci.' },
+        ],
+      }),
       A('Retirer le K3', {
         if: '!f:k3_retire_radio & !obj:filtration=repare & e:f_k3_radio', danger: true, time: 10,
         fx: ['set:k3_retire_radio', 'give:relais_k3', 'set:radio_muette'],

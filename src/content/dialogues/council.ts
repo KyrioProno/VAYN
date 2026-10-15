@@ -41,7 +41,7 @@ export const CASTEL: DialogueDef = {
     ]),
     nie: s('Je n’ai touché à personne. Sortez, avant que je trouve une raison de vous garder ici.', 'hub', { fx: ['susp:castel+1', 'trust:castel-1'] }),
     aveu: s('… Je l’ai surpris en sortant de la salle radio. Minuit vingt. Il avait bricolé le poste. Je l’ai menacé de la cellule — je voulais lui faire peur, pas plus.', 'aveu2'),
-    aveu2: s('Il a filé vers l’arrière. Dix minutes après, il n’était plus à bord. Si j’avais su qu’il sauterait… Ce que je vous dis là ne sort pas d’ici.', 'aveu3', { fx: ['entry:t_castel_aveu', 'set:castel_avoue', 'obj:q_main.theo'] }),
+    aveu2: s('Il a filé vers l’avant, vers la soute. Dix minutes après, il n’était plus à bord. Si j’avais su qu’il sauterait… Ce que je vous dis là ne sort pas d’ici.', 'aveu3', { fx: ['entry:t_castel_aveu', 'set:castel_avoue', 'obj:q_main.theo'] }),
     aveu3: n('Il attend votre réponse, la mâchoire serrée.', [
       c('Ça restera entre nous.', 'hub', { fx: ['trust:castel+2', 'set:castel_couvert'] }),
       c('Le conseil devra l’entendre.', 'hub', { fx: ['trust:castel-1', 'set:castel_a_reveler'] }),
@@ -77,11 +77,11 @@ export const CASTEL: DialogueDef = {
     detourne: s('Vers le Salon ? … Je ferai d’abord un tour là-bas, alors. Si vous m’avez menti, je le saurai.', 'hub', { fx: ['set:fouille_detournee', 'susp:castel+1'] }),
     cellule: s('Elle se cachait dans la soute. Complice de Théo, j’en mettrais ma main au feu. Le conseil décidera de son sort.', 'cellule2'),
     cellule2: n('Derrière les barreaux, la fille ne vous quitte pas des yeux.', [
-      c('C’est la fille de la docteure Sorel.', 'cellule_mere', { if: 'e:f_mere' }),
+      c('C’est la fille de la docteure Sorel.', 'cellule_mere', { if: 'e:f_mere & !dead:mara' }),
       c('Elle n’est pas dangereuse. Laissez-la sortir.', 'cellule_non'),
       back('Je vois.'),
     ]),
-    cellule_mere: s('… La fille de Sorel ? Bon sang. Bon sang. Qu’elle aille voir sa mère. Mais elle reste à bord, et sous ma responsabilité.', 'hub', { fx: ['set:mara_libre', 'trust:castel+1', 'loc:mara='] }),
+    cellule_mere: s('… La fille de Sorel ? Bon sang. Bon sang. Qu’elle aille voir sa mère. Mais elle reste à bord, et sous ma responsabilité.', 'hub', { fx: ['set:mara_libre', 'trust:castel+1', 'loc:mara=', 'set:mere_reunie', 'conseq:cq_mere_reunie', 'obj:q_mara.reunion', 'trust:mara+3', 'trust:sorel+3', 'qdone:q_mara'] }),
     cellule_non: s('Ce n’est pas à vous d’en décider. Ni à moi. Au conseil.', 'hub'),
     registre: n('Le registre ? Pour quoi faire ?', [
       c('Pour retrouver Théo plus vite que vous.', 'registre_ok', { if: 'trust:castel>=1' }),
@@ -139,9 +139,9 @@ export const VASSEUR: DialogueDef = {
       { if: 'char:mecanicien', text: 'Et toi, tu as signé avec moi. Si ça sort, on tombe tous les deux, Malo.' },
       { if: 'true', text: 'Sans pompe de secours, la panne de cette nuit a arrêté le train. Je le sais. Vous croyez que je dors ?' },
     ], [
-      c('J’avouerai devant le conseil que j’ai signé sans vérifier.', 'malo_aveu', { if: 'char:mecanicien', fx: ['set:malo_avoue', 'obj:qp_mecanicien.vasseur', 'obj:qp_mecanicien.choix', 'conseq:cq_malo_aveu', 'trust:vasseur-1'] }),
-      c('Je te couvre. Le carnet reste comme il est.', 'malo_couvre', { if: 'char:mecanicien', fx: ['set:malo_couvre', 'set:vasseur_couverte', 'obj:qp_mecanicien.vasseur', 'obj:qp_mecanicien.choix', 'conseq:cq_malo_couvre', 'trust:vasseur+2', 'debt:vasseur+1'] }),
-      c('On dira que c’est Théo qui a signé. Il n’est pas là pour dire le contraire.', 'malo_theo', { if: 'char:mecanicien', fx: ['set:malo_accuse_theo', 'obj:qp_mecanicien.vasseur', 'obj:qp_mecanicien.choix', 'conseq:cq_malo_accuse_theo', 'trust:vasseur+1'] }),
+      c('J’avouerai devant le conseil que j’ai signé sans vérifier.', 'malo_aveu', { if: 'char:mecanicien', fx: ['set:malo_avoue', 'obj:qp_mecanicien.vasseur', 'obj:qp_mecanicien.choix', 'qdone:qp_mecanicien', 'conseq:cq_malo_aveu', 'trust:vasseur-1'] }),
+      c('Je te couvre. Le carnet reste comme il est.', 'malo_couvre', { if: 'char:mecanicien', fx: ['set:malo_couvre', 'set:vasseur_couverte', 'obj:qp_mecanicien.vasseur', 'obj:qp_mecanicien.choix', 'qdone:qp_mecanicien', 'conseq:cq_malo_couvre', 'trust:vasseur+2', 'debt:vasseur+1'] }),
+      c('On dira que c’est Théo qui a signé. Il n’est pas là pour dire le contraire.', 'malo_theo', { if: 'char:mecanicien', fx: ['set:malo_accuse_theo', 'obj:qp_mecanicien.vasseur', 'obj:qp_mecanicien.choix', 'qdone:qp_mecanicien', 'conseq:cq_malo_accuse_theo', 'trust:vasseur+1'] }),
       c('Je garderai ça pour moi.', 'hub', { if: '!char:mecanicien', fx: ['set:vasseur_couverte', 'trust:vasseur+2', 'debt:vasseur+1'] }),
       c('Le conseil doit savoir.', 'hub', { if: '!char:mecanicien', fx: ['set:vasseur_a_reveler', 'trust:vasseur-1'] }),
     ]),
@@ -187,7 +187,7 @@ export const MARCHETTI: DialogueDef = {
     ]),
     comptes: s('Chaque litre est inscrit. Il y a l’évaporation, la casse, les fuites… Un train, ça fuit de partout.', 'hub', { fx: ['entry:t_marchetti_version'] }),
     cabine0: n('Il pâlit. « Une erreur d’écriture. Une vieille référence. »', [
-      c('Quatre jerricans par nuit, vers 23 h. Le compteur de la citerne s’en souvient.', 'aveu', { if: 'e:c_compteur_eau | e:f_detournement' }),
+      c('Deux jerricans, deux nuits par semaine, vers 23 h. Le compteur de la citerne s’en souvient.', 'aveu', { if: 'e:c_compteur_eau | e:f_detournement' }),
       c('« Quatre jerricans contre une boîte d’amoxicilline. » C’est votre écriture.', 'aveu', { if: 'e:c_lettre_marchetti' }),
       c('Les jerricans de la réserve dorment dans le garde-manger du Salon.', 'aveu', { if: 'e:c_gardemanger_salon' }),
       back('Une erreur d’écriture, bien sûr.'),
@@ -195,7 +195,7 @@ export const MARCHETTI: DialogueDef = {
     aveu: s('… Madame a des médicaments. Beaucoup. Elle les a apportés à bord dans ses malles. Elle veut de l’eau, je lui donne de l’eau. Elle me donne des antibiotiques, je les dépose à l’infirmerie, la nuit.', 'aveu2', { fx: ['entry:t_marchetti_aveu', 'set:marchetti_avoue', 'entry:f_echange_antibio'] }),
     aveu2: n('Sorel ne sait pas d’où ils viennent. Sans ça, trois enfants seraient morts ce mois-ci. Trois. Alors oui, je vole l’eau de tout le monde.', [
       c('Vous auriez dû le dire au conseil.', 'hub', { fx: ['set:audit_preuves', 'trust:marchetti-1'] }),
-      c('Je garde ça pour moi. Mais vous me devez beaucoup.', 'couvre', { fx: ['set:marchetti_couvert', 'debt:marchetti+2', 'conseq:cq_marchetti_couvert', 'obj:qp_controleur.choix'] }),
+      c('Je garde ça pour moi. Mais vous me devez beaucoup.', 'couvre', { fx: ['set:marchetti_couvert', 'debt:marchetti+2', 'conseq:cq_marchetti_couvert', 'obj:qp_controleur.choix', 'if:char:controleur?qdone:qp_controleur'] }),
       c('Le conseil en entendra parler ce soir.', 'hub', { fx: ['set:audit_preuves', 'set:marchetti_menace', 'trust:marchetti-2'] }),
     ]),
     couvre: s('Il hoche la tête, soulagé et humilié à la fois. « Je n’oublierai pas. »', 'hub', { fx: ['trust:marchetti+1'] }),
@@ -209,24 +209,31 @@ export const MARCHETTI: DialogueDef = {
       c('Je sais pour la « cabine 0 ». Une boîte pour Lou, et je n’ai rien vu.', 'lou_ok', { if: 'f:marchetti_avoue | e:f_detournement' }),
       c('Je vous en prie.', 'lou_non'),
     ]),
-    lou_ok: s('Il ferme les yeux. « La prochaine boîte… je la garde pour votre sœur. Tenez. C’est la dernière que j’avais. »', 'hub', { fx: ['give:antibio', 'set:marchetti_antibio', 'debt:marchetti-1', 'obj:qp_passager.trouver'] }),
+    lou_ok: s('Il ferme les yeux. « La prochaine, je la garde pour votre sœur. Tenez : c’est la dernière qu’il me restait. »', 'hub', { fx: ['give:antibio', 'set:marchetti_antibio', 'debt:marchetti-1', 'obj:qp_passager.trouver', 'qdone:qp_passager'] }),
     lou_non: s('Je suis désolé. Vraiment.', 'hub'),
     lettre: n([
       { if: 'has:lettre_ouverte', text: 'Il examine le cachet brisé, puis vous. « On lit le courrier de sa maîtresse, maintenant ? »' },
       { if: 'true', text: 'Il brise le cachet rose, lit, soupire longuement.' },
-    ], undefined, { next: 'lettre2', fx: ['take:lettre_madame', 'take:lettre_ouverte', 'set:lettre_remise', 'conseq:cq_lettre_remise', 'obj:qp_majordome.remettre'] }),
+    ], undefined, { next: 'lettre2', fx: ['take:lettre_madame', 'take:lettre_ouverte', 'set:lettre_remise', 'if:f:lettre_lue?conseq:cq_lettre_remise_lue', 'if:!f:lettre_lue?conseq:cq_lettre_remise', 'obj:qp_majordome.remettre', 'qdone:qp_majordome'] }),
     lettre2: s('Le gamin… Noé. Il a vu les jerricans, une nuit. Il en parle aux dortoirs. Madame veut que je le fasse taire. Je lui donnerai des rations, je suppose. C’est comme ça qu’on achète le silence, ici.', 'hub', { fx: ['set:garcon_noe', 'obj:qp_majordome.garcon'] }),
   },
 };
 
 export const SOREL: DialogueDef = {
   id: 'sorel', npc: 'sorel',
-  start: [{ if: 'f:mere_reunie', go: 'reunie' }, { go: 'hub' }],
+  start: [{ if: 'dead:mara', go: 'deuil' }, { if: 'f:mere_reunie', go: 'reunie' }, { go: 'hub' }],
   nodes: {
     reunie: n('Sorel ne lâche pas la main de Mara. Elle a l’air de quelqu’un qui a dormi quatre ans d’un coup. « Merci. Je ne sais pas comment on dit merci pour ça. »', [
       c('Prenez soin d’elle.', 'hub'),
       bye(),
     ]),
+    deuil: n([
+      { if: 'true', text: 'La docteure est assise seule derrière son bureau, les mains vides. Elle a préparé le dîner pour deux, comme la veille. Elle n’a pas dormi. « Vous l’aviez ramenée, n’est-ce pas. Elle me l’avait dit à l’infirmerie. »' },
+    ], [
+      c('Je suis désolée.', 'deuil2'),
+      bye('Je repasserai.'),
+    ]),
+    deuil2: s('Ne le dites pas à qui que ce soit. Pas encore. J’ai gardé quatre ans le silence sur ce que je savais. J’en tiendrai un peu plus.', 'hub', { fx: ['trust:sorel+1'] }),
     hub: n('La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes.', [
       c('Comment vont les malades ?', 'malades', { once: true }),
       c('Parlez-moi de Lou.', 'lou', { if: 'char:passager & !f:lou_soignee' }),

@@ -12,7 +12,7 @@ export function companionOptions(app: App): CompanionOption[] {
   const v = g.rel('vasseur');
   out.push({ id: 'vasseur', ok: v.trust >= 0 && !(g.flag('vasseur_revelee') && v.trust < 1), note: 'Solide, connaît les structures : elle saura étayer une poutre et porter un blessé.', why: 'Vasseur refuse de partir avec vous.' });
   const c = g.rel('castel');
-  out.push({ id: 'castel', ok: c.trust > -2, note: 'Armé. Disperse les chiens, impose le respect. Mais que fera-t-il s’il retrouve Théo ?', why: 'Castel ne vous fait plus confiance.' });
+  out.push({ id: 'castel', ok: c.trust > -2, note: 'Armé. Disperse les chiens d’un coup de fusil, impose le respect partout — et ne parle à personne de ce qu’il a vu.', why: 'Castel ne vous fait plus confiance.' });
   const m = g.rel('mara');
   const maraFree = !!(g.flag('mara_libre') || g.flag('mara_cachee_ailleurs') || (g.flag('mara_trouvee') && !g.flag('mara_capturee')));
   out.push({

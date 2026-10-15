@@ -1,0 +1,232 @@
+[J1 07:00]   ▸ start_majordome : « Aller voir Madame. »
+[J1 07:00] 💬 start_majordome : Jour 147, 07:00. Le Salon. Vous avez déjà ciré l’argenterie, plié les serviettes et consta ‖ Edmond. Madame vous demande dans sa cabine. Tout de suite, a-t-elle dit — et elle l’a dit  ‖ On dit qu’un gars de la maintenance a disparu cette nuit. Théo. Celui qui réparait le chau ‖ Josefa retourne à son poste. Les clés du Salon pèsent dans votre poche : l’office, le gard
+[J1 07:05]   (on frappe à la cabine de Madame)
+[J1 07:05]   ▸ villiers : « Bien, Madame. »
+[J1 07:05]   (fin volontaire du dialogue villiers ; choix : Vous connaissiez Théo Lagarde ? / Ouvrir la lettre à la vapeur, dans l’office. / Partir.)
+[J1 07:05] 💬 villiers : Edmond. Enfin. Cette lettre doit parvenir à M. Marchetti, en main propre. Aujourd’hui. Et  ‖ Elle vous tend l’enveloppe scellée de cire rose. Ses bagues cliquettent. ‖ Madame de Villiers fait tourner le cognac dans son verre. « Oui ? »
+[J1 07:51] ✓ etabli « Lire le carnet d'entretien » → « Pompe de secours : révisée, opérationnelle », il y a quinze jours. Signé O. Vasseur, contresigné M. Kerbrat.
+[J1 08:05] ✓ couchette_theo « Fouiller la couchette » → Lit fait au carré. Son sac de nuit et sa frontale ont disparu. Sous l'oreiller, un dessin maladroit : un grand mur d'eau, et « MERCI THÉO », écrit au feutre, de
+[J1 08:07] ✓ etagere « Prendre le pied-de-biche » → Le pied-de-biche de l'équipe. Personne ne le cherchera… avant d'en avoir besoin.
+[J1 08:14] ✓ alarmes « Lire le journal d'alarmes » → 23:40, la filtration s'arrête. 23:41, la pompe de secours ne prend pas le relais. 23:52, le train s'immobilise en gare de Saint-Aubin.
+[J1 08:22] ✓ filtration « Ouvrir l'armoire » → Un emplacement vide au milieu des relais, étiqueté K3. Rien n'est arraché : quelqu'un a retiré la pièce proprement, et rangé les vis à côté.
+[J1 08:28] ✓ pompe_secours « Examiner » → Le capot de la pompe de secours est posé de travers. Dessous : rien. Le moteur a disparu, et la poussière accumulée dit que ça ne date pas d'hier.
+[J1 08:33] ✗ console_cabine : derrière d_cabine (fermé)
+[J1 08:33] ✗ console_cabine : derrière d_cabine (fermé)
+[J1 08:47] ✓ bons_sortie « Consulter les bons » → Bon n° 112, il y a trois semaines : « 1 moteur de pompe, 0,75 kW — pour bacs hydroponiques (dortoirs). » Paraphe : O.V.
+[J1 08:47] 🔗 c_pompe_secours + c_bon_sortie → f_pompe_morte
+[J1 08:48]   ▸ vasseur : « Qu’est-ce qui a lâché, exactement ? »
+[J1 08:48]   ▸ vasseur : « Et Théo ? Vous le connaissez mieux que personne. »
+[J1 08:48]   ▸ vasseur : « La pompe de secours n’a plus de moteur. »
+[J1 08:48]   ▸ vasseur : « Le bon de sortie n° 112 dit le contraire. Le moteur est dans les bacs hydroponiques. »
+[J1 08:48]   ▸ vasseur : « Le conseil doit savoir. »
+[J1 08:48]   (fin volontaire du dialogue vasseur ; choix : Il me faudrait la clé du casier de Théo. / Le stérilisateur de l’infirmerie, c’est réparable ? / Partir.)
+[J1 08:48] 💬 vasseur : Si c’est pour me demander quand l’eau revient : je n’en sais rien. Si c’est pour Théo : je ‖ Vasseur relève ses lunettes de soudeuse sur son front. ‖ Quelqu’un a sorti le relais K3 de la filtration. Proprement, comme un pro. Et la pompe de  ‖ Vasseur relève ses lunettes de soudeuse sur son front. ‖ Théo n’abandonnerait jamais son poste. Jamais. S’il est parti, c’est qu’on l’y a poussé. D ‖ Vasseur relève ses lunettes de soudeuse sur son front. ‖ Elle a été révisée il y a quinze jours. C’est dans le carnet. ‖ … D’accord. Oui. J’ai pris le moteur pour les bacs. La circulation avait lâché, on perdait ‖ Sans pompe de secours, la panne de cette nuit a arrêté le train. Je le sais. Vous croyez q ‖ Vasseur essuie ses mains sur un chiffon, sans vous regarder.
+[J1 08:48]   ▸ vasseur : « Il me faudrait la clé du casier de Théo. »
+[J1 08:48]   ✗ choix « S’il y a une piste » absent dans vasseur.casier ; choix : Je le forcerai, alors.
+[J1 08:48] 💬 vasseur : Vasseur essuie ses mains sur un chiffon, sans vous regarder. ‖ Ses affaires, c’est ses affaires.
+[J1 08:56] ✓ casier_theo « Forcer au pied-de-biche » → La porte cède dans un hurlement de tôle. Tout l'atelier a dû l'entendre. Derrière la tablette : un carnet à spirale.
+[J1 08:56] 🔗 c_socle_vide + c_carnet_theo → f_k3_radio
+[J1 08:56] 🔗 f_pompe_morte + f_k3_radio → f_panne
+[J1 09:08] ✓ bureau_sorel « Examiner le bureau » → Une photo : une fillette au bord d'un lac. À côté, une moitié de médaillon en laiton, gravée « …ARA ». Vous avez déjà vu sa jumelle — vous en êtes certain.
+[J1 09:08]   ▸ sorel : « Comment vont les malades ? »
+[J1 09:08]   ▸ sorel : « Cette photo, sur votre bureau… »
+[J1 09:08]   (fin volontaire du dialogue sorel ; choix : Partir.)
+[J1 09:08] 💬 sorel : La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes. ‖ Fièvres, plaies infectées, un cas de dysenterie. Il me reste deux boîtes d’antibiotiques.  ‖ La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes. ‖ Ma fille. Mara. Elle était chez son père, à Lyon, le premier jour. Lyon s’est effondrée. J ‖ Pardon. Ce n’est pas une conversation pour un jour comme aujourd’hui. ‖ La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes.
+[J1 09:12] ✓ tableau_rations « Lire » → Les chiffres à la craie ne tombent pas juste : la citerne baisse plus vite que les distributions. Quelqu'un se sert.
+[J1 09:12] ✓ annonces « Lire » → « CONSEIL DES QUATRE — 17:00, CANTINE : l'expédition, les rations. » — « AVIS : Théo LAGARDE, maintenance, absent depuis cette nuit. Toute information au poste 
+[J1 09:14]   ▸ rosa : « Tu as vu Théo, ces derniers jours ? »
+[J1 09:14]   ▸ rosa : « Tu as l’air soucieuse. »
+[J1 09:14]   ▸ rosa : « Je peux t’aider à la réserve, à 11 h ? »
+[J1 09:14]   (fin volontaire du dialogue rosa ; choix : Partir.)
+[J1 09:14] 💬 rosa : Rosa essuie le comptoir d’un geste circulaire. « Qu’est-ce que je te sers ? Des nouvelles  ‖ Théo ? Gentil garçon. Depuis une dizaine de jours, il prenait une deuxième portion. « Pour ‖ Rosa essuie le comptoir d’un geste circulaire. « Qu’est-ce que je te sers ? Des nouvelles  ‖ Chaque matin, il me manque une ration. Une seule. Je ne veux pas d’histoires, pas de Caste ‖ Rosa essuie le comptoir d’un geste circulaire. « Qu’est-ce que je te sers ? Des nouvelles  ‖ Pourquoi pas ? À 11 h devant la grille de la soute. Je n’aurai pas l’œil partout, si tu vo ‖ Rosa essuie le comptoir d’un geste circulaire. « Qu’est-ce que je te sers ? Des nouvelles 
+[J1 09:20]   ▸ vic : « Théo est venu te voir, récemment ? »
+[J1 09:20]   ▸ vic : « Payer 3 jetons. »
+[J1 09:20]   (fin volontaire du dialogue vic ; choix : Acheter… / Vendre… / Partir.)
+[J1 09:20] 💬 vic : Vic écarte les pans de son manteau : un étal portatif de trésors douteux. « Tout se troque ‖ Une info sur Théo ? Ça vaut trois jetons, l’ami. ‖ Il y a trois jours, Théo m’a demandé un relais K3. Je n’en avais pas. Il voulait savoir où ‖ Vic écarte les pans de son manteau : un étal portatif de trésors douteux. « Tout se troque
+[J1 09:24]   ▸ agathe : « Tu as remarqué quelque chose d’étrange, la nuit dernière ? »
+[J1 09:24]   ✗ choix « Je t’offre un peu de tabac » absent dans agathe.nuit_non ; choix : Tant pis.
+[J1 09:24] 💬 agathe : Agathe pose son jerrican vide et s’étire le dos. « On porte de l’eau qu’on n’a plus. C’est ‖ Rien vu, rien entendu. Les gens qui voient des choses, ici, finissent par avoir des ennuis ‖ Elle hausse les épaules.
+[J1 09:54] ✓ mur_caisses « Déplacer les caisses (20 min) » → Les caisses raclent le plancher. Quand la dernière bascule, vous découvrez une couverture, deux bols, des dessins de barrage… et deux yeux qui vous fixent dans 
+[J1 09:54]   ▸ mara : « Doucement. Je ne te veux pas de mal. Je cherche Théo. »
+[J1 09:54]   ▸ mara : « Que sais-tu de Théo ? »
+[J1 09:54]   ▸ mara : « D’où viens-tu ? »
+[J1 09:54]   ▸ mara : « Pourquoi es-tu montée dans ce train ? »
+[J1 09:54]   ▸ mara : « Je peux la garder ? Je la retrouverai. »
+[J1 09:54]   (fin volontaire du dialogue mara ; choix : Castel va fouiller la soute à 16:00. Il faut te cacher ailleurs. / Partir.)
+[J1 09:54] 💬 mara : Une fille maigre, capuche rabattue, brandit un éclat de verre. « Recule. Je te jure que je ‖ … Théo ? Il n’est pas revenu. Il devait revenir avant l’aube. Il revient toujours. ‖ Je m’appelle Mara. Ça fait neuf jours que je vis derrière ces caisses. ‖ Mara vous observe, prête à fuir. ‖ C’est lui qui m’a trouvée. Il m’apportait à manger, sa deuxième portion. Il voulait que j’ ‖ Après, j’ai entendu crier, vers minuit. Et puis plus rien. Il n’est jamais revenu. ‖ Mara vous observe, prête à fuir. ‖ Du barrage de Clairval. On est quarante, là-haut. Il y a de l’eau, des turbines, des serre ‖ Mara vous observe, prête à fuir. ‖ Je cherche quelqu’un. Ma mère. Elle s’appelle Hélène. Je ne connais pas son nom de famille ‖ Elle sort de sous sa capuche une moitié de médaillon en laiton, gravée « M… ». ‖ Elle hésite, puis vous la tend. Vous la retournez dans vos gants : vous avez déjà vu sa ju ‖ Mara vous observe, prête à fuir.
+[J1 09:54] 🔗 t_rosa_portions + c_cache → f_theo_cachait
+[J1 10:01] ✓ cache_noe « Fouiller » → Sous la couchette, une boîte à biscuits : deux rations emballées dans du papier journal, et un dessin de barrage — le même que celui trouvé sous l'oreiller de T
+[J1 10:06]   ▸ noe : « Tiens, une ration. Tu as vu quelque chose, cette nuit ? »
+[J1 10:06]   ▸ noe : « C’est toi qui prends des rations au comptoir ? »
+[J1 10:06]   ▸ noe : « Je promets. Tu as bien fait. »
+[J1 10:06]   (fin volontaire du dialogue noe ; choix : Partir.)
+[J1 10:06] 💬 noe : Le gamin vous dévisage, les mains dans les poches de son short trop grand. ‖ Noé fait disparaître la ration dans son short avec une vitesse de prestidigitateur. ‖ J’étais réveillé, j’avais faim. Vers minuit et demi, quelqu’un a sauté par la porte de la  ‖ Il boitait pas, à ce moment-là. Il courait vite. Comme quelqu’un qui a peur. ‖ Le gamin vous dévisage, les mains dans les poches de son short trop grand. ‖ … Tu promets que tu dis rien ? C’est pour la fille de la soute. Derrière les caisses. Moi, ‖ Il vous fixe, le menton tremblant. ‖ Le gamin vous dévisage, les mains dans les poches de son short trop grand.
+[J1 10:13] ✓ hydro « Identifier le moteur » → Plaque signalétique : « Pompe auxiliaire — VAYN — 0,75 kW ». Le moteur de la pompe de secours fait pousser les salades.
+[J1 10:18]   ▸ castel : « Que s’est-il passé cette nuit ? »
+[J1 10:18]   (fin volontaire du dialogue castel ; choix : J’ai besoin de la clé de la salle radio. / Un café, chef ? Vous n’avez pas fermé l’œil. / La fouille de la soute, c’est pour quand ? / Le registre des passagers, je peux le consulter ? / Partir.)
+[J1 10:18] 💬 castel : Lavigne. Madame vous envoie aux nouvelles ? Dites-lui que tout est sous contrôle. ‖ Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main. ‖ À 23 h 52, le pilote automatique a coupé. Arrêt de sécurité. La filtration est morte, et T ‖ Il a dû sauter. Un instable, ce garçon. Toujours à traîner où il ne devait pas. Je ne l’ai ‖ Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main.
+[J1 10:19] ✓ carte_reseau « Étudier la carte » → Saint-Aubin, puis l'embranchement de Vercel : au sud, la ligne vers la côte et Port-Sel ; à l'est, la vallée et le barrage de Clairval. Quelqu'un a entouré Clai
+[J1 10:21]   ▸ castel : « Le registre des passagers, je peux le consulter ? »
+[J1 10:21]   ✗ choix « Pour retrouver Théo » absent dans castel.registre ; choix : Simple curiosité.
+[J1 10:21] 💬 castel : Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main. ‖ Le registre ? Pour quoi faire ?
+[J1 10:28]   ▸ josefa : « Vous étiez de service, cette nuit ? »
+[J1 10:28]   ✗ choix « Deux jetons » absent dans josefa.hub ; choix : Que pensez-vous de Madame ? / Partir.
+[J1 10:28] 💬 josefa : Josefa ajuste son col. « Edmond. Madame vous a sonné deux fois. » ‖ J’ai porté une tisane à l’administration, vers minuit vingt. J’ai croisé Castel dans le co ‖ Je ne l’ai dit à personne. Castel a des yeux partout. ‖ Josefa ajuste son col. « Edmond. Madame vous a sonné deux fois. »
+[J1 10:30]   ▸ villiers : « Vous connaissiez Théo Lagarde ? »
+[J1 10:30]   (fin volontaire du dialogue villiers ; choix : Ouvrir la lettre à la vapeur, dans l’office. / Partir.)
+[J1 10:30] 💬 villiers : Madame de Villiers fait tourner le cognac dans son verre. « Oui ? » ‖ Ce garçon réparait mon chauffe-eau. Charmant, mais il posait beaucoup trop de questions su ‖ Ne faites pas cette tête. Je ne lui ai rien fait. Je n’ai pas besoin de faire quoi que ce  ‖ Madame de Villiers fait tourner le cognac dans son verre. « Oui ? »
+[J1 10:30] ✓ d_gardemanger « Ouvrir avec les clés du Salon » → La serrure de laiton cède avec un déclic familier.
+[J1 10:30]   ▸ villiers : « Ouvrir la lettre à la vapeur, dans l’office. »
+[J1 10:45]   (fin volontaire du dialogue villiers ; choix : Partir.)
+[J1 10:45] 💬 villiers : Madame de Villiers fait tourner le cognac dans son verre. « Oui ? » ‖ Dans l’office, au-dessus de la bouilloire, la cire se ramollit. « Plus une goutte ne sorti ‖ Madame de Villiers fait tourner le cognac dans son verre. « Oui ? »
+[J1 11:25] ✓ citerne « Lire le compteur » → Un compteur mécanique à rouleaux, avec un enregistreur à papier. Deux nuits sur sept, vers 23 h, un trait : deux jerricans, une quarantaine de litres. Aucune di
+[J1 11:39] ✓ bureau_reserve « Lire le registre » → Colonnes propres, écriture appliquée. Et, deux fois par semaine, la nuit : « cabine 0 — 2 jerricans, 6 conserves ». Paraphe : P.M.
+[J1 11:39] Rosa referme la grille.
+[J1 11:39] ✗ bureau_reserve : derrière d_cage (fermé)
+[J1 11:39] 🔗 c_registre_cabine0 + c_compteur_eau → f_detournement
+[J1 11:39] 🔗 f_detournement + c_lettre_marchetti → rien
+[J1 12:26] ✓ bureau_castel « Fouiller le tiroir » → Le tiroir cède sous la lame d'un coupe-papier. Dessous, un journal d'écoute : « 4,7 MHz, 21 h, voix humaine, Clairval ». Tampon rouge : NE PAS DIFFUSER — H.C.
+[J1 12:44]   ▸ castel : « Un café, chef ? Vous n’avez pas fermé l’œil. »
+[J1 12:44]   (fin volontaire du dialogue castel ; choix : Vous avez croisé Théo cette nuit, n’est-ce pas ? / Parlons de la radio. / La fouille de la soute, c’est pour quand ? / Le registre des passagers, je peux le consulter ? / Partir.)
+[J1 12:44] 💬 castel : Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main. ‖ Vous lui tendez une tasse fumante. Castel la prend sans même vous regarder — on ne regarde ‖ Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main.
+[J1 12:44] ✓ d_radio « Ouvrir avec la clé » → La clé de Castel tourne sans un bruit.
+[J1 13:09] ✓ radio « Examiner le poste » → Un relais K3 branché en dérivation, fils de récupération, soudures propres. Quelqu'un a ressuscité ce poste en cachette.
+[J1 13:09] 🔗 c_registre_radio + c_relais_radio → f_signal_cache
+[J1 13:09] 🔗 c_registre_radio + t_mara_clairval → f_signal_cache (déjà)
+[J1 13:09] 🔗 c_carnet_theo + t_vic_k3 → f_depot
+[J1 13:09] 🔗 t_noe_saut + t_hotesse_castel → f_chronologie
+[J1 13:30]   ▸ castel : « Vous avez croisé Théo cette nuit, n’est-ce pas ? »
+[J1 13:30]   ▸ castel : « Et ce journal radio tamponné « H.C. » ? »
+[J1 13:30]   ▸ castel : « Le conseil devra l’entendre. »
+[J1 13:30]   (fin volontaire du dialogue castel ; choix : Parlons de la radio. / La fouille de la soute, c’est pour quand ? / Le registre des passagers, je peux le consulter ? / Partir.)
+[J1 13:30] 💬 castel : Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main. ‖ Josefa vous a vu dans le couloir de l’administration à minuit vingt. Matraque à la main. E ‖ Castel se fige. Un muscle tressaille sur sa mâchoire. ‖ … Je l’ai surpris en sortant de la salle radio. Minuit vingt. Il avait bricolé le poste. J ‖ Il a filé vers l’avant, vers la soute. Dix minutes après, il n’était plus à bord. Si j’ava ‖ Il attend votre réponse, la mâchoire serrée. ‖ Castel garde les yeux baissés sur son registre des rondes.
+[J1 13:48]   ▸ castel : « Parlons de la radio. »
+[J1 13:48]   ▸ castel : « Il y a un journal d’écoute, tamponné « NE PAS DIFFUSER — H.C. ». »
+[J1 13:48]   ▸ castel : « Je comprends. Mais ça ne pourra pas rester caché. »
+[J1 13:48]   (fin volontaire du dialogue castel ; choix : La fouille de la soute, c’est pour quand ? / Le registre des passagers, je peux le consulter ? / Partir.)
+[J1 13:48] 💬 castel : Castel garde les yeux baissés sur son registre des rondes. ‖ Ce poste est hors service depuis des semaines. Fin de l’histoire. ‖ Il soutient votre regard un peu trop longtemps. ‖ Oui. J’ai entendu Clairval. Trois soirs. Une voix qui dit « venez ». Et j’ai coupé le post ‖ Vous savez ce qui arrive si deux cents personnes apprennent qu’il y a un abri à deux jours ‖ Il n’a pas l’air de s’excuser. Il a l’air épuisé. ‖ Castel garde les yeux baissés sur son registre des rondes.
+[J1 13:56] ✓ gardemanger « Ouvrir » → Vous connaissez chaque étagère. Mais vous n'aviez jamais compté : douze jerricans marqués du V de la réserve commune, des caisses de rations militaires. Bien pl
+[J1 14:16]   (on parle à marchetti à travers la grille)
+[J1 14:16]   ▸ marchetti : « Qu’est-ce que la « cabine 0 » ? »
+[J1 14:16]   ✗ choix « Quatre jerricans par nuit » absent dans marchetti.cabine0 ; choix : Deux jerricans, deux nuits par semaine, vers 23 h. Le compteur de la citerne s’en souvient. / Les jerricans de la réserve dorment dans le garde-manger du Salon. / Une erreur d’écriture, bien sûr.
+[J1 14:16] 💬 marchetti : Marchetti referme son registre d’un geste sec. « Oui ? » ‖ Il pâlit. « Une erreur d’écriture. Une vieille référence. »
+[J1 14:16]   (on parle à marchetti à travers la grille)
+[J1 14:16]   ▸ marchetti : « Une lettre de Madame, en main propre. »
+[J1 14:16]   (fin volontaire du dialogue marchetti ; choix : Les réserves tombent juste ? / Qu’est-ce que la « cabine 0 » ? / J’aurais besoin de la clé de la réserve. / Partir.)
+[J1 14:16] 💬 marchetti : Marchetti referme son registre d’un geste sec. « Oui ? » ‖ Il brise le cachet rose, lit, soupire longuement. ‖ Le gamin… Noé. Il a vu les jerricans, une nuit. Il en parle aux dortoirs. Madame veut que  ‖ Marchetti referme son registre d’un geste sec. « Oui ? »
+[J1 14:27] ✓ bureau_sorel « Rapprocher les deux moitiés » → Les deux moitiés s'emboîtent sans un jeu : « MARA ». Vous restez un long moment, le médaillon reconstitué dans la paume.
+[J1 14:31]   ▸ sorel : « Votre fille est vivante. Elle est à bord. »
+[J1 14:31]   ▸ sorel : « Vous montrer le médaillon reconstitué. »
+[J1 14:31]   (fin volontaire du dialogue sorel ; choix : Partir.)
+[J1 14:31] 💬 sorel : La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes. ‖ Sorel devient très pâle. « Ne jouez pas avec ça. » ‖ Sorel se lève si vite que sa chaise bascule. Elle ne dit rien. Elle court. Quand vous la r ‖ La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes.
+[J1 14:36]   ▸ rosa : « Pour ta ration disparue… »
+[J1 14:36]   ✗ choix « Je l’ai trouvé » absent dans rosa.ration_fin ; choix : C’est Noé. Il met des rations de côté. / C’est Vic, le passeur. Il revend tout.
+[J1 14:36] 💬 rosa : Rosa essuie le comptoir d’un geste circulaire. « Qu’est-ce que je te sers ? Des nouvelles  ‖ Alors ? Tu as trouvé mon voleur ?
+[J1 17:00]   argument e_theo_vivant → Sorel : « Un blessé, à quelques centaines de mètres ? On ne le laisse pas. »
+[J1 17:00]   argument e_theo_castel → Castel serre les mâchoires. « … D’accord. Je lui dois ça. »
+[J1 17:00]   argument e_mara_guide → Castel : « Une clandestine comme guide… On aura tout vu. »
+[J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; votes {"castel":"theo","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_k3_depot,e_filtration,e_theo_vivant,e_theo_castel,e_eau_citerne,e_mara_guide)
+[J1 17:00]   argument r_detournement → Sorel : « Si c’est vrai, alors oui. Un audit. Tout de suite. »
+[J1 17:00]   argument r_trafic_castel → Castel : « Personne ne vole sous mon nez. Audit. »
+[J1 17:00] Conseil : « Le rationnement » → audit (position audit ; votes {"castel":"audit","vasseur":"quota","marchetti":"quota","sorel":"audit"} ; args dispo : r_detournement,r_trafic_castel,r_quota_injuste)
+[J1 17:00] Conseil : motion « Le sort de la clandestine » non présentée
+[J1 17:00] Conseil : « Le relais de la radio » → filtration (position radio ; votes {"castel":"filtration","vasseur":"filtration","rosa":"filtration","sorel":"radio"} ; args dispo : k_clairval,k_depot,k_castel)
+[J1 17:07]   ▸ mara : « Tu viendrais avec moi, dehors ? »
+[J1 17:07]   (fin volontaire du dialogue mara ; choix : D’accord.)
+[J1 17:07] 💬 mara : Mara a enlevé sa capuche. Elle a les yeux de sa mère. ‖ Dehors ? Je suis passée par Saint-Aubin en suivant ce train, pas pour y monter. Je connais
+[J1 17:14]   ▸ vasseur : « Vous viendrez à l’expédition ? »
+[J1 17:14]   (fin volontaire du dialogue vasseur ; choix : Compris.)
+[J1 17:14] 💬 vasseur : Vasseur essuie ses mains sur un chiffon, sans vous regarder. ‖ Avec toi ? Non. Je reste avec mes machines.
+[J1 21:35] ✗ radio « Écouter 4,7 » indisponible (dispo : Examiner le poste)
+[J1 21:35] Va dormir.
+[J2 06:30] Expédition : compagnon aucun, matériel {"ration":2,"bandage_comp":1,"cric":1,"lampe":1,"masque":1}
+[J2 06:30] 💬 depart_quai : Jour 148, 06:30. La portière de la soute s’ouvre sur le quai désert. L’air sent le fer mou ‖ Le VAYN repartira à 12:00, avec ou sans vous. Les sirènes préviendront à 11:00, 11:30 et 1
+[J2 06:45] ✓ bagages « Fouiller » → Une valise éventrée, des vêtements d'enfant. Au fond, un bandage encore emballé et une blague de tabac.
+[J2 07:10] ✓ mur_messages « Lire les messages » → « Maman, on est partis vers Port-Sel » — « Ne buvez pas l'eau de la rivière » — et, d'une écriture appliquée, daté du Jour 101 : « Clairval tient. Barrage. Quar
+[J2 07:23] ✓ pharmacie_gare « Forcer au pied-de-biche » → Le cadenas saute. Une boîte d'antibiotiques, des bandages, des antidouleurs. Une fortune, ici.
+[J2 07:55] ✓ traces « Examiner » → Du sang séché sur le béton. Une lampe frontale brisée — celle de Théo, son nom est gravé dessus. Des traces de pas irrégulières repartent vers l'est, vers le ta
+[J2 08:18] ✓ poutre « Étayer avec le cric (20 min) » → Le cric grince, la poutre remonte de quelques centimètres et se cale. Le passage est sûr.
+[J2 08:33] ✓ armoire_k « Ouvrir l'armoire » → Une armoire de signalisation, intacte. Dans sa graisse, un relais K3 — et deux autres, grillés. Vous emballez le bon dans un chiffon comme un objet sacré.
+[J2 08:50] ✓ etabli_depot « Fouiller » → Des outils rouillés, des boîtes de boulons… et un pignon denté graissé, étiqueté « draisine ». Quelques pièces récupérables, aussi.
+[J2 09:07] ✓ chiens « Leur jeter une ration » → Vous lancez la ration loin sur la gauche. La meute s'y précipite en grondant. Le passage est libre.
+[J2 09:17]   ▸ anselme : « Le VAYN. On cherche un homme blessé, Théo. »
+[J2 09:17]   ▸ anselme : « Depuis quand êtes-vous ici ? »
+[J2 09:17]   ▸ anselme : « Le récepteur, là, il capte Clairval ? »
+[J2 09:17]   ▸ anselme : « Pouvez-vous mettre le signal au rouge ? Le train s’arrêterait ici. »
+[J2 09:17]   (fin volontaire du dialogue anselme ; choix : Vous avez besoin de quelque chose ? / Partir.)
+[J2 09:17] 💬 anselme : Un vieil homme braque un fusil de chasse sur la porte. « Un pas de plus et je tire. Qui vo ‖ Le gamin à la jambe cassée ? Il est là. Je l’ai traîné hors du talus avant que les chiens  ‖ Anselme garde son fusil en travers des genoux. Derrière lui, les leviers luisent de graiss ‖ Depuis toujours. Aiguilleur, comme mon père. Il y a un mois, un train est passé sans s’arr ‖ Anselme garde son fusil en travers des genoux. Derrière lui, les leviers luisent de graiss ‖ Il capte une voix, en boucle. Le barrage. Ça fait des semaines que c’est la même. Les viva ‖ Anselme garde son fusil en travers des genoux. Derrière lui, les leviers luisent de graiss ‖ Le levier n° 4. Il ne sert plus à rien depuis des mois. Pour vous… d’accord. Votre train s ‖ Allez-y, tirez le n° 4 avec moi quand vous voulez. ‖ Anselme garde son fusil en travers des genoux. Derrière lui, les leviers luisent de graiss
+[J2 09:30] ✓ recepteur « Écouter » → Une voix d'homme, enregistrée, tourne en boucle : « Ici Clairval, barrage. Nous sommes quarante. Venez par la vallée… Jour 96. » Puis un silence, puis la boucle
+[J2 09:39] ✓ leviers « Mettre le signal au rouge » → Anselme pose sa main sur la vôtre. Ensemble, vous tirez le levier n° 4. Au loin, le signal bascule au rouge. Le VAYN s'arrêtera ici.
+[J2 09:45]   ▸ theo : « Qu’est-ce qui s’est passé, Théo ? »
+[J2 09:45]   ▸ theo : « Mara va bien. »
+[J2 09:45]   ▸ theo : « Soigner sa jambe. »
+[J2 10:00]   ▸ theo : « On te ramène au train. »
+[J2 10:00] 💬 theo : Vous venez du VAYN ? Il n’est pas parti ? Dieu merci… ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ J’ai pris le K3 de la filtration pour réparer la radio. Pour Mara — pour qu’elle entende C ‖ Castel m’a surpris en sortant de la salle radio. Il a dit qu’il me mettrait en cellule, qu ‖ La poutre a cédé sur ma jambe. J’ai rampé jusqu’ici. Anselme m’a ramassé. C’est tout. C’es ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Elle va bien ? Vraiment ? … Alors ça valait le coup. Presque. ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Vous videz la trousse de secours : antiseptique, gaze, bandage propre. Théo serre les dent ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Il se redresse en serrant les dents. « Allons-y. Doucement. » ‖ Théo passe un bras autour de vos épaules. Vous avancerez moins vite, mais il rentre.
+[J2 11:56] Retour à bord : Théo est hissé à bord. Le relais K3 est dans votre poche.
+[J2 12:26] Départ du train (12:00).
+[J2 12:26]   ✗ choix « J’ai un relais K3 » absent dans vasseur.hub ; choix : Le stérilisateur de l’infirmerie, c’est réparable ? / Partir.
+[J2 12:26] 💬 vasseur : Vasseur essuie ses mains sur un chiffon, sans vous regarder.
+[J2 12:37]   (fin volontaire du dialogue theo ; choix : Partir.)
+[J2 12:37] 💬 theo : Théo somnole, la jambe sanglée. Il vous remercie d’un hochement de tête.
+[J2 15:00] Assemblée : train_roule=true (le départ a-t-il eu lieu ?)
+[J2 15:00] Assemblée : révélations dispo [rev_radio, rev_pompe, rev_theo], faites [rev_radio, rev_pompe, rev_theo] ; direction → clairval (votes {"castel":"sud","vasseur":"clairval","rosa":"sud","sorel":"clairval"} ; args dispo d_mur,d_mere,d_boucle,d_vayn2,d_theo)
+
+NOTIFICATIONS
+J1 07:00 Nouvelle mission : Le train arrêté
+J1 07:05 Nouvelle mission : La lettre de Madame
+J1 07:51 Indice : Carnet d'entretien
+J1 08:05 Indice : Couchette de Théo
+J1 08:14 Indice : Journal d'alarmes
+J1 08:22 Indice : Socle K3 vide
+J1 08:28 Indice : Pompe de secours éventrée
+J1 08:47 Indice : Bon de sortie n° 112
+J1 08:47 Fait établi : La pompe de secours était morte
+J1 08:48 Témoignage : Vasseur : « Théo ne fuit pas »
+J1 08:48 Témoignage : Vasseur avoue pour la pompe
+J1 08:56 Indice : Le carnet de Théo
+J1 08:56 Fait établi : Le K3 de la filtration est dans la radio
+J1 08:56 Fait établi : La panne, expliquée
+J1 09:08 Indice : Le médaillon de la docteure
+J1 09:08 Témoignage : Sorel et sa fille
+J1 09:12 Indice : Tableau des rations
+J1 09:14 Témoignage : Rosa : la deuxième portion
+J1 09:14 Nouvelle mission : La ration disparue
+J1 09:20 Témoignage : Vic : Théo cherchait un K3
+J1 09:54 Indice : La cache de la soute
+J1 09:54 Nouvelle mission : La voix de Clairval
+J1 09:54 Témoignage : Mara : Théo la nourrissait
+J1 09:54 Témoignage : Mara : « Clairval existe »
+J1 09:54 Témoignage : Mara cherche sa mère
+J1 09:54 Indice : Le demi-médaillon de Mara
+J1 09:54 Fait établi : Théo cachait quelqu'un
+J1 10:06 Témoignage : Noé a vu quelqu'un sauter
+J1 10:18 Témoignage : Castel : « Il a sauté, c'est tout »
+J1 10:28 Témoignage : Josefa a vu Castel
+J1 10:30 Témoignage : Madame de Villiers et Théo
+J1 10:30 Indice : La lettre de Madame
+J1 11:25 Indice : Compteur de la citerne
+J1 11:39 Indice : Registre de la réserve
+J1 11:39 Fait établi : L'eau part vers le Salon
+J1 12:26 Indice : Journal radio caché
+J1 13:09 Indice : Un K3 dans la radio
+J1 13:09 Fait établi : Castel a caché Clairval
+J1 13:09 Fait établi : Un K3 au dépôt de Saint-Aubin
+J1 13:09 Fait établi : La nuit de Théo
+J1 13:30 Témoignage : Castel avoue l'altercation
+J1 13:56 Indice : Le garde-manger du Salon
+J1 14:16 Mission terminée : La lettre de Madame
+J1 14:27 Fait établi : Mara est la fille de Sorel
+J1 14:31 Mission terminée : La voix de Clairval
+J1 17:00 Le conseil des quatre se réunit à 17:00 à la cantine.
+J2 07:10 Indice : Le mur des messages
+J2 07:55 Indice : Traces dans le dépôt
+J2 08:33 Indice : L'armoire K du dépôt
+J2 09:17 Témoignage : Anselme et le train fantôme
+J2 09:30 Indice : L'émission de Clairval
+J2 09:45 Témoignage : Le récit de Théo
+J2 10:00 La brume monte depuis la vallée, à l’est. Elle avance vers la gare.
+J2 11:00 Sirène du VAYN : départ dans une heure.
+J2 11:30 Deuxième sirène : départ dans trente minutes.
+J2 11:51 Dernier appel ! Le VAYN part dans dix minutes.
+J2 15:00 Mission terminée : Le train arrêté
+J2 15:00 Indice : « Ne vous arrêtez pas à Clairval »

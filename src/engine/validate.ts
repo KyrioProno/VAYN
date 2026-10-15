@@ -65,6 +65,7 @@ export function validateContent(c: Content, sprites?: Set<string>): string[] {
           break;
         }
         case 'clock': case 't': case 'day': case 'tok': case 'f': case 'true': case 'false': break;
+        case 'dead': if (!c.npcs[a]) bad('PNJ'); break;
         default: errors.push(`${where} : condition « ${r.key} » inconnue`);
       }
     }

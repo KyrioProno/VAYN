@@ -1,5 +1,5 @@
 // Cinématique d'introduction, scènes d'ouverture, épilogue.
-import type { DialogueDef } from '../engine/types';
+import type { DialogueDef, TextVariant } from '../engine/types';
 import type { Game } from '../engine/game';
 import { c, n, nar, s } from './dialogues/util';
 
@@ -9,7 +9,7 @@ export interface IntroCard { scene: IntroScene; title?: string; text: string; du
 export const INTRO: IntroCard[] = [
   { scene: 'embark', title: 'Embarquement', text: 'Lyon-Perrache. Dernier départ avant la fermeture des lignes.', dur: 4200 },
   { scene: 'embark', text: 'Ils sont deux cent douze à monter à bord du VAYN, le train qui roule seul.', dur: 4600 },
-  { scene: 'embark', text: 'En tête, on charge des malles et de l’argenterie. En queue, on serre des enfants et un sac pour quatre.', dur: 5200 },
+  { scene: 'embark', text: 'Le Salon charge des malles et de l’argenterie ; dans les voitures communes, on serre des enfants et un sac pour quatre.', dur: 5200 },
   { scene: 'embark', text: 'On a besoin des autres : une médecin, des mécaniciens, une cuisinière, un contrôleur. Ceux-là voyagent au milieu.', dur: 5200 },
   { scene: 'embark', text: 'Personne ne remarque l’homme en gris, sans bagage, qui regarde la locomotive comme on regarde un vieil ennemi.', dur: 5600 },
   { scene: 'depart', title: 'Départ', text: 'Le VAYN est autonome : pilote automatique, turbine, filtration d’eau, serres hydroponiques.', dur: 4800 },
@@ -42,7 +42,7 @@ export const STARTS: Record<string, DialogueDef> = {
     nodes: {
       a: nar('Jour 147, 07:00. Dortoirs. Vous avez dormi tout habillé, comme toujours. Lou n’est pas dans la couchette du dessous : elle est à l’infirmerie depuis trois jours.', 'b'),
       b: s('Sacha ! Sacha, réveille-toi ! Le train s’est arrêté cette nuit ! Il y a plus d’eau aux robinets, et Théo, le gentil mécano, il a disparu !', 'c'),
-      c: s('Castel dit qu’il a sauté. Moi je dis que c’est pas vrai. Et la docteure, elle dit que les médicaments, ça va manquer…', 'd'),
+      c: s('Castel dit qu’il s’est sauvé. Théo, il se sauve pas. Et la docteure, elle dit que les médicaments, ça va manquer…', 'd'),
       d: n('Noé repart en courant annoncer la nouvelle à tout le wagon. Les médicaments vont manquer. Lou est quatrième sur la liste.', [
         c('Aller voir ce qui se passe.', undefined, { fx: ['quest:q_main', 'quest:qp_passager', 'set:intro_vu', 'checkpoint:Début du chapitre'] }),
       ]),
@@ -83,7 +83,7 @@ export const STARTS: Record<string, DialogueDef> = {
   depart_quai: {
     id: 'depart_quai', start: 'a',
     nodes: {
-      a: nar('Jour 2, 06:30. La portière de la soute s’ouvre sur le quai désert. L’air sent le fer mouillé et l’herbe. Quelque part, un chien aboie.', 'b'),
+      a: nar('Jour 148, 06:30. La portière de la soute s’ouvre sur le quai désert. L’air sent le fer mouillé et l’herbe. Quelque part, un chien aboie.', 'b'),
       b: nar('Le VAYN repartira à 12:00, avec ou sans vous. Les sirènes préviendront à 11:00, 11:30 et 11:50. Si la brume se lève, ne restez pas dedans.', undefined, { fx: ['checkpoint:Expédition'] }),
     },
   },
@@ -96,24 +96,34 @@ export function buildEpilogue(g: Game): { title: string; lines: string[] }[] {
   const train: string[] = [];
   if (g.state.objects['filtration'] === 'repare') train.push('La filtration ronronne. On recommence à boire sans compter les gorgées.');
   else train.push('La filtration est toujours morte. La citerne baisse chaque jour, et chaque gorgée se discute.');
-  if (f('marchetti_destitue')) train.push('Rosa tient les comptes de la réserve. Les parts sont égales, le Salon grince des dents.');
-  else if (f('marchetti_couvert')) train.push('La « cabine 0 » continue d’être ravitaillée, la nuit. Vous êtes l’un des rares à savoir pourquoi.');
+  if (f('marchetti_destitue')) train.push(g.flag('rationnement') === 'quota'
+    ? 'Rosa tient les comptes de la réserve. Le train mange désormais au mérite : les dortoirs ont vu leur portion diminuer, et ils l’ont retenu.'
+    : 'Rosa tient les comptes de la réserve. Les parts sont égales, le Salon grince des dents.');
+  else if (f('marchetti_couvert')) train.push('La « cabine 0 » continue d’être ravitaillée en douce, deux nuits par semaine. Vous êtes l’un des rares à savoir pourquoi.');
   if (g.state.res.water < 1.5) train.push(`Il reste ${g.state.res.water} jours d’eau. Il faudra une autre gare, et vite.`);
+  if (f('compagnon_mort') === 'vasseur') train.push('L’atelier tourne sans Vasseur : les pièces se perdent, les retards s’empilent, et personne ne signe la révision.');
   out.push({ title: 'Le train', lines: train });
 
   const gens: string[] = [];
+  const mort = (x: string) => f('compagnon_mort') === x;
   if (f('theo_sauve')) gens.push('Théo dort à l’infirmerie, la jambe dans une attelle. Il a demandé à voir Mara avant même de demander de l’eau.');
   else if (f('theo_mort')) gens.push('Théo n’est jamais revenu. Son casier reste fermé. Personne n’ose l’ouvrir.');
-  else if (f('theo_reste')) gens.push('Théo est resté au poste d’aiguillage avec Anselme. Le signal, au loin, a regardé passer le train.');
+  else if (f('theo_reste')) gens.push(f('theo_abandonne_signal')
+    ? 'Théo est resté au poste d’aiguillage. Le signal, au loin, a regardé passer le train.'
+    : 'Théo est resté au poste d’aiguillage, avec Anselme et son fusil. Vous avez choisi de partir sans lui.');
+  else if (g.check('met:theo')) gens.push('Vous avez entendu Théo, vivant, et il ignore encore ce que vous avez fait de sa nuit. Ça ne se rattrape pas.');
   else gens.push('Personne n’a retrouvé Théo. Dans les dortoirs, on dit déjà qu’il a été dévoré par les chiens. On dit beaucoup de choses.');
-  if (f('mere_reunie')) gens.push('Sorel et Mara ne se quittent plus. La docteure a recousu la capuche de sa fille, maladroitement, comme on recoud quatre ans d’absence.');
-  else if (f('mara_expulsee')) gens.push('Mara est restée sur le quai de Saint-Aubin, toute petite dans la brume. Sa mère ne saura jamais qu’elle l’a croisée.');
+  if (mort('mara')) gens.push('Mara n’a pas reparu de Saint-Aubin. Sorel, à l’infirmerie, a recommencé à préparer le dîner pour deux, chaque soir.');
+  else if (f('mere_reunie')) gens.push('Sorel et Mara ne se quittent plus. La docteure a recousu la capuche de sa fille, maladroitement, comme on recoud quatre ans d’absence.');
+  else if (f('mara_expulsee')) gens.push('Mara a été débarquée à Saint-Aubin. Au poste d’aiguillage, Anselme lui a donné de l’eau et une couverture : elle est repartie seule vers la vallée, avant l’aube.');
   else if (f('mara_capturee') && !f('mara_libre')) gens.push('Mara attend dans sa cellule. Sorel lui apporte ses repas sans savoir pourquoi cette gamine la fixe ainsi.');
   else if (f('mara_libre')) gens.push('Mara a une couchette, une ration et une place à table. Elle regarde la docteure, parfois, avec une question au bord des lèvres.');
   const comp = g.state.expedition?.companion ?? (g.flag('companion') as string | undefined);
-  if (f('compagnon_mort')) gens.push(`${g.content.npcs[String(f('compagnon_mort'))]?.name ?? 'Votre compagnon'} n’est pas revenu de Saint-Aubin.`);
-  else if (comp && (g.state.expedition?.compHealth ?? 100) < 40) gens.push(`${g.content.npcs[comp]?.name ?? 'Votre compagnon'} est revenu blessé de l’expédition. Ça se soigne. Ça se pardonne, aussi, peut-être.`);
+  if (f('compagnon_mort')) gens.push(`Saint-Aubin a gardé ${g.content.npcs[String(f('compagnon_mort'))]?.name ?? 'votre compagnon'}. On a vidé son casier sans en parler à personne.`);
+  else if (comp && (g.state.expedition?.compHealth ?? 100) < 40) gens.push(`${g.content.npcs[comp]?.name ?? 'Votre compagnon'} a rapporté autre chose que la clé de la filtration. Ça se soigne. Ça se pardonne, aussi, peut-être.`);
   if (f('radio_revelee')) gens.push('Tout le train sait désormais que Castel a caché Clairval. Il a gardé son brassard, mais plus personne ne baisse les yeux devant lui.');
+  if (f('castel_couverte') && f('theo_public')) gens.push('Vous avez promis à Castel que son aveu ne sortirait pas de son bureau, et vous l’ai dit devant deux cents personnes. Il ne vous le pardonnera pas. Vous le savez.');
+  if (f('mere_tue') && f('mere_reunie')) gens.push('Vous aviez juré à Mara de ne rien dire à personne. Vous l’avez dit devant tout le train : elle ne vous regarde plus, et elle dort dans la couchette de sa mère.');
   out.push({ title: 'Les gens', lines: gens });
 
   const perso: string[] = [];
@@ -130,7 +140,7 @@ export function buildEpilogue(g: Game): { title: string; lines: string[] }[] {
       if (f('antibio_vole')) perso.push('Quelqu’un, plus haut sur la liste, n’a pas eu sa boîte. Vous ne demandez pas qui.');
       break;
     case 'majordome':
-      if (f('lettre_remise')) perso.push('Vous avez remis la lettre, cachet intact. Noé a reçu des rations pour se taire. Vous êtes resté un bon domestique — vous n’êtes pas certain d’être resté quelqu’un de bien.');
+      if (f('lettre_remise')) perso.push((f('lettre_lue') ? 'Vous avez lu la lettre avant de la remettre : Marchetti a vu le cachet brisé, et il n’a rien dit. Noé a reçu des rations pour se taire. ' : 'Vous avez remis la lettre, cachet intact. Noé a reçu des rations pour se taire. ') + 'Vous êtes resté un bon domestique — vous n’êtes pas certain d’être resté quelqu’un de bien.');
       else if (f('lettre_brulee')) perso.push('La lettre a brûlé dans le poêle des dortoirs. Madame vous sonne toujours, mais vous prenez votre temps pour répondre.');
       else perso.push('La lettre dort au fond de votre poche, comme une décision qu’on remet au lendemain.');
       break;
@@ -163,13 +173,35 @@ export function twistText(g: Game): string[] {
 }
 
 /** Révélations possibles devant l'assemblée finale. */
-export interface Revelation { id: string; label: string; desc: string; if: string; fx: string[] }
+export interface Revelation { id: string; label: string | TextVariant; desc: string | TextVariant; if: string; fx: string[] }
 export const REVELATIONS: Revelation[] = [
   { id: 'rev_radio', label: 'Castel a caché Clairval', desc: 'Lire le journal radio tamponné « NE PAS DIFFUSER — H.C. ».', if: 'e:f_signal_cache & !f:radio_revelee & !f:radio_couverte', fx: ['set:radio_revelee', 'conseq:cq_radio_publique', 'trust:castel-2', 'trust:sorel+1'] },
   { id: 'rev_pompe', label: 'La pompe de secours sacrifiée', desc: 'Dire que Vasseur a démonté le moteur et maquillé le carnet.', if: 'e:f_pompe_morte & !f:vasseur_couverte & !f:vasseur_revelee & !char:mecanicien', fx: ['set:vasseur_revelee', 'conseq:cq_vasseur_exposee', 'trust:vasseur-2'] },
-  { id: 'rev_aveu', label: 'Avouer votre signature', desc: 'Reconnaître publiquement que vous avez contresigné une révision fantôme.', if: 'char:mecanicien & e:c_carnet_entretien & !f:malo_avoue', fx: ['set:malo_avoue', 'conseq:cq_malo_aveu', 'obj:qp_mecanicien.choix', 'trust:castel+1'] },
-  { id: 'rev_trafic', label: 'Le trafic de la « cabine 0 »', desc: 'Exposer l’échange d’eau contre des antibiotiques entre Marchetti et le Salon.', if: 'e:f_detournement & !f:marchetti_destitue & !f:marchetti_couvert', fx: ['set:marchetti_destitue', 'conseq:cq_marchetti_destitue', 'trust:marchetti-3', 'trust:villiers-2', 'obj:qp_controleur.choix'] },
-  { id: 'rev_mere', label: 'Mara est la fille de Sorel', desc: 'Réunir publiquement la mère et la fille.', if: 'e:f_mere & !f:mere_reunie & !f:mara_expulsee', fx: ['set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'trust:sorel+3', 'trust:mara+2', 'qdone:q_mara'] },
-  { id: 'rev_theo', label: 'La nuit de Théo', desc: 'Raconter ce que Théo vous a dit : la radio, Castel, le dépôt.', if: 'e:t_theo_recit & !f:theo_public', fx: ['set:theo_public', 'trust:castel-1', 'trust:vasseur+1'] },
-  { id: 'rev_lettre', label: 'La lettre de Madame', desc: 'Lire à voix haute la lettre cachetée de Madame de Villiers.', if: 'e:c_lettre_madame & !f:lettre_remise & !f:lettre_brulee & !f:lettre_revelee', fx: ['set:lettre_revelee', 'take:lettre_ouverte', 'conseq:cq_lettre_revelee', 'trust:villiers-3', 'obj:qp_majordome.remettre'] },
+  { id: 'rev_aveu', label: 'Avouer votre signature', desc: 'Reconnaître publiquement que vous avez contresigné une révision fantôme.', if: 'char:mecanicien & e:c_carnet_entretien & !f:malo_avoue', fx: ['set:malo_avoue', 'conseq:cq_malo_aveu', 'obj:qp_mecanicien.choix', 'qdone:qp_mecanicien', 'trust:castel+1'] },
+  { id: 'rev_trafic', label: 'Le trafic de la « cabine 0 »', desc: 'Exposer l’échange d’eau contre des antibiotiques entre Marchetti et le Salon.', if: 'e:f_detournement & !f:marchetti_destitue & !f:marchetti_couvert', fx: ['set:marchetti_destitue', 'conseq:cq_marchetti_destitue', 'trust:marchetti-3', 'trust:villiers-2', 'obj:qp_controleur.choix', 'if:char:controleur?qdone:qp_controleur'] },
+  {
+    id: 'rev_mere', if: 'e:f_mere & !f:mere_reunie & !f:mara_expulsee & !dead:mara',
+    label: [
+      { if: 'f:mere_tue', text: 'Mara est la fille de Sorel — vous l’aviez juré' },
+      { if: 'true', text: 'Mara est la fille de Sorel' },
+    ],
+    desc: [
+      { if: 'f:mere_tue', text: 'Vous avez promis à Mara de ne rien dire à personne. Elle est là, dans la salle, et elle le sait déjà.' },
+      { if: 'true', text: 'Réunir publiquement la mère et la fille.' },
+    ],
+    fx: ['set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'trust:sorel+3', 'trust:mara+2', 'if:f:mere_tue?trust:mara-4;conseq:cq_mere_trahie', 'qdone:q_mara'],
+  },
+  {
+    id: 'rev_theo', if: 'e:t_theo_recit & !f:theo_public',
+    label: [
+      { if: 'f:castel_couverte', text: 'La nuit de Théo — et ce que Castel vous avait juré' },
+      { if: 'true', text: 'La nuit de Théo' },
+    ],
+    desc: [
+      { if: 'f:castel_couverte', text: 'Castel vous avait juré que son aveu ne sortirait pas de son bureau. Vous allez le dire devant deux cents personnes.' },
+      { if: 'true', text: 'Raconter ce que Théo vous a dit : la radio, Castel, le dépôt.' },
+    ],
+    fx: ['set:theo_public', 'if:f:castel_couverte?trust:castel-3;conseq:cq_castel_trahie', 'if:!f:castel_couverte?trust:castel-1', 'trust:vasseur+1'],
+  },
+  { id: 'rev_lettre', label: 'La lettre de Madame', desc: 'Lire à voix haute la lettre cachetée de Madame de Villiers.', if: 'e:c_lettre_madame & !f:lettre_remise & !f:lettre_brulee & !f:lettre_revelee', fx: ['set:lettre_revelee', 'take:lettre_ouverte', 'conseq:cq_lettre_revelee', 'trust:villiers-3', 'obj:qp_majordome.remettre', 'qdone:qp_majordome'] },
 ];

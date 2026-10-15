@@ -147,7 +147,7 @@ export function carnetPanel(app: App, start: CarnetTab = 'clue'): HTMLElement {
         h('h4', { class: d.main ? 'dia' : '' }, d.personal ? 'Personnel — ' : '', d.title, status),
         h('p', null, d.desc));
       for (const o of d.objectives) {
-        const done = !!st.obj[o.id];
+        const done = g.objectiveDone(id, o.id);
         if (!done && !g.check(o.if)) continue;
         card.append(h('div', { class: done ? 'chk on' : 'chk', style: `font-size:13px;margin:4px 0;color:${done ? 'var(--dim)' : 'var(--text)'}` }, h('span', { style: done ? 'text-decoration:line-through' : '' }, g.fmt(o.text))));
       }

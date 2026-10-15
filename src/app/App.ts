@@ -656,34 +656,27 @@ export class App implements WorldHost {
       const front = w.hazeFront();
       if (w.player.x > front) {
         const k = g.itemQty('masque') ? 0.25 : 0.9;
-        g.changeStat('health', -mins * k);
+        g.changeStat('health', -mins * k, 'Asphyxié dans la brume de Saint-Aubin');
         g.changeCompanionHealth(-mins * 0.7);
         if (!this.hazeWarned) {
           this.hazeWarned = true;
           this.ui.toast(g.itemQty('masque') ? 'La brume vous enveloppe. Le masque filtre, mais ça pique les yeux.' : 'La brume vous brûle la gorge. Sortez-en, vite !', 'warn');
           this.sfx('hurt');
         }
-        if (g.state.stats.health <= 0) g.die('Asphyxié dans la brume de Saint-Aubin');
       }
       if (g.flag('depart_retarde') && after >= absTime('d2@12:20') && !g.flag('retard_fini')) {
         g.setFlag('retard_fini');
-        this.enqueue(() => this.missedTrainFlow(true));
+        this.enqueue(() => (g.state.zone === 'train' ? this.departureFlow() : this.missedTrainFlow(true)));
       }
     }
   }
 
   private checkCompanion() {
     const g = this.game!;
-    const e = g.state.expedition;
-    if (!e || !e.companion) return;
-    if (e.compHealth <= 0 && !g.flag('compagnon_mort')) {
-      const id = e.companion;
-      g.setFlag('compagnon_mort', id);
-      g.addConseq('cq_comp_mort');
-      e.companion = null;
-      this.world()?.syncCompanion();
-      this.enqueue(() => this.narrate(`${this.content.npcs[id].name} s’effondre et ne se relève pas. Vous restez à genoux près de son corps plus longtemps que vous ne pouvez vous le permettre.`, 'Perte'));
-    }
+    const mort = g.checkCompanionDeath();
+    if (!mort) return;
+    this.world()?.syncCompanion();
+    this.enqueue(() => this.narrate(`${this.content.npcs[mort].name} s’effondre et ne se relève pas. Vous restez à genoux près de son corps plus longtemps que vous ne pouvez vous le permettre.`, 'Perte'));
   }
 
   // ======================================================================== séquences scénarisées
@@ -923,10 +916,13 @@ export class App implements WorldHost {
       g.addConseq('cq_theo_sauve');
       g.completeObjective('q_main', 'theo');
       lines.push('Théo est hissé à bord. Sorel l’emmène aussitôt à l’infirmerie.');
-    } else if (late && g.flag('signal_rouge') && g.flag('theo_reste')) {
+    } else if (g.flag('signal_rouge') && g.flag('theo_reste')) {
+      // Anselme a mis le signal au rouge : le VAYN s'arrêtera devant sa porte, et Théo monte.
       g.setFlag('theo_sauve');
       g.addConseq('cq_theo_sauve');
-      lines.push('Au poste d’aiguillage, Anselme hisse Théo dans la voiture de queue avant de vous faire signe.');
+      lines.push(late
+        ? 'Au poste d’aiguillage, Anselme hisse Théo dans la voiture de queue avant de vous faire signe.'
+        : 'Le VAYN s’est arrêté devant le poste d’aiguillage, comme Anselme l’avait promis. Il a hissé Théo dans la voiture de queue avant de vous faire signe.');
     } else if (g.flag('theo_reste')) {
       g.addConseq('cq_theo_laisse');
     }
@@ -949,7 +945,8 @@ export class App implements WorldHost {
     await this.ui.fade(false, 700);
     g.applyFx(['checkpoint:Retour d’expédition']);
     this.narrate(lines.length ? lines.join(' ') : 'Vous remontez à bord, couvert de poussière. Le train sent le fer chaud et la soupe.', 'Retour à bord', () => {
-      if (late) this.enqueue(() => this.departureFlow());
+      // Sursis de Vasseur : le départ n'a jamais eu lieu, il faut le relancer.
+      if (late || (g.flag('depart_retarde') && !g.flag('retard_fini'))) this.enqueue(() => this.departureFlow());
     });
   }
 
@@ -980,7 +977,7 @@ export class App implements WorldHost {
       items.push({ label: 'Courir jusqu’au poste d’aiguillage, où le train s’est arrêté', time: 20, run: () => { this.ui.setMenu(null); g.advance(20); g.changeStat('health', -5); void this.returnToTrain(true); } });
     }
     if (g.flag('draisine_ok')) {
-      items.push({ label: 'Rattraper le train en draisine', time: 40, danger: true, run: () => { this.ui.setMenu(null); g.advance(40); g.changeStat('health', -8); g.changeCompanionHealth(-10); void this.returnToTrain(true); } });
+      items.push({ label: 'Rattraper le train en draisine', time: 40, danger: true, run: () => { this.ui.setMenu(null); g.advance(40); g.changeStat('health', -8); g.changeCompanionHealth(-10); if (g.flag('theo_reste') && g.flag('signal_rouge')) g.setFlag('theo_abandonne_signal'); void this.returnToTrain(true); } });
     }
     const vasseurHelps = !final && !g.flag('depart_retarde') && (g.rel('vasseur').trust >= 3 || g.state.char === 'mecanicien') && g.state.expedition?.companion !== 'vasseur';
     if (vasseurHelps) {

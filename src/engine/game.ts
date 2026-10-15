@@ -47,7 +47,7 @@ export class Game extends Emitter {
       rel: (npc, f) => g.rel(npc)[f],
       met: (npc) => g.rel(npc).met,
       questStatus: (id) => g.state.quests[id]?.status ?? 'none',
-      objective: (q, o) => !!g.state.quests[q]?.obj[o],
+      objective: (q, o) => g.objectiveDone(q, o),
       res: (k) => g.state.res[k as ResKey] ?? 0,
       get tokens() { return g.state.tokens; },
       stat: (k) => g.state.stats[k as StatKey] ?? 0,
@@ -397,11 +397,11 @@ export class Game extends Emitter {
   }
 
   // ------------------------------------------------------------------ stats & ressources
-  changeStat(k: StatKey, d: number) {
+  changeStat(k: StatKey, d: number, cause?: string) {
     const s = this.state.stats;
     s[k] = clamp(s[k] + d, 0, 100);
     this.emit('stats');
-    if (k === 'health' && s.health <= 0) this.die(this.state.deathCause || 'Blessures');
+    if (k === 'health' && s.health <= 0) this.die(cause || this.state.deathCause || 'Blessures');
   }
 
   changeRes(k: ResKey, d: number) {
@@ -419,6 +419,24 @@ export class Game extends Emitter {
     if (!e || !e.companion) return;
     e.compHealth = clamp(e.compHealth + d, 0, 100);
     this.emit('companion');
+  }
+
+  /**
+   * Enregistre la mort du compagnon d'expédition : il quitte le bord pour de bon.
+   * Renvoie son identifiant si le compagnon vient de mourir, sinon null.
+   * Le mort est retiré du décor (plus de point, plus de dialogue), du conseil,
+   * et l'épilogue cesse de parler de lui comme s'il était à bord.
+   */
+  checkCompanionDeath(): string | null {
+    const e = this.state.expedition;
+    if (!e || !e.companion) return null;
+    if (e.compHealth > 0 || this.flag('compagnon_mort')) return null;
+    const id = e.companion;
+    this.setFlag('compagnon_mort', id);
+    this.addConseq('cq_comp_mort');
+    e.companion = null;
+    this.applyFx([`hide:${id}`], 'comp:death');
+    return id;
   }
 
   // ------------------------------------------------------------------ temps
@@ -654,10 +672,17 @@ export class Game extends Emitter {
     for (const def of order) {
       const q = this.state.quests[def.id];
       if (!q || q.status !== 'active') continue;
-      const o = def.objectives.find((x) => !q.obj[x.id] && this.check(x.if));
+      const o = def.objectives.find((x) => !this.objectiveDone(def.id, x.id) && this.check(x.if));
       if (o) return { quest: def.id, text: this.fmt(o.text) };
     }
     return null;
+  }
+
+  /** Objectif accompli : coché par un effet, ou automatiquement si sa condition « fait si… » est vraie. */
+  objectiveDone(q: string, o: string): boolean {
+    if (this.state.quests[q]?.obj[o]) return true;
+    const od = this.content.quests[q]?.objectives.find((x) => x.id === o);
+    return !!od?.doneIf && this.check(od.doneIf);
   }
 
   // ------------------------------------------------------------------ relations

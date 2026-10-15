@@ -169,7 +169,7 @@ export const NPCS: Record<string, NpcDef> = {
     look: { body: 'coat', hat: 'beret', accent: '#8a8f99', prop: 'cane' }, color: '#a6abb4',
     schedule: [{ from: '06:00', spot: 'd_table' }, { from: '08:15', spot: 'c_table3' }, { from: '10:00', spot: 'd_poele' }, { from: '12:15', spot: 'c_table4' }, { from: '14:00', spot: 'd_poele' }],
     barks: [
-      { text: 'Trois jours qu\'on est arrêtés. Le train n\'aime pas attendre, petit.' },
+      { text: 'Arrêtés en pleine nuit, sans prévenir… Le train n\'aime pas attendre, petit.' },
       { if: 'res:water<2', text: 'L\'eau a un goût de fer. Ça commence toujours comme ça.' },
       { if: 'f:vote_rationnement=quota', text: 'Les quotas ! Et moi qui ne porte plus rien, je mange l\'air ?' },
     ],
@@ -180,6 +180,7 @@ export const NPCS: Record<string, NpcDef> = {
     schedule: [{ from: '06:00', spot: 'd_lit1' }, { from: '08:00', spot: 'c_table4' }, { from: '09:45', spot: 'i_soins' }, { from: '11:00', spot: 'd_lit1' }, { from: '12:00', spot: 'c_queue2' }, { from: '13:30', spot: 'd_lit1' }],
     barks: [
       { text: 'Mon fils tousse depuis hier. La docteure dit d\'attendre.' },
+      { if: 'dead:mara', text: 'La petite de la soute, on ne la reverra pas. Inès ne pose plus de questions à personne.' },
       { if: 'f:mara_capturee', text: 'Une gamine en cellule… On est devenus quoi ?' },
       { if: 'f:mara_libre', text: 'La petite est restée. Tant mieux. Une bouche de plus, une main de plus.' },
     ],
@@ -189,7 +190,8 @@ export const NPCS: Record<string, NpcDef> = {
     look: { body: 'stocky', hat: 'kerchief', accent: '#7f8c6a', prop: 'wrench' }, color: '#9aa883',
     schedule: [{ from: '06:00', spot: 'a_etagere' }, { from: '08:30', spot: 'm_turbine' }, { from: '12:00', spot: 'c_table1' }, { from: '13:30', spot: 'm_turbine' }],
     barks: [
-      { text: 'Vasseur dit que ça tiendra. Vasseur dit toujours que ça tiendra.' },
+      { if: 'dead:vasseur', text: 'Vasseur ne répond plus à personne. On l’a vue couchée sur le talus, et depuis, la moitié de l’atelier ne répond plus non plus.' },
+      { if: 'true', text: 'Vasseur dit que ça tiendra. Vasseur dit toujours que ça tiendra.' },
       { if: 'obj:filtration=repare', text: 'Ça tourne ! Entends-moi ce ronron.' },
     ],
   },

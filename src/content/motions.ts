@@ -49,7 +49,7 @@ export const MOTIONS: Record<string, MotionDef> = {
     },
     fallback: 'egal',
     args: [
-      { id: 'r_detournement', label: 'De l’eau commune part chaque nuit vers le Salon. On doit savoir combien.', if: 'e:f_detournement', target: 'sorel', toward: 'audit', strength: 2.5, reply: 'Sorel : « Si c’est vrai, alors oui. Un audit. Tout de suite. »', fx: ['set:revele_detournement'] },
+      { id: 'r_detournement', label: 'Deux nuits par semaine, de l’eau commune part vers le Salon. On doit savoir combien.', if: 'e:f_detournement', target: 'sorel', toward: 'audit', strength: 2.5, reply: 'Sorel : « Si c’est vrai, alors oui. Un audit. Tout de suite. »', fx: ['set:revele_detournement'] },
       { id: 'r_trafic_castel', label: 'Un trafic sous votre nez, Castel. Vous allez laisser faire ?', if: 'e:f_detournement', target: 'castel', toward: 'audit', strength: 2, reply: 'Castel : « Personne ne vole sous mon nez. Audit. »' },
       { id: 'r_antibio', label: 'Ce trafic achète des antibiotiques. Il faut le régler au grand jour.', if: 'e:f_echange_antibio', target: 'vasseur', toward: 'audit', strength: 1.5, reply: 'Vasseur : « Des secrets, ça finit toujours par casser quelque chose. Audit. »' },
       { id: 'r_quota_injuste', label: 'Les vieux et les enfants ne portent rien. Ils mangent quand même.', if: 'char:passager | trust:rosa>=1', target: 'vasseur', toward: 'egal', strength: 1.5, reply: 'Vasseur soupire. « D’accord. Des parts égales. »' },
@@ -75,7 +75,7 @@ export const MOTIONS: Record<string, MotionDef> = {
     },
     fallback: 'cellule',
     args: [
-      { id: 'm_mere', label: 'C’est la fille de la docteure Sorel. Le médaillon le prouve.', if: 'e:f_mere', target: 'castel', toward: 'accueil', strength: 3, reply: 'Un silence de plomb. Castel : « On ne jette pas la fille de notre médecin dans la brume. Accueil. »', fx: ['set:mere_revelee_conseil'] },
+      { id: 'm_mere', label: 'C’est la fille de la docteure Sorel. Le médaillon le prouve.', if: 'e:f_mere & !dead:mara', target: 'castel', toward: 'accueil', strength: 3, reply: 'Un silence de plomb. Castel : « On ne jette pas la fille de notre médecin dans la brume. Accueil. »', fx: ['set:mere_revelee_conseil', 'set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'obj:q_mara.reunion', 'trust:mara+3', 'trust:sorel+3', 'qdone:q_mara'] },
       { id: 'm_mere_marchetti', label: 'Vous voudriez qu’on jette votre enfant dehors, Marchetti ?', if: 'e:f_mere', target: 'marchetti', toward: 'accueil', strength: 2, reply: 'Marchetti détourne le regard. « … Non. »' },
       { id: 'm_theo', label: 'Théo l’a protégée pendant neuf jours. Elle n’a rien volé.', if: 'e:t_mara_theo | e:f_theo_cachait', target: 'vasseur', toward: 'accueil', strength: 1.5, reply: 'Vasseur : « Si Théo la protégeait, c’est qu’elle le valait. »' },
       { id: 'm_clairval', label: 'Elle disait vrai sur Clairval, Castel. Votre journal radio le prouve.', if: 'e:t_mara_clairval & e:c_registre_radio', target: 'castel', toward: 'accueil', strength: 1.5, reply: 'Castel blêmit. « … Gardez votre journal pour vous. Accueil, si vous voulez. »', fx: ['set:radio_revelee', 'conseq:cq_radio_publique'] },
@@ -122,7 +122,7 @@ export const MOTIONS: Record<string, MotionDef> = {
     fallback: 'sud',
     args: [
       { id: 'd_mur', label: 'Le mur de la gare : « Clairval tient. Quarante personnes. » Jour 101.', if: 'e:c_mur_messages', target: 'vasseur', toward: 'clairval', strength: 1.5, reply: 'Vasseur : « Quarante personnes et des turbines. Ça vaut le détour. »' },
-      { id: 'd_mere', label: 'Mara vient de là-bas. Sa mère est parmi nous.', if: 'f:mere_reunie', target: 'sorel', toward: 'clairval', strength: 2.5, reply: 'Sorel serre la main de sa fille. « Clairval. »' },
+      { id: 'd_mere', label: 'Mara vient de là-bas. Sa mère est parmi nous.', if: 'f:mere_reunie & !dead:mara', target: 'sorel', toward: 'clairval', strength: 2.5, reply: 'Sorel serre la main de sa fille. « Clairval. »' },
       { id: 'd_boucle', label: 'L’émission de Clairval tourne en boucle depuis le Jour 96. Plus rien de neuf.', if: 'e:c_emission_clairval', target: 'sorel', toward: 'sud', strength: 2, reply: 'Sorel pâlit. « Une boucle… Alors on ne sait pas s’ils sont encore en vie. »' },
       { id: 'd_vayn2', label: 'Un autre VAYN est passé il y a un mois, vers le sud. Il savait peut-être quelque chose.', if: 'e:t_anselme | e:c_cabine_horaire', target: 'castel', toward: 'sud', strength: 1.5, reply: 'Castel : « Un autre VAYN ? Alors on suit ses rails. »' },
       { id: 'd_radio_castel', label: 'Castel a entendu Clairval et l’a caché. Ils appelaient au secours.', if: 'e:f_signal_cache & !f:radio_couverte', target: 'marchetti', toward: 'clairval', strength: 2, reply: 'Marchetti, scandalisé : « Vous avez caché ça ? Alors on y va. »', fx: ['set:radio_revelee', 'conseq:cq_radio_publique'] },

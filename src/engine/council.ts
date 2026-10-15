@@ -18,7 +18,10 @@ export const MEMBER_LABEL: Record<Member, string> = {
 };
 
 export function councilMembers(game: Game): Member[] {
-  return ['castel', 'vasseur', game.flag('marchetti_destitue') ? 'rosa' : 'marchetti', 'sorel'];
+  // Un membre mort pendant une expédition ne siège plus, ne vote plus et ne peut plus être argumenté.
+  const mort = game.flag('compagnon_mort');
+  return (['castel', 'vasseur', game.flag('marchetti_destitue') ? 'rosa' : 'marchetti', 'sorel'] as Member[])
+    .filter((m) => m !== mort);
 }
 
 export function newSession(motion: MotionDef): CouncilSession {
