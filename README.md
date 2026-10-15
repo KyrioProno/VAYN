@@ -23,6 +23,7 @@ Autres commandes :
 | Commande | Effet |
 |---|---|
 | `npm run build` | Vérification TypeScript puis build de production dans `dist/` |
+| `npm run build:pages` | Même build, écrit dans `docs/` : c’est la version publiée sur GitHub Pages |
 | `npm run preview` | Sert `dist/` sur http://localhost:4173 |
 | `npm test` | Lance les tests automatisés (Vitest) |
 | `npm run typecheck` | Vérification TypeScript seule |
@@ -31,6 +32,23 @@ Pages de développement (non incluses dans le build) :
 - `/dev/sprites.html` : galerie des personnages ;
 - `/dev/furniture.html` : galerie du mobilier ;
 - `/dev/world.html` : scène du train seule, sans interface.
+
+### Tester sur téléphone (GitHub Pages)
+
+Le dossier `docs/` contient une version compilée du jeu, prête à être servie par GitHub Pages.
+Il est versionné exprès : contrairement à `dist/`, il n’est pas ignoré par Git.
+
+Mise en place, une seule fois, sur github.com :
+1. Si le compte GitHub est gratuit, rendre le dépôt public : *Settings → General → Danger Zone → Change repository visibility*.
+   Le code et l’historique deviennent alors visibles par tous.
+2. *Settings → Pages → Build and deployment* :
+   - Source : *Deploy from a branch* ;
+   - branche : celle qui contient `docs/` ;
+   - dossier : `/docs`.
+3. Après une à deux minutes, le jeu est en ligne sur `https://<compte>.github.io/VAYN/`.
+
+Pour publier une nouvelle version : lancer `npm run build:pages`, puis committer `docs/` et pousser.
+Le fichier `public/.nojekyll` est copié dans `docs/` ; il empêche GitHub de passer le site dans Jekyll.
 
 ### Gestes
 
