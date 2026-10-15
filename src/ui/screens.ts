@@ -5,12 +5,15 @@ import { fmtDuration } from '../engine/time';
 import { btn, clear, h } from './dom';
 import { portrait } from './portraits';
 import { icon } from './icons';
+import { fullscreenButton } from './fullscreen';
 
 export function titleScreen(app: App, opts: { canContinue: string | null; hasHistory: boolean }): HTMLElement {
   const menu = h('div', { class: 'title-menu' });
   if (opts.canContinue) menu.append(btn(['Continuer', h('small', { style: 'display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);text-transform:none;letter-spacing:0' }, opts.canContinue)], () => app.continueGame(), 'btn primary'));
   menu.append(btn('Nouvelle partie', () => app.newGameFlow(), opts.canContinue ? 'btn' : 'btn primary'));
   menu.append(btn('Paramètres', () => app.openSettings(), 'btn'));
+  const fs = fullscreenButton('btn ghost');
+  if (fs) menu.append(fs);
   menu.append(btn('À propos', () => app.showAbout(), 'btn ghost'));
   return h('div', { class: 'screen' },
     h('div', { class: 'title-logo' }, 'VAYN'),

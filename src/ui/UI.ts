@@ -1,5 +1,6 @@
 // Racine de l'interface DOM : calques, notifications, étiquettes du monde, fondus.
 import { h, clear } from './dom';
+import { icon } from './icons';
 
 export type ToastKind = 'info' | 'entry' | 'quest' | 'warn' | 'item';
 
@@ -34,7 +35,7 @@ export class UI {
     this.screen = layer('screen-layer');
     this.toasts = layer('toasts');
     this.fadeEl = layer('fade');
-    document.body.append(h('div', { class: 'rotate' }, h('i', null, '⟳'), 'Tournez votre appareil', h('small', null, 'VAYN se joue à l’horizontale')));
+    document.body.append(h('div', { class: 'rotate' }, h('i', null, icon('rotate')), 'Tournez votre appareil', h('small', null, 'VAYN se joue à l’horizontale')));
     for (const el of [this.menu, this.dlg, this.panel, this.flow, this.screen]) {
       el.style.position = 'absolute';
       el.style.inset = '0';

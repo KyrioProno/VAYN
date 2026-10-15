@@ -4,7 +4,7 @@ dist/
 coverage/
 *.log
 .DS_Store
-# Projets natifs générés par Capacitor (voir docs/EXPORT_MOBILE.md)
+# Projets natifs générés par Capacitor (voir README, section 2)
 /android/
 /ios/
 /tmp/

@@ -331,7 +331,8 @@ button { font: inherit; color: inherit; }
 
 .rotate { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; color: var(--muted); font-family: var(--title); letter-spacing: .1em; text-transform: uppercase; text-align: center; padding: 30px; }
 .rotate i { font-style: normal; font-size: 40px; color: var(--text); }
-@media (orientation: portrait) and (max-width: 900px) { .rotate { display: flex; } }
+/* Seulement sur écran tactile : sur ordinateur, une fenêtre étroite (aperçu, onglet réduit) affiche quand même le jeu. */
+@media (orientation: portrait) and (max-width: 900px) and (pointer: coarse) { .rotate { display: flex; } }
 .loading { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 10px; font-family: var(--title); letter-spacing: .3em; color: var(--muted); text-transform: uppercase; pointer-events: auto; }
 .loading .bar { width: 200px; height: 2px; background: var(--line); position: relative; }
 .loading .bar b { position: absolute; inset: 0 auto 0 0; background: var(--blue2); transition: width .2s; }

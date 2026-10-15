@@ -40,6 +40,8 @@ Pages de développement (non incluses dans le build) :
 - **Pincer** ou molette : zoomer.
 - **Bouton « Attendre »** : laisser passer le temps (30 min, 1 h, ou jusqu’au prochain rendez-vous).
 - **Onglets à droite** : Carnet, Sac, Train, Menu.
+- **Plein écran** : bouton sur l’écran titre et dans Menu, quand le navigateur le permet (Android, ordinateur).
+  Sur iPhone, Safari ne le permet pas : « Ajouter à l’écran d’accueil » ouvre le jeu sans barre d’adresse.
 
 Le temps ne s’écoule que lorsque vous agissez, marchez ou attendez. Les dialogues le mettent en pause.
 
@@ -196,7 +198,7 @@ Volume : 13 PNJ principaux et 4 passagers d’ambiance. Le contenu comprend :
   - Une somme de contrôle détecte les sauvegardes corrompues.
   - Restauration cohérente sans duplication d’objets.
   - Les séquences obligatoires interrompues (conseil, préparation, départ, assemblée) sont relancées au chargement.
-- [x] Interface mobile : zones sûres, cibles tactiles d’au moins 44 px, anti-double-déclenchement, message « tournez votre appareil » en portrait.
+- [x] Interface mobile : zones sûres, cibles tactiles d’au moins 44 px, anti-double-déclenchement, message « tournez votre appareil » en portrait sur écran tactile (sur ordinateur, une fenêtre étroite affiche le jeu quand même), bouton plein écran.
 - [x] Son procédural avec réglages de volume (général, musique, ambiance, effets) et vitesse du texte :
   - ambiances : train à l’arrêt, train en marche, extérieur ;
   - musique rare et sobre selon l’humeur ;
@@ -212,8 +214,8 @@ Volume : 13 PNJ principaux et 4 passagers d’ambiance. Le contenu comprend :
 - La progression d’un dialogue en cours n’est pas sauvegardée : on reprend au menu de conversation du personnage.
 - Les PNJ se déplacent en temps réel entre leurs postes. Après une attente de 20 minutes ou plus, ils sont replacés directement.
 - Les panneaux peints dans le décor utilisent une police 3×5 sans accents (« CONTROLE », « DEPOT »).
-- Les icônes d’objets du sac sont des glyphes Unicode : sur un système sans police de symboles, certaines peuvent s’afficher en carrés.
-  Les icônes du HUD, elles, sont en SVG.
+- Les objets du sac n’ont pas de dessin : ils sont signalés par une pastille (initiale, couleur de catégorie).
+  Les icônes du HUD sont en SVG.
 - Une seule sauvegarde en cours à la fois (plus un point de reprise en mode Histoire).
 
 ## 7. Tests et résultats

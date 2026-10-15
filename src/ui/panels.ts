@@ -6,6 +6,7 @@ import { fmtDateTime, fmtDuration } from '../engine/time';
 import { btn, clear, fmtKg, h } from './dom';
 import { portrait } from './portraits';
 import { icon } from './icons';
+import { fullscreenButton } from './fullscreen';
 
 type CarnetTab = 'fact' | 'testimony' | 'clue' | 'hyp' | 'quests' | 'conseq';
 
@@ -356,6 +357,8 @@ export function trainPanel(app: App): HTMLElement {
 export function menuPanel(app: App): HTMLElement {
   const g = app.game!;
   const body = h('div', { class: 'sheet-body' });
+  // Deux colonnes : tout tient sur un téléphone en paysage, sans faire défiler.
+  const left = h('div', { class: 'col list' });
   const col = h('div', { class: 'col detail' });
   const info = h('div', { class: 'kv', style: 'margin-bottom:14px' },
     h('div', { class: 'k' }, 'Personnage'), h('div', null, `${g.content.chars[g.state.char].title} — ${g.content.chars[g.state.char].name}`),
@@ -371,9 +374,11 @@ export function menuPanel(app: App): HTMLElement {
     }, 'btn primary'),
     g.state.mode === 'histoire' ? btn('Revenir au dernier point de reprise', () => app.confirm('Revenir au point de reprise ? La progression depuis sera perdue.', () => app.loadCheckpoint()), 'btn') : null,
     btn('Paramètres', () => app.openSettings(), 'btn'),
+    fullscreenButton('btn'),
     btn('Retour au titre', () => app.confirm('Revenir à l’écran titre ? La partie est sauvegardée automatiquement.', () => app.toTitle()), 'btn danger'),
   );
-  col.append(info, actions, status, h('p', { class: 'empty', style: 'padding-left:0;margin-top:10px' }, 'Gestes : toucher pour marcher ou interagir · glisser pour regarder · pincer pour zoomer.'));
-  body.append(col);
+  left.append(info, h('p', { class: 'empty', style: 'padding-left:0;margin-top:10px' }, 'Gestes : toucher pour marcher ou interagir · glisser pour regarder · pincer pour zoomer.'));
+  col.append(actions, status);
+  body.append(left, col);
   return sheet('Menu', null, body, () => app.closePanel());
 }

@@ -16,6 +16,7 @@ export const ICON = {
   back: S('<path d="M15 5l-7 7 7 7"/>', 14),
   skip: S('<path d="M5 5l7 7-7 7M12 5l7 7-7 7"/>', 14),
   close: S('<path d="M6 6l12 12M18 6L6 18"/>', 14),
+  rotate: S('<rect x="2" y="9" width="15" height="10" rx="1.5"/><path d="M5 14h1"/><path d="M11 3a9 9 0 0 1 10 9"/><path d="M22 8l-1 4-4-1"/>', 44),
 };
 
 export function icon(name: keyof typeof ICON): HTMLElement {
