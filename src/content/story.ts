@@ -161,3 +161,15 @@ export function twistText(g: Game): string[] {
   lines.push('Il existe un autre VAYN. Et il sait quelque chose que vous ignorez.');
   return lines;
 }
+
+/** Révélations possibles devant l'assemblée finale. */
+export interface Revelation { id: string; label: string; desc: string; if: string; fx: string[] }
+export const REVELATIONS: Revelation[] = [
+  { id: 'rev_radio', label: 'Castel a caché Clairval', desc: 'Lire le journal radio tamponné « NE PAS DIFFUSER — H.C. ».', if: 'e:f_signal_cache & !f:radio_revelee & !f:radio_couverte', fx: ['set:radio_revelee', 'conseq:cq_radio_publique', 'trust:castel-2', 'trust:sorel+1'] },
+  { id: 'rev_pompe', label: 'La pompe de secours sacrifiée', desc: 'Dire que Vasseur a démonté le moteur et maquillé le carnet.', if: 'e:f_pompe_morte & !f:vasseur_couverte & !f:vasseur_revelee & !char:mecanicien', fx: ['set:vasseur_revelee', 'conseq:cq_vasseur_exposee', 'trust:vasseur-2'] },
+  { id: 'rev_aveu', label: 'Avouer votre signature', desc: 'Reconnaître publiquement que vous avez contresigné une révision fantôme.', if: 'char:mecanicien & e:c_carnet_entretien & !f:malo_avoue', fx: ['set:malo_avoue', 'conseq:cq_malo_aveu', 'obj:qp_mecanicien.choix', 'trust:castel+1'] },
+  { id: 'rev_trafic', label: 'Le trafic de la « cabine 0 »', desc: 'Exposer l’échange d’eau contre des antibiotiques entre Marchetti et le Salon.', if: 'e:f_detournement & !f:marchetti_destitue & !f:marchetti_couvert', fx: ['set:marchetti_destitue', 'conseq:cq_marchetti_destitue', 'trust:marchetti-3', 'trust:villiers-2', 'obj:qp_controleur.choix'] },
+  { id: 'rev_mere', label: 'Mara est la fille de Sorel', desc: 'Réunir publiquement la mère et la fille.', if: 'e:f_mere & !f:mere_reunie & !f:mara_expulsee', fx: ['set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'trust:sorel+3', 'trust:mara+2', 'qdone:q_mara'] },
+  { id: 'rev_theo', label: 'La nuit de Théo', desc: 'Raconter ce que Théo vous a dit : la radio, Castel, le dépôt.', if: 'e:t_theo_recit & !f:theo_public', fx: ['set:theo_public', 'trust:castel-1', 'trust:vasseur+1'] },
+  { id: 'rev_lettre', label: 'La lettre de Madame', desc: 'Lire à voix haute la lettre cachetée de Madame de Villiers.', if: 'e:c_lettre_madame & !f:lettre_remise & !f:lettre_brulee & !f:lettre_revelee', fx: ['set:lettre_revelee', 'take:lettre_ouverte', 'conseq:cq_lettre_revelee', 'trust:villiers-3', 'obj:qp_majordome.remettre'] },
+];

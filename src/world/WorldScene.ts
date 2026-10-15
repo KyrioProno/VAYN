@@ -19,7 +19,7 @@ import { Actor } from './Actor';
 import { canvasTexture, charTexture, spriteTexture, glowTexture } from './textures';
 
 export interface WorldHost {
-  game: Game;
+  game: Game | null;
   content: Content;
   busy(): boolean;
   reachedObject(o: ObjectDef): void;
@@ -86,6 +86,11 @@ export class WorldScene extends Phaser.Scene {
   private dragging = false;
   private tapMarker!: Phaser.GameObjects.Image;
   private ready = false;
+  private darkRect!: Phaser.GameObjects.Rectangle;
+  private darkA = 0;
+  private moving = false;
+  private drift = 0;
+  private stationLayer: Phaser.GameObjects.Image | null = null;
 
   constructor() {
     super('world');
@@ -110,10 +115,14 @@ export class WorldScene extends Phaser.Scene {
     this.unsub = [];
     this.pointers = new Map();
     this.ready = false;
+    this.moving = false;
+    this.drift = 0;
+    this.darkA = 0;
+    this.stationLayer = null;
   }
 
   get eng(): Game {
-    return this.host.game;
+    return this.host.game!;
   }
 
   create() {
@@ -142,6 +151,8 @@ export class WorldScene extends Phaser.Scene {
 
     // Voile d'énergie / nuit
     this.dim = this.add.rectangle(0, 0, 10, 10, 0x000000, 0).setOrigin(0, 0).setDepth(1400).setScrollFactor(0);
+    this.darkRect = this.add.rectangle(0, 0, 10, 10, 0x020203, 0).setOrigin(0, 0).setDepth(1450).setScrollFactor(0);
+    if (this.zone === 'train' && g.flag('train_roule')) this.setMoving(true);
     if (this.zone === 'exterior') {
       this.haze = this.add.tileSprite(0, 0, 900, GEO.H + 40, canvasTexture(this, 'fx:haze', () => renderHaze())).setOrigin(0, 0).setDepth(1600).setAlpha(0);
     }
@@ -196,6 +207,7 @@ export class WorldScene extends Phaser.Scene {
       const sw = Math.round(W * 0.6 + 900);
       const st = this.add.image(0, 0, canvasTexture(this, `bg:station:${ph}:${sw}`, () => renderStation(ph, sw))).setOrigin(0, 0).setDepth(-970);
       this.layers.push({ obj: st, f: 0.6, y: 0, tile: false });
+      this.stationLayer = st;
       const ground = this.add.tileSprite(0, GEO.UNDER_Y1, 1200, GEO.H - GEO.UNDER_Y1 + 60, canvasTexture(this, 'bg:ground', () => renderGround())).setOrigin(0, 0).setDepth(-200);
       this.layers.push({ obj: ground, f: 1, y: GEO.UNDER_Y1, tile: true });
       const fg = this.add.tileSprite(0, GEO.H - 200 + 30, 1200, 200, canvasTexture(this, 'bg:fg', () => renderForeground())).setOrigin(0, 0).setDepth(3000).setAlpha(0.96);
@@ -673,6 +685,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.haze.width < need) this.haze.setSize(need + 128, this.haze.height);
     }
     this.dim.setSize(this.scale.width / z + 4, this.scale.height / z + 4);
+    this.darkRect?.setSize(this.scale.width / z + 4, this.scale.height / z + 4);
   }
 
   /** Cadrage de dialogue : resserre entre le joueur et l'interlocuteur. */
@@ -748,16 +761,17 @@ export class WorldScene extends Phaser.Scene {
     cam.centerOn(Math.round(this.camX * cam.zoom) / cam.zoom, CAM_Y);
     const left = this.camX - viewW / 2;
     const top = CAM_Y - this.scale.height / cam.zoom / 2;
-    // Parallaxe
+    // Parallaxe (et défilement du paysage quand le train roule)
+    if (this.moving) this.drift += (dt / 1000) * 160;
     for (const l of this.layers) {
       if (l.tile) {
         const ts = l.obj as Phaser.GameObjects.TileSprite;
-        if (l.f === 1) {
+        if (l.f === 1 && !this.moving) {
           ts.setPosition(Math.floor(left / 64) * 64 - 64, l.y);
           ts.tilePositionX = 0;
         } else {
           ts.setPosition(left - 32, l.y);
-          ts.tilePositionX = (left - 32) * l.f;
+          ts.tilePositionX = (left - 32) * l.f + this.drift * l.f;
         }
       } else {
         l.obj.setPosition(left * (1 - l.f) - 120, l.y);
@@ -784,6 +798,7 @@ export class WorldScene extends Phaser.Scene {
       dimA += this.phase === 'nuit' ? 0.35 : this.phase === 'crepuscule' || this.phase === 'aube' ? 0.12 : 0;
     }
     this.dim.setPosition(0, 0).setFillStyle(0x05070c, dimA);
+    this.darkRect.setFillStyle(0x020203, this.darkA);
     // Brume extérieure
     if (this.haze) {
       const front = this.hazeFront();
@@ -795,6 +810,17 @@ export class WorldScene extends Phaser.Scene {
     if (this.dark) this.updateDark(left, top);
     if (this.navDirty && !this.player.moving) this.rebuildNav();
     this.host.frame(this);
+  }
+
+  /** Obscurité (dépôt sans lampe…) : 0 = aucune. */
+  setDark(a: number) {
+    this.darkA += (a - this.darkA) * 0.15;
+  }
+
+  /** Le train roule : la gare disparaît, le paysage défile. */
+  setMoving(on: boolean) {
+    this.moving = on;
+    if (this.stationLayer) this.stationLayer.setVisible(!on);
   }
 
   /** Position x du front de brume (scène extérieure) : progresse depuis la droite à partir de 10:00. */

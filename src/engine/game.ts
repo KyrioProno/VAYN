@@ -6,6 +6,7 @@ import { Emitter } from './emitter';
 import { evalCond, parseFx, splitAssign, splitDelta, splitQty, type CondContext } from './dsl';
 import { absTime, clockOf, dayOf, hm, MIN_PER_DAY } from './time';
 import type {
+  ActionDef,
   Content, GameState, ItemDef, Relation, ResKey, StatKey, TextVariant, HypothesisDef, Fx, UpgradeDef,
 } from './types';
 
@@ -283,6 +284,28 @@ export class Game extends Emitter {
       default:
         throw new Error(`Effet inconnu "${verb}" (${source})`);
     }
+  }
+
+  // ------------------------------------------------------------------ actions de décor
+  /** Actions disponibles (conditions vraies, actions « une fois » non consommées). */
+  availableActions(list: ActionDef[] | undefined): ActionDef[] {
+    return (list ?? []).filter((a) => this.check(a.if) && !(a.once && this.state.flags[a.once]));
+  }
+
+  /** Durée effective d'une action (le Mécanicien répare plus vite). */
+  actionTime(a: ActionDef): number {
+    const t = a.time ?? 0;
+    return t && this.state.char === 'mecanicien' && a.tag === 'Réparation' ? Math.round(t * 0.6) : t;
+  }
+
+  /** Exécute une action de décor : drapeau « une fois », temps, effets. Renvoie le texte à afficher. */
+  perform(a: ActionDef, source = 'action'): string {
+    if (a.once) this.setFlag(a.once, true);
+    const t = this.actionTime(a);
+    if (t) this.advance(t);
+    if (this.state.dead) return '';
+    this.applyFx(a.fx, source);
+    return this.text(a.text);
   }
 
   // ------------------------------------------------------------------ inventaire
