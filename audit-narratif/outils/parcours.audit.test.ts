@@ -330,8 +330,8 @@ function C2() {
   return r;
 }
 function C3() {
-  // Mara expulsée : est-elle au poste d'aiguillage pendant l'expédition ?
-  const r = new Run('passager', 'C3-mara-expulsee', opposite);
+  // Conseil d'abstention : le verdict tombe en « cellule ». Mara reste-t-elle à bord pendant l'expédition ?
+  const r = new Run('passager', 'C3-cellule-puis-expedition', opposite);
   begin(r);
   r.act('mur_caisses', 'Déplacer');
   r.talk('mara', ['Doucement', 'Que sais-tu de Théo']);
@@ -504,6 +504,81 @@ function C12() {
   return r;
 }
 
+
+function avantConseil(r: Run) {
+  // La filiation, trouvée normalement (bureau de Sorel + médaillon).
+  r.act('bureau_sorel', 'Examiner le bureau');
+  r.act('mur_caisses', 'Déplacer');
+  r.talk('mara', ['Doucement', 'Que sais-tu de Théo', 'D\u2019où viens-tu', 'Pourquoi es-tu montée', 'Je peux la garder']);
+  r.act('bureau_sorel', 'Rapprocher');
+  r.link('c_medaillon_mara', 'c_medaillon_sorel');
+  // Le témoignage de Josefa, puis l'aveu de Castel et son tiroir : c'est ce qui achète sa confiance.
+  r.talk('josefa', ['Vous étiez de service', 'Vous pouvez me faire confiance']);
+  r.talk('castel', ['Que s\u2019est-il passé', 'Vous avez croisé Théo', 'Dites-moi la vérité', 'Ça restera entre nous']);
+  r.until('d1@12:05');
+  r.act('bureau_castel', 'Fouiller le tiroir');
+  r.talk('castel', ['Parlons de la radio', 'Il y a un journal', 'Je garderai ça pour moi']);
+}
+
+function C13() {
+  // N3 + N2 : on dit au conseil que Mara est la fille de Sorel, et le council-la en cellule.
+  // Les scènes de révélation (cellule_mere, mere) doivent alors disparaître, comme la réunion.
+  const r = new Run('controleur', 'C13-revelation-puis-cellule', {
+    council: (m: MotionDef) => {
+      const pos: Record<string, string> = { expedition: 'theo', rationnement: 'quota', clandestin: 'cellule', k3_radio: 'radio' };
+      return { position: pos[m.id], args: m.id === 'clandestin' ? ['m_mere'] : 'toward' };
+    },
+    expedition: (rr) => ({ companion: null, gear: rr.g.itemQty('lampe') ? { ration: 1 } : { lampe: 1, ration: 1 } }),
+    revelations: (avail) => avail.map((x) => x.id),
+    direction: () => ({ position: 'clairval', args: 'toward' }),
+  });
+  begin(r);
+  // Le moteur de la pompe de secours : Vasseur avoue, et couvre le contrôleur jusqu'au bout.
+  r.act('pompe_secours', 'Examiner');
+  r.act('bons_sortie', 'Consulter les bons');
+  r.link('c_pompe_secours', 'c_bon_sortie');
+  r.talk('vasseur', ['La pompe de secours n\u2019a plus de moteur', 'Le bon de sortie', 'Je garderai ça pour moi']);
+  avantConseil(r);
+  r.L(`Avant le conseil : f_mere=${r.g.knows('f_mere')} f_pompe_morte=${r.g.knows('f_pompe_morte')} castel_couvert=${r.g.flag('castel_couvert')} castel confiance=${r.g.rel('castel').trust} soupçon=${r.g.rel('castel').suspicion} vasseur confiance=${r.g.rel('vasseur').trust} dette=${r.g.rel('vasseur').debt}`);
+  r.until('d1@17:00');
+  r.L(`Après le conseil : vote=${r.g.flag('vote_clandestin')} mere_revelee_conseil=${r.g.flag('mere_revelee_conseil')} mere_reunie=${r.g.flag('mere_reunie')} point de Mara=${r.g.npcSpot('mara')}`);
+  // Scènes qui contrediraient le verdict : elles ne doivent plus exister.
+  r.talk('castel', ['La fille, dans la cellule']);
+  r.talk('sorel', ['Votre fille est vivante']);
+  r.L(`Tentatives après le verdict : mere_reunie=${r.g.flag('mere_reunie')} consequences=${r.g.state.conseqs.map((c) => c.id).join(', ')}`);
+  r.sleep();
+  expeditionMain(r, { poste: true, theo: 'rien' });
+  r.walkBack();
+  r.toAssembly();
+  return r;
+}
+
+function C14() {
+  // Même révélation au conseil, mais le conseil vote l'expulsion : plus aucun retour à bord.
+  const r = new Run('controleur', 'C14-revelation-puis-expulsion', {
+    council: (m: MotionDef) => {
+      const pos: Record<string, string> = { expedition: 'theo', rationnement: 'quota', clandestin: 'expulsion', k3_radio: 'radio' };
+      return { position: pos[m.id], args: m.id === 'clandestin' ? ['m_mere'] : 'toward' };
+    },
+    expedition: (rr) => ({ companion: null, gear: rr.g.itemQty('lampe') ? { ration: 1 } : { lampe: 1, ration: 1 } }),
+    revelations: (avail) => avail.map((x) => x.id),
+    direction: () => ({ position: 'clairval', args: 'toward' }),
+  });
+  begin(r);
+  avantConseil(r);
+  r.L(`Avant le conseil : f_mere=${r.g.knows('f_mere')} castel confiance=${r.g.rel('castel').trust} soupçon=${r.g.rel('castel').suspicion} vasseur confiance=${r.g.rel('vasseur').trust} dette=${r.g.rel('vasseur').debt}`);
+  r.until('d1@17:00');
+  r.L(`Après le conseil : vote=${r.g.flag('vote_clandestin')} mere_revelee_conseil=${r.g.flag('mere_revelee_conseil')} mere_reunie=${r.g.flag('mere_reunie')} point de Mara=${r.g.npcSpot('mara')}`);
+  r.talk('castel', ['La fille, dans la cellule']);
+  r.talk('sorel', ['Votre fille est vivante']);
+  r.L(`Tentatives après le verdict : mere_reunie=${r.g.flag('mere_reunie')} consequences=${r.g.state.conseqs.map((c) => c.id).join(', ')}`);
+  r.sleep();
+  expeditionMain(r, { poste: true, theo: 'rien' });
+  r.walkBack();
+  r.toAssembly();
+  return r;
+}
+
 describe('audit narratif — parcours', () => {
   it('joue tous les parcours et écrit le rapport', () => {
     const runs: Run[] = [];
@@ -514,7 +589,7 @@ describe('audit narratif — parcours', () => {
     runs.push(P4('controleur'), P4('mecanicien'));
     runs.push(P5('mecanicien'), P5('majordome'));
     runs.push(P6('passager'), P6('controleur'));
-    runs.push(C1(), C2(), C3(), C4b(), C5(), C6(), C7(), C8(), C9(), C10(), C11(), C12());
+    runs.push(C1(), C2(), C3(), C4b(), C5(), C6(), C7(), C8(), C9(), C10(), C11(), C12(), C13(), C14());
 
     const out: string[] = ['# Parcours exécutés (moteur réel, sans rendu)', '', 'Fichier généré par `audit-narratif/outils/parcours.audit.test.ts`. Ne pas modifier à la main.', '', 'Chaque parcours joue le chapitre dans le vrai moteur (`src/engine`) avec le vrai contenu (`src/content`).', 'Les séquences de l’application (conseil, nuit, expédition, retour, départ, assemblée) sont recopiées de `src/app/App.ts`.', 'La marche est approchée en ligne droite ; les PNJ sont placés selon leur emploi du temps. Aucun rendu, aucune interface.', ''];
     const grid: string[] = ['| Parcours | ' + Object.keys(comprehension(runs[0])).join(' | ') + ' |', '|' + '---|'.repeat(Object.keys(comprehension(runs[0])).length + 1)];
@@ -553,6 +628,47 @@ describe('audit narratif — parcours', () => {
     expect(vote).toBeTruthy();
     expect(c9.log.some((l) => /"vasseur":/.test(l.split('Assemblée')[1] ?? ''))).toBe(false); // D-01 : elle ne vote plus
 
-    expect(runs.length).toBeGreaterThanOrEqual(28);
+    const c3 = runs.find((r) => r.label === 'C3-cellule-puis-expedition')!;
+    expect(c3.g.flag('vote_clandestin')).toBe('cellule');   // le libellé du parcours dit ce qui est réellement joué
+    expect(c3.g.flag('mara_expulsee')).toBeFalsy();
+    expect(c3.log.some((l) => /Anselme parle-t-il de Mara \? non/.test(l))).toBe(true);
+
+    const c13 = runs.find((r) => r.label === 'C13-revelation-puis-cellule')!;
+    expect(c13.dead).toBeNull();
+    expect(c13.ended).toBe(true);
+    expect(c13.argsUsed).toContain('clandestin.m_mere');                    // l'argument a bien été porté au conseil
+    expect(c13.g.flag('mere_revelee_conseil')).toBe(true);                  // N3 : la filiation a été dite…
+    expect(c13.g.flag('vote_clandestin')).toBe('cellule');                  // … mais c'est le verdict qui décide.
+    expect(c13.log.some((l) => /Le sort de la clandestine.*→ cellule \(position cellule/.test(l))).toBe(true);
+    expect(c13.votes.clandestin).toBe('cellule');
+    expect(c13.g.flag('mere_reunie')).toBeFalsy();                         // N3 : aucune réunion n'a eu lieu.
+    expect(c13.g.state.conseqs.map((x) => x.id)).not.toContain('cq_mere_reunie');
+    expect(c13.g.flag('mara_cellule')).toBe(true);                          // N2 : la fille reste enfermée.
+    expect(c13.g.state.conseqs.map((x) => x.id)).toContain('cq_mara_cellule');
+    expect(c13.g.npcSpot('mara')).toBe('ad_cellule');
+    expect(c13.log.some((l) => /✗ choix « La fille, dans la cellule » absent/.test(l))).toBe(true);
+    expect(c13.log.some((l) => /✗ choix « Votre fille est vivante » absent/.test(l))).toBe(true);
+    const gens13 = c13.epilogue.find((s2) => s2.title === 'Les gens')!.lines.join(' ');
+    expect(gens13).toContain('Mara attend dans sa cellule');
+    expect(gens13).toContain('la porte, elle, est restée fermée');
+    expect(gens13).not.toContain('ne se quittent plus');
+
+    const c14 = runs.find((r) => r.label === 'C14-revelation-puis-expulsion')!;
+    expect(c14.dead).toBeNull();
+    expect(c14.ended).toBe(true);
+    expect(c14.argsUsed).toContain('clandestin.m_mere');
+    expect(c14.g.flag('mere_revelee_conseil')).toBe(true);
+    expect(c14.g.flag('vote_clandestin')).toBe('expulsion');                // N3 : le conseil décide, pas l'argument.
+    expect(c14.g.flag('mara_expulsee')).toBe(true);
+    expect(c14.g.flag('mara_libre')).toBeFalsy();                           // N2b : aucun retour à bord.
+    expect(c14.g.flag('mere_reunie')).toBeFalsy();
+    expect(c14.g.npcSpot('mara')).toBeNull();                               // débarquée : plus aucun point sur le train
+    expect(c14.g.state.conseqs.map((x) => x.id)).toContain('cq_mara_expulsee');
+    expect(c14.g.state.conseqs.map((x) => x.id)).not.toContain('cq_mere_reunie');
+    expect(c14.log.some((l) => /✗ choix « La fille, dans la cellule » absent/.test(l))).toBe(true);
+    expect(c14.log.some((l) => /✗ choix « Votre fille est vivante » absent/.test(l))).toBe(true);
+    expect(c14.epilogue.find((s2) => s2.title === 'Les gens')!.lines.join(' ')).toContain('débarquée à Saint-Aubin');
+
+    expect(runs.length).toBeGreaterThanOrEqual(30);
   });
 });

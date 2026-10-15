@@ -1,10 +1,13 @@
 // Non-régression des corrections narratives (lots A, B et C de l'audit).
 // Ces tests protègent l'état du monde : morts, décisions de Théo et de Mara,
 // objectifs « faits si… », promesses tenues jusqu'à l'épilogue.
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { CONTENT } from '../src/content';
 import { REVELATIONS, buildEpilogue } from '../src/content/story';
-import { availableArgs, councilMembers, newSession, resolveVote, useArg } from '../src/engine/council';
+import { applyResult, availableArgs, councilMembers, newSession, resolveVote, useArg } from '../src/engine/council';
 import { absTime } from '../src/engine/time';
 import { newGame, talk } from './helpers';
 
@@ -64,9 +67,12 @@ describe('D-01 — un compagnon mort ne revient pas à bord', () => {
     // plus de vote…
     const r = resolveVote(g, newSession(CONTENT.motions.expedition));
     expect(Object.keys(r.votes)).not.toContain('vasseur');
-    // …et plus d'argument qui la vise
-    const motion = Object.values(CONTENT.motions).find((m) => m.args.some((a) => a.target === 'vasseur'))!;
-    const argVas = motion.args.find((a) => a.target === 'vasseur')!;
+    // …et plus d'argument qui la vise (argument réellement disponible sur un Passager : « char:passager »)
+    const motion = CONTENT.motions.rationnement;
+    const argVas = motion.args.find((a) => a.id === 'r_quota_injuste')!;
+    const vivant = newGame('passager');
+    expect(availableArgs(vivant, newSession(motion)).map((a) => a.id)).toContain(argVas.id);
+    expect(useArg(vivant, newSession(motion), argVas.id)).not.toBeNull();
     expect(availableArgs(g, newSession(motion)).map((a) => a.id)).not.toContain(argVas.id);
     expect(useArg(g, newSession(motion), argVas.id)).toBeNull();
     // l'assemblée se tient malgré tout, à trois
@@ -131,14 +137,23 @@ describe('D-02 / D-06 / D-19 — Théo', () => {
 });
 
 describe('D-04 / D-05 / D-11 — Mara', () => {
-  it('révélée au conseil : la mère et la fille se retrouvent vraiment', () => {
+  it('révélée au conseil : la mère et la fille se retrouvent si le conseil accueille Mara', () => {
     const g = newGame('controleur');
-    g.applyFx(['entry:f_mere']);
-    const arg = CONTENT.motions.clandestin.args.find((a) => a.id === 'm_mere')!;
-    g.applyFx(arg.fx);
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    const motion = CONTENT.motions.clandestin;
+    const arg = motion.args.find((a) => a.id === 'm_mere')!;
+    const s = newSession(motion);
+    s.position = 'accueil';
+    expect(useArg(g, s, arg.id)).not.toBeNull();
+    // N3 : avant le vote, rien n'est acquis.
+    expect(g.flag('mere_revelee_conseil')).toBe(true);
+    expect(g.flag('mere_reunie')).toBeFalsy();
+    expect(g.flag('mara_libre')).toBeFalsy();
+    applyResult(g, s, { winner: 'accueil', votes: {}, tie: false, decidedByPlayer: false });
     expect(g.flag('mere_reunie')).toBe(true);
     expect(g.flag('mara_libre')).toBe(true);
     expect(g.state.conseqs.map((c) => c.id)).toContain('cq_mere_reunie');
+    expect(g.state.conseqs.map((c) => c.id)).toContain('cq_mara_accueil');
     expect(g.state.quests.q_mara?.status).toBe('done');
     expect(section(g, 'Les gens')).toContain('Sorel et Mara ne se quittent plus');
   });
@@ -180,7 +195,11 @@ describe('D-07 / D-21 / D-22 — objectifs et missions', () => {
     g.applyFx(['entry:t_theo_recit']);
     expect(g.objectiveDone('q_main', 'panne')).toBe(true);
     expect(g.check('o:q_main.panne')).toBe(true);
-    expect(g.currentObjective()?.text).not.toContain('filtration');
+    // « panne » est accompli sans jamais avoir été coché à la main ; l'affichage reste sur le premier objectif.
+    expect(g.currentObjective()?.text).toBe(CONTENT.quests.q_main.objectives[0].text);
+    // Et dès que celui-ci est fait, l'affichage passe à la suite — rien ne reste bloqué sur « panne ».
+    g.completeObjective('q_main', 'machines');
+    expect(g.currentObjective()?.text).toBe(CONTENT.quests.q_main.objectives[2].text);
   });
 
   it('les réserves et la trace de Théo se cochent par leurs autres voies', () => {
@@ -223,7 +242,8 @@ describe('D-07 / D-21 / D-22 — objectifs et missions', () => {
 describe('D-13 / D-14 / D-15 — promesses et conséquences', () => {
   it('promettre le silence à Castel a une suite si l’on raconte sa nuit de Théo', () => {
     const g = newGame('controleur');
-    g.applyFx(['set:castel_couverte', 'entry:t_theo_recit']);
+    // Le drapeau réellement posé par le dialogue (« Ça restera entre nous », council.ts) :
+    g.applyFx(['set:castel_couvert', 'entry:t_theo_recit']);
     const rev = REVELATIONS.find((r) => r.id === 'rev_theo')!;
     expect(g.check(rev.if)).toBe(true);
     const label = typeof rev.label === 'string' ? rev.label : rev.label.find((x) => g.check(x.if))!.text;
@@ -305,5 +325,281 @@ describe('D-12 / D-17 / D-30 — cohérence technique', () => {
     expect(textes).not.toContain('quatre jerricans par nuit');
     expect(textes).not.toContain('chaque nuit, vers 23 h');
     expect(textes).toContain('quatre jerricans par semaine');
+  });
+});
+// =====================================================================
+// Non-régression des corrections issues de l'audit de vérification
+// (rapport audit-narratif/RAPPORT_VERIFICATION.md : N1 à N7)
+// =====================================================================
+
+describe('N1 — la promesse faite à Castel (« ça restera entre nous »)', () => {
+  const rev = () => REVELATIONS.find((r) => r.id === 'rev_theo')!;
+  const libelle = (g: ReturnType<typeof newGame>) => {
+    const r = rev();
+    return typeof r.label === 'string' ? r.label : r.label.find((x) => g.check(x.if))!.text;
+  };
+
+  it('promettre puis raconter : conséquence de trahison, fort abaissement, ligne d’épilogue', () => {
+    const g = newGame('controleur');
+    g.applyFx(['set:castel_couvert', 'entry:t_theo_recit']); // drapeau réellement posé par le dialogue
+    expect(libelle(g)).toContain('Castel vous avait juré');
+    const avant = g.rel('castel').trust;
+    g.applyFx(rev().fx);
+    expect(g.rel('castel').trust).toBeLessThan(avant - 2);
+    expect(g.state.conseqs.map((c) => c.id)).toContain('cq_castel_trahie');
+    expect(section(g, 'Les gens')).toContain('devant deux cents personnes');
+  });
+
+  it('n’avoir rien promis : ni conséquence de trahison, ni grande perte de confiance', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:t_theo_recit']);
+    expect(libelle(g)).toBe('La nuit de Théo');
+    const avant = g.rel('castel').trust;
+    g.applyFx(rev().fx);
+    expect(g.state.conseqs.map((c) => c.id)).not.toContain('cq_castel_trahie');
+    expect(g.rel('castel').trust).toBe(avant - 1);
+    expect(section(g, 'Les gens')).not.toContain('devant deux cents personnes');
+  });
+
+  it('avoir dit « le conseil devra l’entendre » : raconter est alors ce que Castel demandait', () => {
+    const g = newGame('controleur');
+    g.applyFx(['set:castel_a_reveler', 'entry:t_theo_recit']);
+    const avant = g.rel('castel').trust;
+    g.applyFx(rev().fx);
+    expect(g.state.conseqs.map((c) => c.id)).not.toContain('cq_castel_trahie');
+    expect(g.rel('castel').trust).toBe(avant);
+    expect(section(g, 'Les gens')).not.toContain('Vous aviez promis à Castel');
+  });
+});
+
+describe('N3 — la réunion obtenue au conseil ne dépend que du verdict', () => {
+  const motion = CONTENT.motions.clandestin;
+  const conseil = (g: ReturnType<typeof newGame>, winner: string) => {
+    const s = newSession(motion);
+    s.position = winner;
+    useArg(g, s, 'm_mere');
+    applyResult(g, s, { winner, votes: {}, tie: false, decidedByPlayer: false });
+  };
+
+  it('l’argument seul ne change rien à l’état de Mara', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    const s = newSession(motion);
+    s.position = 'expulsion';
+    expect(useArg(g, s, 'm_mere')).not.toBeNull();
+    expect(g.flag('mere_revelee_conseil')).toBe(true);
+    expect(g.flag('mere_reunie')).toBeFalsy();
+    expect(g.flag('mara_libre')).toBeFalsy();
+    expect(g.state.conseqs.map((c) => c.id)).not.toContain('cq_mere_reunie');
+  });
+
+  it('verdict « expulsion » : aucune réunion, et l’épilogue raconte l’expulsion', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    conseil(g, 'expulsion');
+    expect(g.flag('mara_expulsee')).toBe(true);
+    expect(g.flag('mere_reunie')).toBeFalsy();
+    expect(g.state.conseqs.map((c) => c.id)).toContain('cq_mara_expulsee');
+    expect(g.state.conseqs.map((c) => c.id)).not.toContain('cq_mere_reunie');
+    expect(section(g, 'Les gens')).toContain('Mara a été débarquée à Saint-Aubin');
+    expect(section(g, 'Les gens')).not.toContain('ne se quittent plus');
+  });
+
+  it('verdict « cellule » : pas de réunion non plus', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    conseil(g, 'cellule');
+    expect(g.flag('mara_cellule')).toBe(true);
+    expect(g.flag('mere_reunie')).toBeFalsy();
+    expect(g.state.conseqs.map((c) => c.id)).toContain('cq_mara_cellule');
+    expect(section(g, 'Les gens')).toContain('Mara attend dans sa cellule');
+  });
+
+  it('verdict « accueil » : la réunion a lieu, et elle est la seule qui compte', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    conseil(g, 'accueil');
+    expect(g.flag('mere_reunie')).toBe(true);
+    expect(g.flag('mara_libre')).toBe(true);
+    expect(g.state.conseqs.map((c) => c.id)).toContain('cq_mara_accueil');
+    expect(g.state.conseqs.map((c) => c.id)).toContain('cq_mere_reunie');
+  });
+});
+
+describe('N2 / N2b — plus aucune scène de révélation après le verdict du conseil', () => {
+  const motion = CONTENT.motions.clandestin;
+  const verdict = (g: ReturnType<typeof newGame>, winner: string) =>
+    applyResult(g, newSession(motion), { winner, votes: {}, tie: false, decidedByPlayer: false });
+
+  it('verdict « cellule » : ni Castel ni Sorel ne peuvent réunir la mère et la fille', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    verdict(g, 'cellule');
+    expect(() => talk(g, 'castel', ['La fille, dans la cellule'])).toThrow();
+    expect(() => talk(g, 'sorel', ['Votre fille est vivante'])).toThrow();
+    expect(g.flag('mere_reunie')).toBeFalsy();
+    expect(g.flag('mara_libre')).toBeFalsy();
+    expect(g.state.conseqs.map((c) => c.id)).not.toContain('cq_mere_reunie');
+    expect(g.state.quests.q_mara?.obj?.reunion).toBeFalsy();
+  });
+
+  it('verdict « expulsion » : Mara ne peut pas revenir à bord', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    verdict(g, 'expulsion');
+    expect(g.npcSpot('mara')).toBeNull();
+    expect(() => talk(g, 'sorel', ['Votre fille est vivante'])).toThrow();
+    expect(() => talk(g, 'castel', ['La fille, dans la cellule'])).toThrow();
+    expect(g.flag('mere_reunie')).toBeFalsy();
+    expect(g.npcSpot('mara')).toBeNull();
+  });
+
+  it('l’assemblée ne peut plus réunir la mère et la fille après un verdict qui l’interdit', () => {
+    const revMere = REVELATIONS.find((r) => r.id === 'rev_mere')!;
+    for (const winner of ['cellule', 'expulsion']) {
+      const g = newGame('controleur');
+      g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+      expect(g.check(revMere.if)).toBe(true);
+      verdict(g, winner);
+      expect(g.check(revMere.if)).toBe(false);
+    }
+    const libre = newGame('controleur');
+    libre.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    verdict(libre, 'accueil');
+    expect(libre.check(revMere.if)).toBe(true);
+  });
+
+  it('avant le verdict, la scène de cellule fonctionne toujours', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:f_mere', 'set:mara_capturee']);
+    const lignes = talk(g, 'castel', ['La fille, dans la cellule', 'C’est la fille de la docteure Sorel']);
+    expect(lignes.join(' ')).toContain('Bon sang');
+    expect(g.flag('mere_reunie')).toBe(true);
+    expect(g.flag('mara_libre')).toBe(true);
+  });
+});
+
+describe('N4 — le deuil de Sorel suppose la rencontre', () => {
+  it('Mara morte après la réunion : Sorel fait deuil, l’épilogue parle du dîner pour deux', () => {
+    const g = newGame('passager');
+    expeditionAvec(g, 'mara');
+    g.applyFx(['set:mere_reunie', 'set:mara_libre', 'loc:mara=i_lit_vide']);
+    g.changeCompanionHealth(-100);
+    g.checkCompanionDeath();
+    expect(debut(g, 'sorel').go).toBe('deuil');
+    expect(section(g, 'Les gens')).toContain('préparer le dîner pour deux');
+  });
+
+  it('Mara morte sans réunion : pas de scène de deuil, et Sorel n’a jamais su son nom', () => {
+    const g = newGame('passager');
+    expeditionAvec(g, 'mara');
+    g.applyFx(['set:mara_cachee_ailleurs', 'hide:mara']);
+    g.changeCompanionHealth(-100);
+    g.checkCompanionDeath();
+    expect(debut(g, 'sorel').go).toBe('hub');
+    expect(section(g, 'Les gens')).toContain('n’a jamais su qui elle était');
+    expect(section(g, 'Les gens')).not.toContain('dîner pour deux');
+  });
+});
+
+describe('N5 — les promesses faites au conseil ont désormais une suite', () => {
+  const cas = [
+    { drapeau: 'castel_a_reveler', revele: 'theo_public', texte: 'le conseil entendrait la vérité' },
+    { drapeau: 'radio_a_reveler', revele: 'radio_revelee', texte: 'cela ne pouvait pas rester caché' },
+    { drapeau: 'vasseur_a_reveler', revele: 'vasseur_revelee', texte: 'la vérité sur la pompe de secours' },
+    { drapeau: 'marchetti_menace', revele: 'marchetti_destitue', texte: 'le conseil en entendrait parler ce soir' },
+  ];
+  for (const { drapeau, revele, texte } of cas) {
+    it(`${drapeau} : promesse non tenue rappelée, promesse tenue oubliée`, () => {
+      const promis = newGame('controleur');
+      promis.applyFx([`set:${drapeau}`]);
+      expect(section(promis, 'Les gens')).toContain(texte);
+
+      const tenu = newGame('controleur');
+      tenu.applyFx([`set:${drapeau}`, `set:${revele}`]);
+      expect(section(tenu, 'Les gens')).not.toContain(texte);
+
+      const jamais = newGame('controleur');
+      expect(section(jamais, 'Les gens')).not.toContain(texte);
+    });
+  }
+});
+
+describe('N6 / N7 — contenus morts et libellés de soin', () => {
+  it('N7 : sans trousse mais avec antibiotiques, le texte dit ce qui a été utilisé', () => {
+    const g = newGame('mecanicien');
+    g.meet('theo');
+    g.applyFx(['give:antibio']);
+    const lignes = talk(g, 'theo', ['Raconte-moi cette nuit-là', 'Soigner sa jambe']);
+    expect(lignes.join(' ')).toContain('les antibiotiques et une compresse');
+    expect(g.itemQty('antibio')).toBe(0);
+  });
+
+  it('N6 : la mort de Théo est retirée, ses deux fins réelles sont intactes', () => {
+    const g = newGame('controleur');
+    expect(tout(g)).not.toContain('Son casier reste fermé');
+    g.setFlag('theo_reste');
+    expect(section(g, 'Les gens')).toContain('avec Anselme et son fusil');
+    const sauve = newGame('controleur');
+    sauve.setFlag('theo_sauve');
+    expect(section(sauve, 'Les gens')).toContain('Théo dort à l’infirmerie');
+  });
+
+  it('N6 : l’aide de Vasseur annoncée par le refus du relais existe, dans son dialogue', () => {
+    const g = newGame('passager');
+    g.applyFx(['give:relais_k3']);
+    const filtration = CONTENT.train.objects.find((o) => o.id === 'filtration')!;
+    const refus = g.availableActions(filtration.actions).find((a) => a.label === 'Installer le relais K3')!;
+    expect(refus).toBeDefined();
+    // Sans trousse et sans être mécanicien, le relais s'installe seulement avec elle.
+    talk(g, 'vasseur', ['J’ai un relais K3']);
+    expect(g.state.objects['filtration']).toBe('repare');
+  });
+});
+
+describe('Garde-fou — aucun drapeau lu sans être posé', () => {
+  /** Identifiants lisibles mais posés ailleurs que par `set:` (le scan est lexical). */
+  const IGNORES: Record<string, string> = {
+    conseil: 'événement (state.fired), lu par le helper local f() d’App.ts',
+    depart: 'événement (state.fired), lu par le helper local f() d’App.ts',
+    reveil: 'événement (state.fired), lu par le helper local f() d’App.ts',
+    assemblee: 'événement (state.fired), lu par le helper local f() d’App.ts',
+    expedition_depart: 'événement (state.fired), lu par le helper local f() d’App.ts',
+    vote_expedition: 'posé par council.applyResult : setFlag(`vote_${motion.id}`)',
+    vote_rationnement: 'posé par council.applyResult : setFlag(`vote_${motion.id}`)',
+  };
+
+  it('tout f:x lu dans le code est posé quelque part', () => {
+    const racine = fileURLToPath(new URL('../src', import.meta.url));
+    const fichiers: string[] = [];
+    const parcourir = (d: string) => {
+      for (const e of readdirSync(d, { withFileTypes: true })) {
+        const chemin = join(d, e.name);
+        if (e.isDirectory()) parcourir(chemin);
+        else if (e.name.endsWith('.ts')) fichiers.push(chemin);
+      }
+    };
+    parcourir(racine);
+    const poses = new Set<string>();
+    const lus: { nom: string; ou: string }[] = [];
+    const ajouter = (m: RegExpMatchArray, f: string, n: number) => poses.add(m[1]);
+    for (const f of fichiers) {
+      readFileSync(f, 'utf8').split('\n').forEach((ligne, n) => {
+        if (/^\s*(\/\/|\*|\/\*)/.test(ligne)) return; // commentaires de documentation
+        const ou = `${f.slice(racine.length + 1)}:${n + 1}`;
+        for (const re of [/set:([a-z0-9_]+)/g, /setFlag\('([a-z0-9_]+)'/g, /\.set\('([a-z0-9_]+)'/g, /once: '([a-z0-9_]+)'/g, /entry:([a-z0-9_]+)/g, /give:([a-z0-9_]+)/g]) {
+          for (const m of ligne.matchAll(re)) ajouter(m, f, n);
+        }
+        for (const re of [/(?:^|[^a-zA-Z_.])f:([a-z0-9_]+)/g, /\bf\('([a-z0-9_]+)'\)/g]) {
+          for (const m of ligne.matchAll(re)) {
+            // f('x') est le helper d'App.ts qui teste les événements, pas un drapeau.
+            if (re.source.includes("f\\(") && f.endsWith(join('app', 'App.ts'))) continue;
+            lus.push({ nom: m[1], ou });
+          }
+        }
+      });
+    }
+    const orphelins = lus.filter((x) => !poses.has(x.nom) && !(x.nom in IGNORES));
+    expect(orphelins.map((x) => `${x.nom} (${x.ou})`).join(', ')).toBe('');
   });
 });

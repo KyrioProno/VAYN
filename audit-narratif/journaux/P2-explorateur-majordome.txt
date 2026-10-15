@@ -128,7 +128,7 @@
 [J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; votes {"castel":"theo","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_k3_depot,e_filtration,e_theo_vivant,e_theo_castel,e_eau_citerne,e_mara_guide)
 [J1 17:00]   argument r_detournement → Sorel : « Si c’est vrai, alors oui. Un audit. Tout de suite. »
 [J1 17:00]   argument r_trafic_castel → Castel : « Personne ne vole sous mon nez. Audit. »
-[J1 17:00] Conseil : « Le rationnement » → audit (position audit ; votes {"castel":"audit","vasseur":"quota","marchetti":"quota","sorel":"audit"} ; args dispo : r_detournement,r_trafic_castel,r_quota_injuste)
+[J1 17:00] Conseil : « Le rationnement » → audit (position audit ; égalité tranchée par la position du joueur ; votes {"castel":"audit","vasseur":"quota","marchetti":"quota","sorel":"audit"} ; args dispo : r_detournement,r_trafic_castel,r_quota_injuste)
 [J1 17:00] Conseil : motion « Le sort de la clandestine » non présentée
 [J1 17:00] Conseil : « Le relais de la radio » → filtration (position radio ; votes {"castel":"filtration","vasseur":"filtration","rosa":"filtration","sorel":"radio"} ; args dispo : k_clairval,k_depot,k_castel)
 [J1 17:07]   ▸ mara : « Tu viendrais avec moi, dehors ? »

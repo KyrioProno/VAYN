@@ -107,23 +107,31 @@ export function buildEpilogue(g: Game): { title: string; lines: string[] }[] {
   const gens: string[] = [];
   const mort = (x: string) => f('compagnon_mort') === x;
   if (f('theo_sauve')) gens.push('Théo dort à l’infirmerie, la jambe dans une attelle. Il a demandé à voir Mara avant même de demander de l’eau.');
-  else if (f('theo_mort')) gens.push('Théo n’est jamais revenu. Son casier reste fermé. Personne n’ose l’ouvrir.');
   else if (f('theo_reste')) gens.push(f('theo_abandonne_signal')
     ? 'Théo est resté au poste d’aiguillage. Le signal, au loin, a regardé passer le train.'
     : 'Théo est resté au poste d’aiguillage, avec Anselme et son fusil. Vous avez choisi de partir sans lui.');
   else if (g.check('met:theo')) gens.push('Vous avez entendu Théo, vivant, et il ignore encore ce que vous avez fait de sa nuit. Ça ne se rattrape pas.');
   else gens.push('Personne n’a retrouvé Théo. Dans les dortoirs, on dit déjà qu’il a été dévoré par les chiens. On dit beaucoup de choses.');
-  if (mort('mara')) gens.push('Mara n’a pas reparu de Saint-Aubin. Sorel, à l’infirmerie, a recommencé à préparer le dîner pour deux, chaque soir.');
+  if (mort('mara')) gens.push(f('mere_reunie')
+    ? 'Mara n’a pas reparu de Saint-Aubin. Sorel, à l’infirmerie, a recommencé à préparer le dîner pour deux, chaque soir.'
+    : 'Mara n’a pas reparu de Saint-Aubin. La docteure Sorel n’a jamais su qui elle était. Elle a repris son service, sans rien dire.');
   else if (f('mere_reunie')) gens.push('Sorel et Mara ne se quittent plus. La docteure a recousu la capuche de sa fille, maladroitement, comme on recoud quatre ans d’absence.');
   else if (f('mara_expulsee')) gens.push('Mara a été débarquée à Saint-Aubin. Au poste d’aiguillage, Anselme lui a donné de l’eau et une couverture : elle est repartie seule vers la vallée, avant l’aube.');
-  else if (f('mara_capturee') && !f('mara_libre')) gens.push('Mara attend dans sa cellule. Sorel lui apporte ses repas sans savoir pourquoi cette gamine la fixe ainsi.');
+  else if (f('mara_capturee') && !f('mara_libre')) gens.push(f('mere_revelee_conseil')
+    ? 'Mara attend dans sa cellule. Vous avez dit au conseil qui était sa mère ; la porte, elle, est restée fermée.'
+    : 'Mara attend dans sa cellule. Sorel lui apporte ses repas sans savoir pourquoi cette gamine la fixe ainsi.');
   else if (f('mara_libre')) gens.push('Mara a une couchette, une ration et une place à table. Elle regarde la docteure, parfois, avec une question au bord des lèvres.');
   const comp = g.state.expedition?.companion ?? (g.flag('companion') as string | undefined);
   if (f('compagnon_mort')) gens.push(`Saint-Aubin a gardé ${g.content.npcs[String(f('compagnon_mort'))]?.name ?? 'votre compagnon'}. On a vidé son casier sans en parler à personne.`);
   else if (comp && (g.state.expedition?.compHealth ?? 100) < 40) gens.push(`${g.content.npcs[comp]?.name ?? 'Votre compagnon'} a rapporté autre chose que la clé de la filtration. Ça se soigne. Ça se pardonne, aussi, peut-être.`);
   if (f('radio_revelee')) gens.push('Tout le train sait désormais que Castel a caché Clairval. Il a gardé son brassard, mais plus personne ne baisse les yeux devant lui.');
-  if (f('castel_couverte') && f('theo_public')) gens.push('Vous avez promis à Castel que son aveu ne sortirait pas de son bureau, et vous l’ai dit devant deux cents personnes. Il ne vous le pardonnera pas. Vous le savez.');
+  if (f('castel_couvert') && f('theo_public')) gens.push('Vous avez promis à Castel que son aveu ne sortirait pas de son bureau, et vous l’ai dit devant deux cents personnes. Il ne vous le pardonnera pas. Vous le savez.');
   if (f('mere_tue') && f('mere_reunie')) gens.push('Vous aviez juré à Mara de ne rien dire à personne. Vous l’avez dit devant tout le train : elle ne vous regarde plus, et elle dort dans la couchette de sa mère.');
+  // Promesses faites au conseil et non tenues (drapeaux posés par les dialogues, sans suite tant qu’ils n’étaient pas lus).
+  if (f('castel_a_reveler') && !f('theo_public')) gens.push('Vous aviez promis à Castel que le conseil entendrait la vérité sur cette nuit. Vous n’avez rien dit. Il l’a noté, comme il note tout.');
+  if (f('radio_a_reveler') && !f('radio_revelee')) gens.push('Vous avez dit à Castel que cela ne pouvait pas rester caché. Deux cents personnes ignorent encore qu’un barrage de survivants tient sous la brume, à deux jours de marche.');
+  if (f('vasseur_a_reveler') && !f('vasseur_revelee') && !f('malo_avoue')) gens.push('Vous aviez promis au conseil de dire la vérité sur la pompe de secours. Vasseur a rangé ses outils un par un, sans un mot, en vous regardant tout le temps.');
+  if (f('marchetti_menace') && !f('marchetti_destitue')) gens.push('Vous avez dit à Marchetti que le conseil en entendrait parler ce soir. Il a compté ses malles avant même que le VAYN freine.');
   out.push({ title: 'Les gens', lines: gens });
 
   const perso: string[] = [];
@@ -180,7 +188,7 @@ export const REVELATIONS: Revelation[] = [
   { id: 'rev_aveu', label: 'Avouer votre signature', desc: 'Reconnaître publiquement que vous avez contresigné une révision fantôme.', if: 'char:mecanicien & e:c_carnet_entretien & !f:malo_avoue', fx: ['set:malo_avoue', 'conseq:cq_malo_aveu', 'obj:qp_mecanicien.choix', 'qdone:qp_mecanicien', 'trust:castel+1'] },
   { id: 'rev_trafic', label: 'Le trafic de la « cabine 0 »', desc: 'Exposer l’échange d’eau contre des antibiotiques entre Marchetti et le Salon.', if: 'e:f_detournement & !f:marchetti_destitue & !f:marchetti_couvert', fx: ['set:marchetti_destitue', 'conseq:cq_marchetti_destitue', 'trust:marchetti-3', 'trust:villiers-2', 'obj:qp_controleur.choix', 'if:char:controleur?qdone:qp_controleur'] },
   {
-    id: 'rev_mere', if: 'e:f_mere & !f:mere_reunie & !f:mara_expulsee & !dead:mara',
+    id: 'rev_mere', if: 'e:f_mere & !f:mere_reunie & !f:mara_cellule & !f:mara_expulsee & !dead:mara',
     label: [
       { if: 'f:mere_tue', text: 'Mara est la fille de Sorel — vous l’aviez juré' },
       { if: 'true', text: 'Mara est la fille de Sorel' },
@@ -194,14 +202,14 @@ export const REVELATIONS: Revelation[] = [
   {
     id: 'rev_theo', if: 'e:t_theo_recit & !f:theo_public',
     label: [
-      { if: 'f:castel_couverte', text: 'La nuit de Théo — et ce que Castel vous avait juré' },
+      { if: 'f:castel_couvert', text: 'La nuit de Théo — et ce que Castel vous avait juré' },
       { if: 'true', text: 'La nuit de Théo' },
     ],
     desc: [
-      { if: 'f:castel_couverte', text: 'Castel vous avait juré que son aveu ne sortirait pas de son bureau. Vous allez le dire devant deux cents personnes.' },
+      { if: 'f:castel_couvert', text: 'Castel vous avait juré que son aveu ne sortirait pas de son bureau. Vous allez le dire devant deux cents personnes.' },
       { if: 'true', text: 'Raconter ce que Théo vous a dit : la radio, Castel, le dépôt.' },
     ],
-    fx: ['set:theo_public', 'if:f:castel_couverte?trust:castel-3;conseq:cq_castel_trahie', 'if:!f:castel_couverte?trust:castel-1', 'trust:vasseur+1'],
+    fx: ['set:theo_public', 'if:f:castel_couvert?trust:castel-3;conseq:cq_castel_trahie', 'if:!f:castel_couvert & !f:castel_a_reveler?trust:castel-1', 'trust:vasseur+1'],
   },
   { id: 'rev_lettre', label: 'La lettre de Madame', desc: 'Lire à voix haute la lettre cachetée de Madame de Villiers.', if: 'e:c_lettre_madame & !f:lettre_remise & !f:lettre_brulee & !f:lettre_revelee', fx: ['set:lettre_revelee', 'take:lettre_ouverte', 'conseq:cq_lettre_revelee', 'trust:villiers-3', 'obj:qp_majordome.remettre', 'qdone:qp_majordome'] },
 ];

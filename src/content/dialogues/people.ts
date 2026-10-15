@@ -300,9 +300,10 @@ export const THEO: DialogueDef = {
     recit3: s('La poutre a cédé sur ma jambe. J’ai rampé jusqu’ici. Anselme m’a ramassé. C’est tout. C’est bête, hein ?', 'hub', { fx: ['entry:t_theo_recit'] }),
     mara: s('Elle va bien ? Vraiment ? … Alors ça valait le coup. Presque.', 'hub', { fx: ['set:theo_mara_dit'] }),
     soigne: n([
-      { if: 'has:bandage_comp', text: 'Vous videz la trousse de secours : antiseptique, gaze, bandage propre. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
+      { if: 'f:soin_trousse', text: 'Vous videz la trousse de secours : antiseptique, gaze, bandage propre. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
+      { if: 'f:soin_antibio', text: 'Vous n’avez pas de trousse : vous vous enservez avec les antibiotiques et une compresse. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
       { if: 'true', text: 'Vous faites de votre mieux avec ce que vous avez. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
-    ], undefined, { next: 'hub', fx: ['if:has:bandage_comp?take:bandage_comp;set:soin_trousse', 'if:!f:soin_trousse & has:antibio?take:antibio', 'if:!f:soin_trousse & !has:antibio?take:bandage', 'set:theo_soigne', 'time:15'] }),
+    ], undefined, { next: 'hub', fx: ['if:has:bandage_comp?take:bandage_comp;set:soin_trousse', 'if:!f:soin_trousse & has:antibio?take:antibio;set:soin_antibio', 'if:!f:soin_trousse & !has:antibio?take:bandage', 'set:theo_soigne', 'time:15'] }),
     ramener: n([
       { if: 'f:theo_soigne | comp:vasseur | comp:castel', text: 'Il se redresse en serrant les dents. « Allons-y. Doucement. »' },
       { if: 'true', text: 'Je ne tiendrai pas debout sans un vrai pansement, ou quelqu’un de costaud pour me porter.' },

@@ -29,7 +29,7 @@
 [J1 09:24] 💬 rosa : Rosa essuie le comptoir d’un geste circulaire. « Qu’est-ce que je te sers ? Des nouvelles  ‖ Alors ? Tu as trouvé mon voleur ? ‖ Noé… Le pauvre gosse. Je vais devoir le dire à Castel, tu sais. C’est la règle. ‖ Rosa essuie le comptoir d’un geste circulaire. « Qu’est-ce que je te sers ? Des nouvelles 
 [J1 17:00] Rosa referme la grille.
 [J1 17:00]   argument e_filtration → Marchetti : « Un relais vaut mieux que dix jerricans. Soit. »
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position pieces ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position pieces ; égalité tranchée par la position du joueur ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration)
 [J1 17:00]   argument r_quota_injuste → Vasseur soupire. « D’accord. Des parts égales. »
 [J1 17:00] Conseil : « Le rationnement » → quota (position egal ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : r_quota_injuste)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position cellule ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : m_theo)

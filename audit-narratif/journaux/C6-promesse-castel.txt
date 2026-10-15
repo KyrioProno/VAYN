@@ -11,7 +11,7 @@
 [J1 07:16]   (fin volontaire du dialogue castel ; choix : J’ai besoin de la clé de la salle radio. / Partir.)
 [J1 07:16] 💬 castel : Fontaine. Un homme en moins, un train à l’arrêt, et les voitures qui murmurent. J’attends  ‖ Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main. ‖ À 23 h 52, le pilote automatique a coupé. Arrêt de sécurité. La filtration est morte, et T ‖ Il a dû sauter. Un instable, ce garçon. Toujours à traîner où il ne devait pas. Je ne l’ai ‖ Castel croise les bras. Sa matraque pend à sa ceinture, à portée de main. ‖ Josefa vous a vu dans le couloir de l’administration à minuit vingt. Matraque à la main. E ‖ Castel se fige. Un muscle tressaille sur sa mâchoire. ‖ … Je l’ai surpris en sortant de la salle radio. Minuit vingt. Il avait bricolé le poste. J ‖ Il a filé vers l’avant, vers la soute. Dix minutes après, il n’était plus à bord. Si j’ava ‖ Il attend votre réponse, la mâchoire serrée. ‖ Castel garde les yeux baissés sur son registre des rondes.
 [J1 17:00] Rosa referme la grille.
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_theo_castel)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_theo_castel)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée
@@ -33,12 +33,12 @@
 [J2 08:37]   ▸ theo : « Mara va bien. »
 [J2 08:37]   ▸ theo : « Soigner sa jambe. »
 [J2 08:52]   ▸ theo : « On te ramène au train. »
-[J2 08:52] 💬 theo : Vous venez du VAYN ? Il n’est pas parti ? Dieu merci… ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ J’ai pris le K3 de la filtration pour réparer la radio. Pour Mara — pour qu’elle entende C ‖ Castel m’a surpris en sortant de la salle radio. Il a dit qu’il me mettrait en cellule, qu ‖ La poutre a cédé sur ma jambe. J’ai rampé jusqu’ici. Anselme m’a ramassé. C’est tout. C’es ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Elle va bien ? Vraiment ? … Alors ça valait le coup. Presque. ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Vous faites de votre mieux avec ce que vous avez. Théo serre les dents, puis souffle, soul ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Il se redresse en serrant les dents. « Allons-y. Doucement. » ‖ Théo passe un bras autour de vos épaules. Vous avancerez moins vite, mais il rentre.
+[J2 08:52] 💬 theo : Vous venez du VAYN ? Il n’est pas parti ? Dieu merci… ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ J’ai pris le K3 de la filtration pour réparer la radio. Pour Mara — pour qu’elle entende C ‖ Castel m’a surpris en sortant de la salle radio. Il a dit qu’il me mettrait en cellule, qu ‖ La poutre a cédé sur ma jambe. J’ai rampé jusqu’ici. Anselme m’a ramassé. C’est tout. C’es ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Elle va bien ? Vraiment ? … Alors ça valait le coup. Presque. ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Vous videz la trousse de secours : antiseptique, gaze, bandage propre. Théo serre les dent ‖ Théo est allongé sur un lit de camp, la jambe bandée de chiffons. Fiévreux, mais lucide. ‖ Il se redresse en serrant les dents. « Allons-y. Doucement. » ‖ Théo passe un bras autour de vos épaules. Vous avancerez moins vite, mais il rentre.
 [J2 10:48] Retour à bord : Théo est hissé à bord. Le relais K3 est dans votre poche.
 [J2 12:00] Départ du train (12:00).
 [J2 15:00] Assemblée : train_roule=true (le départ a-t-il eu lieu ?)
 [J2 15:00] Assemblée : révélations dispo [rev_theo], faites [rev_theo] ; direction → sud (votes {"castel":"sud","vasseur":"sud","marchetti":"sud","sorel":"clairval"} ; args dispo d_boucle,d_vayn2,d_theo)
-[J2 15:00] Castel : promesse castel_couvert=true ; révélation rev_theo faite=true ; confiance 3 → 2
+[J2 15:00] Castel : promesse castel_couvert=true ; révélation rev_theo faite=true ; confiance 3 → 0
 
 NOTIFICATIONS
 J1 07:00 Nouvelle mission : Le train arrêté

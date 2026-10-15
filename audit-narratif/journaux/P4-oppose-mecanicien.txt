@@ -26,7 +26,7 @@
 [J1 11:43]   (fin volontaire du dialogue mara ; choix : Que sais-tu de Théo ? / Castel va fouiller la soute à 16:00. Il faut te cacher ailleurs. / Partir.)
 [J1 11:43] 💬 mara : Une fille maigre, capuche rabattue, brandit un éclat de verre. « Recule. Je te jure que je ‖ Non ! Pas lui. S’il te plaît. Je n’ai rien volé. Presque rien. ‖ Je m’appelle Mara. Ça fait neuf jours que je vis derrière ces caisses. ‖ Mara vous observe, prête à fuir. ‖ Du barrage de Clairval. On est quarante, là-haut. Il y a de l’eau, des turbines, des serre ‖ Mara vous observe, prête à fuir.
 [J1 17:00]   argument e_eau_citerne → Castel : « Sans eau, pas d’ordre. L’eau, alors. »
-[J1 17:00] Conseil : « Le mandat de l’expédition » → eau (position eau ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration,e_eau_citerne)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → eau (position eau ; égalité tranchée par la position du joueur ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration,e_eau_citerne)
 [J1 17:00] Conseil : « Le rationnement » → quota (position quota ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : r_detournement,r_trafic_castel)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position expulsion ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

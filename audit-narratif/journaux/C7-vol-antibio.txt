@@ -8,7 +8,7 @@
 [J1 07:38] ✓ lit_lou « Donner les antibiotiques » → Vous lui faites avaler le premier comprimé. « C'est amer », dit-elle. Vous riez, et vous ne savez pas pourquoi vous pleurez en même temps.
 [J1 07:38] qp_passager : {"status":"done","obj":{"sorel":true,"soigner":true},"at":420}
 [J1 17:00] Rosa referme la grille.
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : r_quota_injuste)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

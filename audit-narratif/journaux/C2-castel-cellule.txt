@@ -17,7 +17,7 @@
 [J1 16:20] Après Castel : mere_reunie=true mara_libre=true
 [J1 16:31]   (fin volontaire du dialogue sorel ; choix : Prenez soin d’elle. / Partir.)
 [J1 16:31] 💬 sorel : Sorel ne lâche pas la main de Mara. Elle a l’air de quelqu’un qui a dormi quatre ans d’un 
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le sort de la clandestine » non présentée
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

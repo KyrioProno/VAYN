@@ -11,7 +11,7 @@
 [J1 08:12] ✓ bureau_sorel « Rapprocher les deux moitiés » → Les deux moitiés s'emboîtent sans un jeu : « MARA ». Vous restez un long moment, le médaillon reconstitué dans la paume.
 [J1 17:00] Rosa referme la grille.
 [J1 17:00]   argument e_mara_guide → Castel : « Une clandestine comme guide… On aura tout vu. »
-[J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; égalité tranchée par la position du joueur ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
 [J1 17:00] Conseil : « Le rationnement » → quota (position audit ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
 [J1 17:00]   argument m_mere → Un silence de plomb. Castel : « On ne jette pas la fille de notre médecin dans la brume. Accueil. »
 [J1 17:00]   argument m_mere_marchetti → Marchetti détourne le regard. « … Non. »

@@ -4,7 +4,7 @@
 [J1 12:20] ✓ d_radio « Crocheter » → Castel n'est pas à son poste. La serrure cède au bout de quinze longues minutes.
 [J1 12:59] ✓ radio « Examiner le poste » → Un relais K3 branché en dérivation, fils de récupération, soudures propres. Quelqu'un a ressuscité ce poste en cachette.
 [J1 12:59] ✓ radio « Écouter » → Du souffle sur toutes les fréquences. Rien, à cette heure-ci.
-[J1 21:05] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
+[J1 21:05] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
 [J1 21:05] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
 [J1 21:05] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 21:05] Conseil : motion « Le relais de la radio » non présentée

@@ -153,7 +153,7 @@ export const NPCS: Record<string, NpcDef> = {
     look: { body: 'std', hat: 'cap', accent: '#f6e05e', acc: ['satchel', 'bandage'], prop: 'crutch' },
     color: '#f6e05e', dialogue: 'theo',
     schedule: [
-      { from: '00:00', spot: 'p_lit', if: 'zone:exterior & !f:theo_mort & !f:theo_suit' },
+      { from: '00:00', spot: 'p_lit', if: 'zone:exterior & !f:theo_suit' },
       { from: '00:00', spot: 'i_lit_vide', if: 'zone:train & f:theo_sauve' },
     ],
   },

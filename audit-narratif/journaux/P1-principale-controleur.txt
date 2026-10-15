@@ -16,7 +16,7 @@
 [J1 13:08]   (fin volontaire du dialogue noe ; choix : Tu as vu quelque chose, cette nuit ? / Tiens, une ration. Tu as vu quelque chose, cette nuit ? / Partir.)
 [J1 13:08] 💬 noe : Le gamin vous dévisage, les mains dans les poches de son short trop grand. ‖ Je dis rien aux uniformes. Ni aux larbins. Ni à personne. ‖ Le gamin vous dévisage, les mains dans les poches de son short trop grand.
 [J1 13:09] ✓ annonces « Lire » → « CONSEIL DES QUATRE — 17:00, CANTINE : l'expédition, les rations. » — « AVIS : Théo LAGARDE, maintenance, absent depuis cette nuit. Toute information au poste 
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

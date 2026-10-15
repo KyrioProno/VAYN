@@ -95,14 +95,14 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
         ],
       }),
       A('Installer le relais K3', {
-        if: 'has:relais_k3 & !obj:filtration=repare & (char:mecanicien | has:trousse | f:vasseur_aide)',
+        if: 'has:relais_k3 & !obj:filtration=repare & (char:mecanicien | has:trousse)',
         tag: 'Réparation',
         time: 30,
         fx: ['take:relais_k3', 'objst:filtration=repare', 'conseq:cq_filtration', 'set:filtration_reparee', 'sfx:repair', 'obj:q_main.panne'],
         text: 'Le relais s\'enclenche avec un claquement net. Une seconde de silence… puis la filtration se remet à ronronner. Quelque part dans le train, quelqu\'un applaudit.',
       }),
       A('Installer le relais K3', {
-        if: 'has:relais_k3 & !obj:filtration=repare & !char:mecanicien & !has:trousse & !f:vasseur_aide',
+        if: 'has:relais_k3 & !obj:filtration=repare & !char:mecanicien & !has:trousse',
         text: 'Sans outils, vous risquez de griller la pièce. Il vous faut une trousse d\'outils, ou l\'aide de Vasseur.',
       }),
       A('Écouter', { if: 'obj:filtration=repare', text: 'Le ronron régulier de la filtration. Le plus beau bruit du monde.' }),

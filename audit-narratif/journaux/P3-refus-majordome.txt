@@ -25,7 +25,7 @@
 [J1 09:07]   (fin volontaire du dialogue mara ; choix : D’où viens-tu ? / Pourquoi es-tu montée dans ce train ? / Castel va fouiller la soute à 16:00. Il faut te cacher ailleurs. / Partir.)
 [J1 09:07] 💬 mara : Une fille maigre, capuche rabattue, brandit un éclat de verre. « Recule. Je te jure que je ‖ Non ! Pas lui. S’il te plaît. Je n’ai rien volé. Presque rien. ‖ Je m’appelle Mara. Ça fait neuf jours que je vis derrière ces caisses. ‖ Mara vous observe, prête à fuir. ‖ C’est lui qui m’a trouvée. Il m’apportait à manger, sa deuxième portion. Il voulait que j’ ‖ Après, j’ai entendu crier, vers minuit. Et puis plus rien. Il n’est jamais revenu. ‖ Mara vous observe, prête à fuir.
 [J1 17:00] Rosa referme la grille.
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : m_theo)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

@@ -26,7 +26,7 @@ export const CASTEL: DialogueDef = {
       c('J’ai besoin de la clé de la salle radio.', 'cle', { if: '!has:cle_radio & !door:d_radio=open' }),
       c('Un café, chef ? Vous n’avez pas fermé l’œil.', 'cafe', { if: 'char:majordome & !has:cle_radio & !f:cafe_castel', tag: 'Service' }),
       c('La fouille de la soute, c’est pour quand ?', 'fouille', { if: 'met:mara & clock<16:00 & !f:fouille_detournee & !f:mara_capturee' }),
-      c('La fille, dans la cellule…', 'cellule', { if: 'f:mara_capturee & !f:mara_libre' }),
+      c('La fille, dans la cellule…', 'cellule', { if: 'f:mara_capturee & !f:mara_libre & !f:mara_cellule & !f:mara_expulsee' }),
       c('Le registre des passagers, je peux le consulter ?', 'registre', { if: '!char:controleur & !f:registre_autorise' }),
       c('Vous serez de l’expédition ?', 'expe', { if: 'ev:conseil & !ev:expedition_depart' }),
       bye(),
@@ -77,7 +77,7 @@ export const CASTEL: DialogueDef = {
     detourne: s('Vers le Salon ? … Je ferai d’abord un tour là-bas, alors. Si vous m’avez menti, je le saurai.', 'hub', { fx: ['set:fouille_detournee', 'susp:castel+1'] }),
     cellule: s('Elle se cachait dans la soute. Complice de Théo, j’en mettrais ma main au feu. Le conseil décidera de son sort.', 'cellule2'),
     cellule2: n('Derrière les barreaux, la fille ne vous quitte pas des yeux.', [
-      c('C’est la fille de la docteure Sorel.', 'cellule_mere', { if: 'e:f_mere & !dead:mara' }),
+      c('C’est la fille de la docteure Sorel.', 'cellule_mere', { if: 'e:f_mere & !dead:mara & !f:mara_cellule & !f:mara_expulsee' }),
       c('Elle n’est pas dangereuse. Laissez-la sortir.', 'cellule_non'),
       back('Je vois.'),
     ]),
@@ -221,7 +221,7 @@ export const MARCHETTI: DialogueDef = {
 
 export const SOREL: DialogueDef = {
   id: 'sorel', npc: 'sorel',
-  start: [{ if: 'dead:mara', go: 'deuil' }, { if: 'f:mere_reunie', go: 'reunie' }, { go: 'hub' }],
+  start: [{ if: 'dead:mara & f:mere_reunie', go: 'deuil' }, { if: 'f:mere_reunie', go: 'reunie' }, { go: 'hub' }],
   nodes: {
     reunie: n('Sorel ne lâche pas la main de Mara. Elle a l’air de quelqu’un qui a dormi quatre ans d’un coup. « Merci. Je ne sais pas comment on dit merci pour ça. »', [
       c('Prenez soin d’elle.', 'hub'),
@@ -238,7 +238,7 @@ export const SOREL: DialogueDef = {
       c('Comment vont les malades ?', 'malades', { once: true }),
       c('Parlez-moi de Lou.', 'lou', { if: 'char:passager & !f:lou_soignee' }),
       c('Cette photo, sur votre bureau…', 'photo', { if: 'e:c_medaillon_sorel & !e:t_sorel_fille' }),
-      c('Votre fille est vivante. Elle est à bord.', 'mere', { if: 'e:f_mere & !f:mere_reunie' }),
+      c('Votre fille est vivante. Elle est à bord.', 'mere', { if: 'e:f_mere & !f:mere_reunie & !f:mara_cellule & !f:mara_expulsee & !dead:mara' }),
       c('Pouvez-vous m’examiner ?', 'soin', { if: 'stat:health<75 & !f:soin_sorel' }),
       c('D’où viennent vos antibiotiques ?', 'antibio', { if: 'e:f_echange_antibio & !f:sorel_sait' }),
       bye(),

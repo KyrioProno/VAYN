@@ -6,8 +6,8 @@
 [J1 07:12]   (fin volontaire du dialogue mara ; choix : D’où viens-tu ? / Pourquoi es-tu montée dans ce train ? / Castel va fouiller la soute à 16:00. Il faut te cacher ailleurs. / Partir.)
 [J1 07:12] 💬 mara : Une fille maigre, capuche rabattue, brandit un éclat de verre. « Recule. Je te jure que je ‖ … Théo ? Il n’est pas revenu. Il devait revenir avant l’aube. Il revient toujours. ‖ Je m’appelle Mara. Ça fait neuf jours que je vis derrière ces caisses. ‖ Mara vous observe, prête à fuir. ‖ C’est lui qui m’a trouvée. Il m’apportait à manger, sa deuxième portion. Il voulait que j’ ‖ Après, j’ai entendu crier, vers minuit. Et puis plus rien. Il n’est jamais revenu. ‖ Mara vous observe, prête à fuir.
 [J1 17:00] Rosa referme la grille.
-[J1 17:00] Conseil : « Le mandat de l’expédition » → eau (position eau ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
-[J1 17:00] Conseil : « Le rationnement » → quota (position quota ; votes {"castel":"egal","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : r_quota_injuste)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → eau (position eau ; égalité tranchée par la position du joueur ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
+[J1 17:00] Conseil : « Le rationnement » → quota (position quota ; égalité tranchée par la position du joueur ; votes {"castel":"egal","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : r_quota_injuste)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position expulsion ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : m_theo)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée
 [J1 17:00] Va dormir.

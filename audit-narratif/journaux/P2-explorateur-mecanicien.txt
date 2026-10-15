@@ -110,7 +110,7 @@
 [J1 17:00]   argument e_theo_vivant → Sorel : « Un blessé, à quelques centaines de mètres ? On ne le laisse pas. »
 [J1 17:00]   argument e_theo_castel → Castel serre les mâchoires. « … D’accord. Je lui dois ça. »
 [J1 17:00]   argument e_mara_guide → Castel : « Une clandestine comme guide… On aura tout vu. »
-[J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_k3_depot,e_filtration,e_theo_vivant,e_theo_castel,e_eau_citerne,e_mara_guide)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; égalité tranchée par la position du joueur ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_k3_depot,e_filtration,e_theo_vivant,e_theo_castel,e_eau_citerne,e_mara_guide)
 [J1 17:00]   argument r_detournement → Sorel : « Si c’est vrai, alors oui. Un audit. Tout de suite. »
 [J1 17:00]   argument r_trafic_castel → Castel : « Personne ne vole sous mon nez. Audit. »
 [J1 17:00] Conseil : « Le rationnement » → quota (position audit ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"audit"} ; args dispo : r_detournement,r_trafic_castel,r_quota_injuste)

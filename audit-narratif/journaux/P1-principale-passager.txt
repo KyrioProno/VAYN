@@ -16,7 +16,7 @@
 [J1 13:08]   (fin volontaire du dialogue noe ; choix : Pour qui gardes-tu ces rations ? / Partir.)
 [J1 13:08] 💬 noe : Noé surgit à votre coude. « Sacha ! T’as vu ? Le train s’est arrêté ! » ‖ J’étais réveillé, j’avais faim. Vers minuit et demi, quelqu’un a sauté par la porte de la  ‖ Il boitait pas, à ce moment-là. Il courait vite. Comme quelqu’un qui a peur. ‖ Noé surgit à votre coude. « Sacha ! T’as vu ? Le train s’est arrêté ! »
 [J1 13:09] ✓ annonces « Lire » → « CONSEIL DES QUATRE — 17:00, CANTINE : l'expédition, les rations. » — « AVIS : Théo LAGARDE, maintenance, absent depuis cette nuit. Toute information au poste 
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration,e_theo_vivant)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_filtration,e_theo_vivant)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : r_quota_injuste)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

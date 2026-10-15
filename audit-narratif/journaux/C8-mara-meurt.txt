@@ -15,7 +15,7 @@
 [J1 07:59] 💬 sorel : La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes. ‖ Sorel devient très pâle. « Ne jouez pas avec ça. » ‖ Sorel se lève si vite que sa chaise bascule. Elle ne dit rien. Elle court. Quand vous la r ‖ La docteure lève les yeux de ses dossiers. Des cernes jusqu’aux pommettes.
 [J1 17:00] Rosa referme la grille.
 [J1 17:00]   argument e_mara_guide → Castel : « Une clandestine comme guide… On aura tout vu. »
-[J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → theo (position theo ; égalité tranchée par la position du joueur ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : e_mara_guide)
 [J1 17:00] Conseil : « Le rationnement » → quota (position audit ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"audit"} ; args dispo : r_quota_injuste)
 [J1 17:00] Conseil : motion « Le sort de la clandestine » non présentée
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

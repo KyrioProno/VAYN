@@ -62,9 +62,9 @@ export const MOTIONS: Record<string, MotionDef> = {
     desc: 'Castel a trouvé une fille cachée dans la soute. Elle dit s’appeler Mara et venir de Clairval. Que fait-on d’elle ?',
     if: 'f:mara_capturee & !f:mara_libre',
     options: [
-      { id: 'cellule', label: 'La garder en cellule', desc: 'Elle reste enfermée jusqu’à ce qu’on en sache plus.', fx: ['conseq:cq_mara_cellule'] },
+      { id: 'cellule', label: 'La garder en cellule', desc: 'Elle reste enfermée jusqu’à ce qu’on en sache plus.', fx: ['set:mara_cellule', 'conseq:cq_mara_cellule'] },
       { id: 'expulsion', label: 'La débarquer à Saint-Aubin', desc: 'Une bouche de moins. Elle se débrouillera dehors.', fx: ['set:mara_expulsee', 'hide:mara', 'conseq:cq_mara_expulsee'] },
-      { id: 'accueil', label: 'L’accueillir à bord', desc: 'Une ration, une couchette, une chance.', fx: ['set:mara_libre', 'loc:mara=', 'conseq:cq_mara_accueil', 'trust:mara+2'] },
+      { id: 'accueil', label: 'L’accueillir à bord', desc: 'Une ration, une couchette, une chance.', fx: ['set:mara_libre', 'loc:mara=', 'conseq:cq_mara_accueil', 'trust:mara+2', 'if:f:mere_revelee_conseil?set:mere_reunie;conseq:cq_mere_reunie;obj:q_mara.reunion;trust:sorel+3;trust:mara+3;qdone:q_mara'] },
     ],
     base: {
       castel: { cellule: 2, expulsion: 1 },
@@ -75,7 +75,7 @@ export const MOTIONS: Record<string, MotionDef> = {
     },
     fallback: 'cellule',
     args: [
-      { id: 'm_mere', label: 'C’est la fille de la docteure Sorel. Le médaillon le prouve.', if: 'e:f_mere & !dead:mara', target: 'castel', toward: 'accueil', strength: 3, reply: 'Un silence de plomb. Castel : « On ne jette pas la fille de notre médecin dans la brume. Accueil. »', fx: ['set:mere_revelee_conseil', 'set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'obj:q_mara.reunion', 'trust:mara+3', 'trust:sorel+3', 'qdone:q_mara'] },
+      { id: 'm_mere', label: 'C’est la fille de la docteure Sorel. Le médaillon le prouve.', if: 'e:f_mere & !dead:mara', target: 'castel', toward: 'accueil', strength: 3, reply: 'Un silence de plomb. Castel : « On ne jette pas la fille de notre médecin dans la brume. Accueil. »', fx: ['set:mere_revelee_conseil'] },
       { id: 'm_mere_marchetti', label: 'Vous voudriez qu’on jette votre enfant dehors, Marchetti ?', if: 'e:f_mere', target: 'marchetti', toward: 'accueil', strength: 2, reply: 'Marchetti détourne le regard. « … Non. »' },
       { id: 'm_theo', label: 'Théo l’a protégée pendant neuf jours. Elle n’a rien volé.', if: 'e:t_mara_theo | e:f_theo_cachait', target: 'vasseur', toward: 'accueil', strength: 1.5, reply: 'Vasseur : « Si Théo la protégeait, c’est qu’elle le valait. »' },
       { id: 'm_clairval', label: 'Elle disait vrai sur Clairval, Castel. Votre journal radio le prouve.', if: 'e:t_mara_clairval & e:c_registre_radio', target: 'castel', toward: 'accueil', strength: 1.5, reply: 'Castel blêmit. « … Gardez votre journal pour vous. Accueil, si vous voulez. »', fx: ['set:radio_revelee', 'conseq:cq_radio_publique'] },

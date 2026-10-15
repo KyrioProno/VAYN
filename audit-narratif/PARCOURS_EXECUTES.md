@@ -352,7 +352,7 @@ Instantanés (heure — objectif affiché dans le HUD — entrées) :
 - fin [J2 15:00] HUD : « Consulter le registre des passagers (bureau du Contrôle). » — 8 entrées
 Carnet final (8) : c_billet_cabine0, c_medaillon_sorel, c_cache, t_mara_theo, t_mara_mere, c_medaillon_mara, f_mere, c_vayn2
 Missions : q_main=done [·machines ·panne ·theo ·reserves ✓conseil ✓dormir ·expedition ·theo_dehors ✓assemblee] | qp_controleur=active [·registre ·cabine0 ·cabine ·choix] | q_mara=done [✓trouver ✓confiance ✓mere ✓reunion ✓proteger]
-Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mere_reunie, cq_mara_accueil
+Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mara_accueil, cq_mere_reunie
 Fin (découverte) : 16:40. L’embranchement de Vercel passe sous les roues. Le VAYN file vers le sud, vers la côte. En salle radio, le poste s’allume de lui-même. Un souffle, puis une voix, hachée, pressante : « …ici VAYN-2… je répète, ici VAYN-2… ne vous arrêtez pas à Clairval… quoi qu’il arrive… ne vous arrêtez pas à Clai… » Puis plus rien. Seulement le bruit des roues, et deux cent douze personnes qui se regardent sans comprendre. Il existe un autre VAYN. Et il sait quelque chose que vous ignorez.
 Épilogue — Le train : La filtration est toujours morte. La citerne baisse chaque jour, et chaque gorgée se discute.
 Épilogue — Les gens : Personne n’a retrouvé Théo. Dans les dortoirs, on dit déjà qu’il a été dévoré par les chiens. On dit beaucoup de choses. Sorel et Mara ne se quittent plus. La docteure a recousu la capuche de sa fille, maladroitement, comme on recoud quatre ans d’absence.
@@ -378,7 +378,7 @@ Fin (découverte) : 16:40. L’embranchement de Vercel passe sous les roues. Le 
 Épilogue — Les gens : Personne n’a retrouvé Théo. Dans les dortoirs, on dit déjà qu’il a été dévoré par les chiens. On dit beaucoup de choses. Sorel et Mara ne se quittent plus. La docteure a recousu la capuche de sa fille, maladroitement, comme on recoud quatre ans d’absence.
 Épilogue — Le Contrôleur : La « cabine 0 » reste une énigme. Vous la contrôlerez au prochain arrêt.
 
-### C3-mara-expulsee — Le Passager
+### C3-cellule-puis-expedition — Le Passager
 Chapitre terminé.
 Votes : {"expedition":"eau","rationnement":"quota","clandestin":"cellule","direction":"sud"} ; arguments : direction.d_boucle, direction.d_vayn2
 Révélations possibles à l’assemblée : rev_theo ; faites : aucune
@@ -452,10 +452,10 @@ Instantanés (heure — objectif affiché dans le HUD — entrées) :
 - fin [J2 15:00] HUD : « Consulter le registre des passagers (bureau du Contrôle). » — 11 entrées
 Carnet final (11) : c_billet_cabine0, t_hotesse_castel, t_castel_version, t_castel_aveu, c_traces_theo, c_armoire_k, f_depot, t_anselme, c_emission_clairval, t_theo_recit, c_vayn2
 Missions : q_main=done [·machines ✓panne ✓theo ·reserves ✓conseil ✓dormir ✓expedition ✓theo_dehors ✓assemblee] | qp_controleur=active [·registre ·cabine0 ·cabine ·choix]
-Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mara_cellule, cq_theo_sauve
+Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mara_cellule, cq_theo_sauve, cq_castel_trahie
 Fin (découverte) : 16:40. L’embranchement de Vercel passe sous les roues. Le VAYN file vers le sud, vers la côte. En salle radio, le poste s’allume de lui-même. Un souffle, puis une voix, hachée, pressante : « …ici VAYN-2… je répète, ici VAYN-2… ne vous arrêtez pas à Clairval… quoi qu’il arrive… ne vous arrêtez pas à Clai… » Puis plus rien. Seulement le bruit des roues, et deux cent douze personnes qui se regardent sans comprendre. Il existe un autre VAYN. Et il sait quelque chose que vous ignorez.
 Épilogue — Le train : La filtration est toujours morte. La citerne baisse chaque jour, et chaque gorgée se discute.
-Épilogue — Les gens : Théo dort à l’infirmerie, la jambe dans une attelle. Il a demandé à voir Mara avant même de demander de l’eau. Mara attend dans sa cellule. Sorel lui apporte ses repas sans savoir pourquoi cette gamine la fixe ainsi.
+Épilogue — Les gens : Théo dort à l’infirmerie, la jambe dans une attelle. Il a demandé à voir Mara avant même de demander de l’eau. Mara attend dans sa cellule. Sorel lui apporte ses repas sans savoir pourquoi cette gamine la fixe ainsi. Vous avez promis à Castel que son aveu ne sortirait pas de son bureau, et vous l’ai dit devant deux cents personnes. Il ne vous le pardonnera pas. Vous le savez.
 Épilogue — Le Contrôleur : La « cabine 0 » reste une énigme. Vous la contrôlerez au prochain arrêt.
 
 ### C7-vol-antibio — Le Passager
@@ -572,10 +572,50 @@ Instantanés (heure — objectif affiché dans le HUD — entrées) :
 - fin [J2 15:00] HUD : « Consulter le registre des passagers (bureau du Contrôle). » — 11 entrées
 Carnet final (11) : c_billet_cabine0, c_medaillon_sorel, c_cache, t_mara_theo, t_mara_mere, c_medaillon_mara, f_mere, c_traces_theo, c_armoire_k, f_depot, c_vayn2
 Missions : q_main=done [·machines ·panne ✓theo ·reserves ✓conseil ✓dormir ✓expedition ✓theo_dehors ✓assemblee] | qp_controleur=active [·registre ·cabine0 ·cabine ·choix] | q_mara=done [✓trouver ✓confiance ✓mere ✓reunion ✓proteger]
-Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mere_reunie, cq_mara_accueil
+Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mara_accueil, cq_mere_reunie
 Fin (découverte) : 16:40. L’embranchement de Vercel passe sous les roues. Le VAYN file vers le sud, vers la côte. En salle radio, le poste s’allume de lui-même. Un souffle, puis une voix, hachée, pressante : « …ici VAYN-2… je répète, ici VAYN-2… ne vous arrêtez pas à Clairval… quoi qu’il arrive… ne vous arrêtez pas à Clai… » Puis plus rien. Seulement le bruit des roues, et deux cent douze personnes qui se regardent sans comprendre. Il existe un autre VAYN. Et il sait quelque chose que vous ignorez.
 Épilogue — Le train : La filtration est toujours morte. La citerne baisse chaque jour, et chaque gorgée se discute.
 Épilogue — Les gens : Personne n’a retrouvé Théo. Dans les dortoirs, on dit déjà qu’il a été dévoré par les chiens. On dit beaucoup de choses. Sorel et Mara ne se quittent plus. La docteure a recousu la capuche de sa fille, maladroitement, comme on recoud quatre ans d’absence.
+Épilogue — Le Contrôleur : La « cabine 0 » reste une énigme. Vous la contrôlerez au prochain arrêt.
+
+### C13-revelation-puis-cellule — Le Contrôleur
+Chapitre terminé.
+Votes : {"expedition":"theo","rationnement":"quota","clandestin":"cellule","direction":"clairval"} ; arguments : expedition.e_theo_castel, expedition.e_mara_guide, clandestin.m_mere, direction.d_theo
+Révélations possibles à l’assemblée : rev_theo ; faites : rev_theo
+Malaises : 0 ; minutes dans la brume : 0
+Instantanés (heure — objectif affiché dans le HUD — entrées) :
+- conseil (avant) [J1 17:00] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 16 entrées
+- conseil (après) [J1 17:00] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 16 entrées
+- aube (préparation) [J2 05:30] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 16 entrées
+- retour à bord [J2 09:39] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 22 entrées
+- assemblée (avant) [J2 15:00] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 22 entrées
+- fin [J2 15:00] HUD : « Consulter le registre des passagers (bureau du Contrôle). » — 23 entrées
+Carnet final (23) : c_billet_cabine0, c_pompe_secours, c_bon_sortie, f_pompe_morte, t_vasseur_pompe, c_medaillon_sorel, c_cache, t_mara_theo, t_mara_clairval, t_mara_mere, c_medaillon_mara, f_mere, t_hotesse_castel, t_castel_version, t_castel_aveu, c_registre_radio, c_traces_theo, c_armoire_k, f_depot, t_anselme, c_emission_clairval, t_theo_recit, c_vayn2
+Missions : q_main=done [·machines ✓panne ✓theo ·reserves ✓conseil ✓dormir ✓expedition ✓theo_dehors ✓assemblee] | qp_controleur=active [·registre ·cabine0 ·cabine ·choix] | q_mara=active [✓trouver ✓confiance ✓mere ·reunion ✓proteger]
+Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mara_cellule, cq_castel_trahie
+Fin (découverte) : 16:40. Le VAYN s’engage dans la vallée. Au loin, entre deux crêtes, on devine la ligne grise du barrage de Clairval. En salle radio, le poste s’allume de lui-même. Un souffle, puis une voix, hachée, pressante : « …ici VAYN-2… je répète, ici VAYN-2… ne vous arrêtez pas à Clairval… quoi qu’il arrive… ne vous arrêtez pas à Clai… » Puis plus rien. Seulement le bruit des roues, et deux cent douze personnes qui se regardent sans comprendre. Il existe un autre VAYN. Et il sait quelque chose que vous ignorez.
+Épilogue — Le train : La filtration est toujours morte. La citerne baisse chaque jour, et chaque gorgée se discute.
+Épilogue — Les gens : Vous avez entendu Théo, vivant, et il ignore encore ce que vous avez fait de sa nuit. Ça ne se rattrape pas. Mara attend dans sa cellule. Vous avez dit au conseil qui était sa mère ; la porte, elle, est restée fermée. Vous avez promis à Castel que son aveu ne sortirait pas de son bureau, et vous l’ai dit devant deux cents personnes. Il ne vous le pardonnera pas. Vous le savez.
+Épilogue — Le Contrôleur : La « cabine 0 » reste une énigme. Vous la contrôlerez au prochain arrêt.
+
+### C14-revelation-puis-expulsion — Le Contrôleur
+Chapitre terminé.
+Votes : {"expedition":"theo","rationnement":"quota","clandestin":"expulsion","direction":"clairval"} ; arguments : expedition.e_theo_castel, expedition.e_mara_guide, clandestin.m_mere, direction.d_theo
+Révélations possibles à l’assemblée : rev_theo ; faites : rev_theo
+Malaises : 0 ; minutes dans la brume : 0
+Instantanés (heure — objectif affiché dans le HUD — entrées) :
+- conseil (avant) [J1 17:00] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 12 entrées
+- conseil (après) [J1 17:00] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 12 entrées
+- aube (préparation) [J2 05:30] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 12 entrées
+- retour à bord [J2 09:40] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 18 entrées
+- assemblée (avant) [J2 15:00] HUD : « Comprendre l'arrêt du train (voiture des machines, en tête). » — 18 entrées
+- fin [J2 15:00] HUD : « Consulter le registre des passagers (bureau du Contrôle). » — 19 entrées
+Carnet final (19) : c_billet_cabine0, c_medaillon_sorel, c_cache, t_mara_theo, t_mara_clairval, t_mara_mere, c_medaillon_mara, f_mere, t_hotesse_castel, t_castel_version, t_castel_aveu, c_registre_radio, c_traces_theo, c_armoire_k, f_depot, t_anselme, c_emission_clairval, t_theo_recit, c_vayn2
+Missions : q_main=done [·machines ✓panne ✓theo ·reserves ✓conseil ✓dormir ✓expedition ✓theo_dehors ✓assemblee] | qp_controleur=active [·registre ·cabine0 ·cabine ·choix] | q_mara=active [✓trouver ✓confiance ✓mere ·reunion ✓proteger]
+Conséquences : cq_mara_capturee, cq_rationnement_quota, cq_mara_expulsee(+anselme), cq_castel_trahie
+Fin (découverte) : 16:40. Le VAYN s’engage dans la vallée. Au loin, entre deux crêtes, on devine la ligne grise du barrage de Clairval. En salle radio, le poste s’allume de lui-même. Un souffle, puis une voix, hachée, pressante : « …ici VAYN-2… je répète, ici VAYN-2… ne vous arrêtez pas à Clairval… quoi qu’il arrive… ne vous arrêtez pas à Clai… » Puis plus rien. Seulement le bruit des roues, et deux cent douze personnes qui se regardent sans comprendre. Il existe un autre VAYN. Et il sait quelque chose que vous ignorez.
+Épilogue — Le train : La filtration est toujours morte. La citerne baisse chaque jour, et chaque gorgée se discute.
+Épilogue — Les gens : Vous avez entendu Théo, vivant, et il ignore encore ce que vous avez fait de sa nuit. Ça ne se rattrape pas. Mara a été débarquée à Saint-Aubin. Au poste d’aiguillage, Anselme lui a donné de l’eau et une couverture : elle est repartie seule vers la vallée, avant l’aube. Vous avez promis à Castel que son aveu ne sortirait pas de son bureau, et vous l’ai dit devant deux cents personnes. Il ne vous le pardonnera pas. Vous le savez.
 Épilogue — Le Contrôleur : La « cabine 0 » reste une énigme. Vous la contrôlerez au prochain arrêt.
 
 ## Grille de compréhension
@@ -600,7 +640,7 @@ Fin (découverte) : 16:40. L’embranchement de Vercel passe sous les roues. Le 
 | P6-mefiant-controleur | oui | oui (récit de Théo) | non | motif connu | indices + doute (boucle) | non | préparé |
 | C1-revelation-au-conseil | non | non | non | oui | non | non | découverte brute |
 | C2-castel-cellule | non | non | non | oui | non | non | découverte brute |
-| C3-mara-expulsee | oui | oui (récit de Théo) | non | rencontrée | boucle seule (doute) | non | préparé |
+| C3-cellule-puis-expedition | oui | oui (récit de Théo) | non | rencontrée | boucle seule (doute) | non | préparé |
 | C4b-theo-ramene-direct | non | partielle | non | rencontrée | non | non | découverte brute |
 | C5-radio-sans-mara | non | non | non | rencontrée | non | non | découverte brute |
 | C6-promesse-castel | oui | oui (récit de Théo) | non | rencontrée | boucle seule (doute) | non | préparé |
@@ -610,3 +650,5 @@ Fin (découverte) : 16:40. L’embranchement de Vercel passe sous les roues. Le 
 | C10-mara-premiere-fois-en-cellule | non | non | non | rencontrée | non | non | découverte brute |
 | C11-theo-signal-rouge | oui | oui (récit de Théo) | non | rencontrée | boucle seule (doute) | non | préparé |
 | C12-mere-revelee-au-conseil | non | partielle | non | oui | non | non | découverte brute |
+| C13-revelation-puis-cellule | oui | oui (récit de Théo) | non | oui | indices + doute (boucle) | indice | préparé |
+| C14-revelation-puis-expulsion | oui | oui (récit de Théo) | non | oui | indices + doute (boucle) | indice | préparé |

@@ -1,7 +1,7 @@
 [J1 07:00]   ▸ start_passager : « Aller voir ce qui se passe. »
 [J1 07:00] 💬 start_passager : Jour 147, 07:00. Dortoirs. Vous avez dormi tout habillé, comme toujours. Lou n’est pas dan ‖ Sacha ! Sacha, réveille-toi ! Le train s’est arrêté cette nuit ! Il y a plus d’eau aux rob ‖ Castel dit qu’il s’est sauvé. Théo, il se sauve pas. Et la docteure, elle dit que les médi ‖ Noé repart en courant annoncer la nouvelle à tout le wagon. Les médicaments vont manquer. 
 [J1 17:00] Rosa referme la grille.
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : r_quota_injuste)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

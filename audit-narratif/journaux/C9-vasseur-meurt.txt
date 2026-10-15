@@ -1,7 +1,7 @@
 [J1 07:00]   ▸ start_controleur : « Au travail. »
 [J1 07:00] 💬 start_controleur : Jour 147, 07:00. Bureau du Contrôle. Le train est immobile depuis sept heures, et le silen ‖ Fontaine ! La filtration est morte, le pilote automatique refuse de repartir, et Théo Laga ‖ Je veux un rapport avant le conseil de 17:00. Et pas de panique dans les voitures. Vous sa ‖ Castel repart vers son poste sans attendre de réponse. Dans votre poche, un billet de prem
 [J1 17:00] Rosa referme la grille.
-[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
+[J1 17:00] Conseil : « Le mandat de l’expédition » → pieces (position abstention ; égalité → repli « pieces » ; votes {"castel":"prudence","vasseur":"pieces","marchetti":"eau","sorel":"theo"} ; args dispo : aucun)
 [J1 17:00] Conseil : « Le rationnement » → quota (position abstention ; votes {"castel":"quota","vasseur":"quota","marchetti":"quota","sorel":"egal"} ; args dispo : aucun)
 [J1 17:00] Conseil : « Le sort de la clandestine » → cellule (position abstention ; votes {"castel":"cellule","vasseur":"cellule","marchetti":"expulsion","sorel":"accueil"} ; args dispo : aucun)
 [J1 17:00] Conseil : motion « Le relais de la radio » non présentée

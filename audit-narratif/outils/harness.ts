@@ -255,7 +255,7 @@ export class Run {
       const r = resolveVote(g, s);
       applyResult(g, s, r);
       this.votes[id] = r.winner;
-      this.L(`Conseil : « ${m.title} » → ${r.winner} (position ${p.position ?? 'abstention'} ; votes ${JSON.stringify(r.votes)} ; args dispo : ${avail.map((a) => a.id).join(',') || 'aucun'})`);
+      this.L(`Conseil : « ${m.title} » → ${r.winner} (position ${p.position ?? 'abstention'}${r.tie ? ` ; égalité ${r.decidedByPlayer ? 'tranchée par la position du joueur' : `→ repli « ${m.fallback} »`}` : ''} ; votes ${JSON.stringify(r.votes)} ; args dispo : ${avail.map((a) => a.id).join(',') || 'aucun'})`);
     }
     g.applyFx(['checkpoint:Après le conseil']);
     this.snap('conseil (après)');
