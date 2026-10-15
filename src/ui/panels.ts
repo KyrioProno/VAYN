@@ -184,6 +184,12 @@ export function carnetPanel(app: App, start: CarnetTab = 'clue'): HTMLElement {
 
 // ======================================================================== SAC
 const CAT_LABEL: Record<ItemCat, string> = { food: 'Vivres', meds: 'Soins', tools: 'Outils', trade: 'Troc', docs: 'Documents', quest: 'Objets importants' };
+const CAT_COLOR: Record<ItemCat, string> = { food: '#e8b45a', meds: '#ff8a7a', tools: '#9fb8c8', trade: '#d9a441', docs: '#e8dcc6', quest: '#8fc1ff' };
+/** Pastille d'objet : initiale en police pixel, couleur de catégorie (aucune police de symboles requise). */
+function itemBadge(name: string, cat: ItemCat): HTMLElement {
+  const letter = name.replace(/^(Le |La |Les |L’|L')/, '').charAt(0).toUpperCase();
+  return h('span', { class: 'ic', style: `color:${CAT_COLOR[cat]};border-color:${CAT_COLOR[cat]}55` }, letter);
+}
 
 export function sacPanel(app: App, storage = false): HTMLElement {
   const g = app.game!;
@@ -210,7 +216,7 @@ export function sacPanel(app: App, storage = false): HTMLElement {
       for (const s of ss) {
         const d = g.item(s.id);
         const on = sel?.id === s.id && sel.where === where;
-        col.append(btn(h('div', { class: 'item-row' }, h('span', { class: 'ic' }, d.icon ?? '•'), h('span', { class: 'nm' }, d.name), h('span', { class: 'q' }, s.qty > 1 ? `×${s.qty}` : '')), () => {
+        col.append(btn(h('div', { class: 'item-row' }, itemBadge(d.name, d.cat), h('span', { class: 'nm' }, d.name), h('span', { class: 'q' }, s.qty > 1 ? `×${s.qty}` : '')), () => {
           sel = { id: s.id, where };
           msg.textContent = '';
           render();

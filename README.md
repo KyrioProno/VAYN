@@ -253,9 +253,14 @@ Les parcours des autres personnages vérifient :
 - entrée en jeu avec chacun des quatre personnages ;
 - dialogue avec Castel ;
 - menu de l’établi et repas au comptoir ;
+- déplacement des PNJ vers la cantine à l’heure du repas ;
+- panneaux Carnet (dont la mise en relation de deux indices), Sac, Train, Menu ;
 - conseil (ouverture, motion, vote) ;
 - préparation d’expédition, quai, dépôt sombre, poste d’aiguillage dans la brume ;
+- retour à bord par la portière, bilan, départ du train avec le paysage qui défile ;
 - assemblée avec révélations et écran de fin ;
+- sauvegarde puis reprise après rechargement de la page (« Continuer ») ;
+- mort en ONE LIFE : écran de fin, sauvegarde effacée, pierre tombale, plus de « Continuer » ;
 - démarrage du build de production.
 
 **Non vérifié manuellement** : une partie entière jouée d’une traite au doigt, du réveil à l’épilogue. Elle n’est couverte que par le test automatique sans rendu.

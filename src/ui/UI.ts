@@ -52,20 +52,26 @@ export class UI {
   }
 
   // ------------------------------------------------------------------ écrans
+  private updateToastPos() {
+    this.toasts.classList.toggle('low', this.hasPanel || this.hasFlow || this.hasScreen);
+  }
+
   setScreen(el: HTMLElement | null) {
     clear(this.screen);
     if (el) this.screen.append(el);
-    this.toasts.classList.toggle('low', !!el);
+    this.updateToastPos();
   }
 
   setFlow(el: HTMLElement | null) {
     clear(this.flow);
     if (el) this.flow.append(el);
+    this.updateToastPos();
   }
 
   setPanel(el: HTMLElement | null) {
     clear(this.panel);
     if (el) this.panel.append(el);
+    this.updateToastPos();
   }
 
   setMenu(el: HTMLElement | null) {

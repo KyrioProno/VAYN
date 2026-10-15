@@ -261,6 +261,10 @@ export class App implements WorldHost {
     await this.ui.fade(false, 500);
     if (fresh) {
       this.startDialogue(`start_${state.char}`);
+      this.enqueue(() => {
+        this.ui.toast('Touchez le sol pour marcher, un objet ou une personne pour interagir. Glissez pour regarder, pincez pour zoomer.', 'info');
+        this.pump();
+      });
       await this.autosave(true);
     } else if (state.chapterDone) {
       this.enqueue(() => this.showEnding());
@@ -698,13 +702,11 @@ export class App implements WorldHost {
 
   private openFlow(el: HTMLElement) {
     this.flowOpen = true;
-    this.ui.toasts.classList.add('low');
     this.ui.setFlow(el);
   }
 
   private closeFlow() {
     this.flowOpen = false;
-    this.ui.toasts.classList.remove('low');
     this.ui.setFlow(null);
     this.refreshHud();
     this.pump();
@@ -870,7 +872,6 @@ export class App implements WorldHost {
 
   private closeFlowSilently() {
     this.flowOpen = false;
-    this.ui.toasts.classList.remove('low');
     this.ui.setFlow(null);
   }
 
@@ -1041,6 +1042,7 @@ export class App implements WorldHost {
     const g = this.game!;
     this.sfx('hurt');
     this.hud.show(false);
+    this.ui.clearLabels();
     this.ui.setMenu(null);
     this.ui.setPanel(null);
     this.closeFlowSilently();
