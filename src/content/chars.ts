@@ -72,7 +72,7 @@ export const CHARS: Record<CharId, CharDef> = {
     difficulty: { label: 'Nuancée', value: 2, note: 'Accès privilégiés, mais chaque loyauté a un prix.' },
     plot: 'La lettre de Madame — une enveloppe cachetée, « à remettre en main propre ». Vous ignorez ce qu\'elle contient.',
     startSpot: 'sa_bar',
-    startItems: [{ id: 'cles_salon', qty: 1 }, { id: 'lettre_madame', qty: 1 }, { id: 'ration', qty: 1 }, { id: 'cafe', qty: 1 }],
+    startItems: [{ id: 'cles_salon', qty: 1 }, { id: 'lettre_madame', qty: 1 }, { id: 'ration', qty: 1 }, { id: 'cafe', qty: 1 }, { id: 'lampe', qty: 1 }],
     startStorage: [{ id: 'eau', qty: 1 }, { id: 'alcool', qty: 1 }],
     tokens: 12,
     rel: { villiers: { trust: 2, met: true }, josefa: { trust: 1, met: true }, marchetti: { trust: 1, met: true }, castel: { met: true }, noe: { suspicion: 1 } },

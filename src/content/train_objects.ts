@@ -373,6 +373,7 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
   { id: 'table2', sec: 'cantine', name: 'Table', sprite: 'table', x: 430, y: 98, block: [36, 6], actions: [] },
   {
     id: 'etal_vic', sec: 'cantine', name: 'Étal du Passeur', sprite: 'passeur_stall', x: 488, y: 78, block: [38, 8],
+    important: '!f:vic_trade',
     actions: [A('Commercer', { dlg: 'vic' })],
   },
   // ================================================================ SOUTE

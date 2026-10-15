@@ -136,6 +136,14 @@ export class Game extends Emitter {
         delete s.flags[arg.trim()];
         this.emit('flag', { name: arg.trim(), value: undefined });
         break;
+      case 'toggle': {
+        // Bascule : un seul effet, donc pas de condition évaluée sur un état déjà modifié.
+        const k = arg.trim();
+        const v = !s.flags[k];
+        this.setFlag(k, v);
+        this.emit('sfx', 'click');
+        break;
+      }
       case 'give': {
         const [id, n] = splitQty(arg);
         this.give(id, n);
@@ -379,6 +387,11 @@ export class Game extends Emitter {
     return k > 0;
   }
 
+  /** Lampe torche allumée ? (l'inventaire seul ne suffit pas : il faut l'allumer.) */
+  lampeAllumee(): boolean {
+    return this.itemQty('lampe') > 0 && !!this.state.flags['lampe_on'];
+  }
+
   canUse(id: string): boolean {
     const d = this.item(id);
     if (!d.use || this.itemQty(id) <= 0) return false;
@@ -393,7 +406,7 @@ export class Game extends Emitter {
     if (d.cat === 'food' || d.cat === 'meds') this.take(id, 1);
     this.applyFx(use.fx, `item:${id}`);
     this.emit('sfx', d.cat === 'food' ? 'eat' : 'use');
-    return use.text ? this.fmt(use.text) : null;
+    return use.text ? this.text(use.text) : null;
   }
 
   // ------------------------------------------------------------------ stats & ressources
@@ -509,7 +522,24 @@ export class Game extends Emitter {
     } else if (s.hydration > 45 && s.satiety > 45 && s.rest > 35) {
       s.health = clamp(s.health + 0.8 * h, 0, 100);
     }
+    this.explainStats();
     this.emit('stats');
+  }
+
+  /** Une seule fois par seuil atteint : rappelle pourquoi la jauge tombe, et ce que ça coûte. */
+  private explainStats() {
+    const s = this.state.stats;
+    const une = (cle: string, texte: string) => {
+      if (this.state.flags[`_seuil_${cle}`]) return;
+      this.state.flags[`_seuil_${cle}`] = true;
+      this.toast(texte, 'warn');
+    };
+    if (s.hydration < 35) une('soif', 'Vous avez soif. La jauge d\'hydratation descend avec le temps passé : une gourde, un repas ou la fontaine.');
+    if (s.hydration < 15) une('soif_critique', 'Hydratation critique : sous 15 %, votre santé commence à baisser.');
+    if (s.satiety < 35) une('faim', 'La faim revient. La jauge de satiété descend elle aussi avec le temps.');
+    if (s.satiety < 15) une('faim_critique', 'Faim critique : sous 15 %, votre santé commence à baisser.');
+    if (s.rest < 25) une('fatigue', 'La fatigue tombe sur vous. Sous 25 %, vous marchez plus lentement — dormez, ou reposez-vous.');
+    if (s.rest < 8) une('fatigue_critique', 'Épuisement critique : sous 8 %, votre santé commence à baisser.');
   }
 
   private dailyConsumption() {
@@ -540,7 +570,8 @@ export class Game extends Emitter {
     this.state.flags['_sleeping'] = true;
     this.advance(mins);
     delete this.state.flags['_sleeping'];
-    this.changeStat('rest', Math.min(100, (mins / 60) * 14));
+    const parHeure = this.state.flags['dortoirs_calfeutres'] ? 18 : 14;   // dortoirs calfeutrés : +30 %
+    this.changeStat('rest', Math.min(100, (mins / 60) * parHeure));
     this.changed();
   }
 

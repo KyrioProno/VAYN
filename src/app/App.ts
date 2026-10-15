@@ -381,11 +381,13 @@ export class App implements WorldHost {
     // obscurité du dépôt
     if (g.state.zone === 'exterior') {
       const sec = sectionAt(scene.laid, scene.player.x);
-      const dark = !!sec?.dark && !g.itemQty('lampe');
-      scene.setDark(sec?.dark ? (g.itemQty('lampe') ? 0.45 : 0.86) : 0);
+      const dark = !!sec?.dark && !g.lampeAllumee();
+      scene.setDark(sec?.dark ? (g.lampeAllumee() ? 0.45 : 0.86) : 0);
       if (dark && !this.darkWarned) {
         this.darkWarned = true;
-        this.ui.toast('Il fait noir comme dans un four. Sans lampe, impossible de fouiller quoi que ce soit.', 'warn');
+        this.ui.toast(g.itemQty('lampe')
+          ? 'Il fait noir comme dans un four. Votre lampe est éteinte : ouvrez le Sac pour l’allumer.'
+          : 'Il fait noir comme dans un four. Sans lampe, impossible de fouiller quoi que ce soit.', 'warn');
       }
     }
   }
@@ -399,8 +401,10 @@ export class App implements WorldHost {
     const w = this.world();
     if (!w) return;
     const sec = w.laid.secById[o.sec];
-    if (sec?.dark && !g.itemQty('lampe')) {
-      this.narrate('Il fait trop noir pour distinguer quoi que ce soit. Il vous faudrait une lampe.');
+    if (sec?.dark && !g.lampeAllumee()) {
+      this.narrate(g.itemQty('lampe')
+        ? 'Il fait trop noir pour distinguer quoi que ce soit. Votre lampe est éteinte : ouvrez le Sac, et allumez-la.'
+        : 'Il fait trop noir pour distinguer quoi que ce soit. Il vous faudrait une lampe — le Passeur en vend peut-être.');
       return;
     }
     const acts = this.availableActions(o.actions);

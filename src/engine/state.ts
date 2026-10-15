@@ -37,7 +37,7 @@ export function createInitialState(content: Content, char: CharId, mode: Mode, r
     tokens: def.tokens,
     inv: def.startItems.map((s) => ({ ...s })),
     storage: def.startStorage.map((s) => ({ ...s })),
-    flags: { [`pc_${char}`]: true },
+    flags: { [`pc_${char}`]: true, ...(def.startItems.some((i) => i.id === 'lampe') ? { lampe_on: true } : {}) },
     rel,
     journal: { entries: {}, hypotheses: {}, linksTried: [] },
     conseqs: [],

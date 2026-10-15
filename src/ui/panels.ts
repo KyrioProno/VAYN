@@ -1,6 +1,7 @@
 // Panneaux : Carnet, Sac (et rangement), Train, Menu.
 import type { App } from '../app/App';
-import type { EntryKind, ItemCat, ResKey } from '../engine/types';
+import type { EntryKind, ItemCat, ItemDef, ResKey } from '../engine/types';
+import type { Game } from '../engine/game';
 import { MEMBER_LABEL, councilMembers } from '../engine/council';
 import { fmtDateTime, fmtDuration } from '../engine/time';
 import { btn, clear, fmtKg, h } from './dom';
@@ -192,6 +193,23 @@ function itemBadge(name: string, cat: ItemCat): HTMLElement {
   return h('span', { class: 'ic', style: `color:${CAT_COLOR[cat]};border-color:${CAT_COLOR[cat]}55` }, letter);
 }
 
+const GAUGE_NOM: Record<string, string> = { health: 'Santé', hydration: 'Hydratation', satiety: 'Satiété', rest: 'Repos' };
+
+/** Objets qu'on ne jette pas : la lampe est le seul éclairage du dépôt, et personne n'a les jetons pour la remplacer. */
+const IRREMPLACABLE = new Set(['lampe']);
+
+/** « +30 satiété · +4 hydratation » : l'effet lisible d'utiliser un objet. */
+function effetUsage(g: Game, d: ItemDef): string {
+  const parts: string[] = [];
+  for (const fx of d.use?.fx ?? []) {
+    const m = /^(?:if:[^?]+\?)?stat:([a-z]+)([+-][0-9.]+)$/.exec(fx);
+    if (!m) continue;
+    const v = Number(m[2]);
+    parts.push(`${v > 0 ? '+' : ''}${v} ${GAUGE_NOM[m[1]]?.toLowerCase() ?? m[1]}`);
+  }
+  return parts.join(' · ');
+}
+
 export function sacPanel(app: App, storage = false): HTMLElement {
   const g = app.game!;
   let sel: { id: string; where: 'inv' | 'sto' } | null = null;
@@ -240,18 +258,22 @@ export function sacPanel(app: App, storage = false): HTMLElement {
       sel = null;
       return detail();
     }
+    if (sel.id === 'lampe') col.append(h('div', { class: 'src' }, g.lampeAllumee() ? 'Lampe allumée — elle éclaire le dépôt.' : 'Lampe éteinte — elle n’éclaire rien.'));
+    if (IRREMPLACABLE.has(sel.id)) col.append(h('p', { class: 'src', style: 'margin:4px 0 0' }, 'La lampe ne se jette pas : c’est le seul endroit noir du jeu, et vous n’avez pas les jetons pour la remplacer.'));
+    const effet = effetUsage(g, d);
+    if (d.use && effet) col.append(h('div', { class: 'src' }, `À utiliser : ${effet}`));
     col.append(h('h3', null, d.name), h('div', { class: 'src' }, `${CAT_LABEL[d.cat]} · ${d.weight ? fmtKg(d.weight) : 'sans poids'}${d.value ? ` · valeur ${d.value} jetons` : ''}${d.quest ? ' · protégé' : ''}`), h('p', null, d.desc));
     const acts = h('div', { style: 'display:flex;gap:8px;flex-wrap:wrap' });
     if (sel.where === 'inv') {
-      if (d.use && g.canUse(sel.id)) acts.append(btn(d.use.label, () => {
+      if (d.use && g.canUse(sel.id)) acts.append(btn(g.text(d.use.label), () => {
         const t = app.useItem(sel!.id);
         msg.replaceChildren(h('div', { class: 'reply' }, t ?? ''));
         render();
       }, 'btn small primary'));
-      else if (d.use) acts.append(btn(d.use.label, () => undefined, 'btn small', { disabled: true }));
+      else if (d.use) acts.append(btn(g.text(d.use.label), () => undefined, 'btn small', { disabled: true }));
       if (storage && !d.quest) acts.append(btn('Ranger', () => { g.transfer(sel!.id, 1, true); app.sfx('tick'); render(); }, 'btn small'));
       if (storage && !d.quest && qty > 1) acts.append(btn('Tout ranger', () => { g.transfer(sel!.id, qty, true); app.sfx('tick'); render(); }, 'btn small'));
-      if (!d.quest && !storage) acts.append(btn('Jeter', () => { g.drop(sel!.id, 1); app.sfx('tick'); render(); }, 'btn small danger'));
+      if (!d.quest && !storage && !IRREMPLACABLE.has(sel.id)) acts.append(btn('Jeter', () => { g.drop(sel!.id, 1); app.sfx('tick'); render(); }, 'btn small danger'));
     } else {
       acts.append(btn('Prendre', () => {
         const n = g.transfer(sel!.id, 1, false);
@@ -311,7 +333,7 @@ export function trainPanel(app: App): HTMLElement {
         kv.append(h('div', { class: 'k' }, label), h('div', null, h('div', { class: `meter${low ? ' low' : ''}` }, h('b', { style: `width:${Math.min(100, (v / max) * 100)}%` })), h('div', { style: 'font-size:12px;color:var(--muted);margin-top:3px' }, note(v))));
       }
       col.append(h('h3', null, 'Réserves du VAYN'), kv);
-      col.append(h('p', { class: 'empty', style: 'padding-left:0' }, 'Les réserves baissent chaque nuit à minuit. Les choix du conseil et les réparations les modifient.'));
+      col.append(h('p', { class: 'empty', style: 'padding-left:0' }, 'Réserves collectives : tout le VAYN y puise. Elles baissent chaque nuit à minuit, et les réparations comme le matériel d’expédition y puisent. En revanche vos gourdes, rations et médicaments personnels restent dans le Sac : ils ne font pas bouger ces chiffres.'));
       col.append(h('h3', { style: 'margin-top:12px' }, 'Le conseil des quatre'));
       for (const m of councilMembers(g)) {
         const npc = g.content.npcs[m];

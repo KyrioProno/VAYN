@@ -13,7 +13,19 @@ export const ITEMS: Record<string, ItemDef> = {
   antidouleur: { id: 'antidouleur', name: 'Antidouleurs', cat: 'meds', weight: 0.1, value: 10, icon: '◊', desc: 'Quatre comprimés. Masquent la douleur, pas la fatigue.', use: { label: 'Prendre', fx: ['stat:health+8', 'stat:rest-4'], text: 'La douleur recule derrière un voile.' } },
   antibio: { id: 'antibio', name: 'Antibiotiques', cat: 'meds', weight: 0.1, value: 30, icon: '✦', desc: 'Une boîte d\'amoxicilline entamée. Ici, ça vaut une vie.' },
   // --- Outils
-  lampe: { id: 'lampe', name: 'Lampe torche', cat: 'tools', weight: 0.6, value: 10, icon: '◐', desc: 'Dynamo à manivelle. Indispensable dans le noir.' },
+  lampe: {
+    id: 'lampe', name: 'Lampe torche', cat: 'tools', weight: 0.6, value: 10, icon: '◐',
+    desc: 'Dynamo à manivelle. Indispensable dans le noir — éteinte, elle n’éclaire rien.',
+    // Le libellé est lu avant l’effet, le texte après : les deux sont donc conditionnés à l’état *final*.
+    use: {
+      label: [{ if: 'f:lampe_on', text: 'Éteindre la lampe' }, { if: 'true', text: 'Allumer la lampe' }],
+      fx: ['toggle:lampe_on'],
+      text: [
+        { if: 'f:lampe_on', text: 'La manivelle accroche, le faisceau repart. Le dépôt, ses armoires, tout vous revient d’un coup.' },
+        { if: 'true', text: 'Vous coupez le faisceau. Le noir du dépôt vous reprend tout de suite.' },
+      ],
+    },
+  },
   pied_de_biche: { id: 'pied_de_biche', name: 'Pied-de-biche', cat: 'tools', weight: 2, value: 10, icon: '⟋', desc: 'Ouvre ce qui ne veut pas s\'ouvrir. Bruyant.' },
   cle_molette: { id: 'cle_molette', name: 'Clé à molette', cat: 'tools', weight: 1, value: 6, icon: '⚒', desc: 'Votre outil fétiche. Elle a votre prénom gravé dessus.' },
   trousse: { id: 'trousse', name: 'Trousse d\'outils', cat: 'tools', weight: 2.5, value: 14, icon: '⌸', desc: 'Tournevis, pinces, fil, fer à souder à gaz.' },

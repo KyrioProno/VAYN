@@ -4,7 +4,7 @@ import { absTime } from './time';
 import type { ActionDef, Content, DialogueDef, Fx } from './types';
 
 const FX_VERBS = new Set([
-  'set', 'inc', 'clr', 'give', 'take', 'store', 'entry', 'trust', 'susp', 'debt', 'met', 'res', 'tok', 'stat', 'cstat', 'time',
+  'set', 'inc', 'clr', 'toggle', 'give', 'take', 'store', 'entry', 'trust', 'susp', 'debt', 'met', 'res', 'tok', 'stat', 'cstat', 'time',
   'quest', 'obj', 'qdone', 'qfail', 'conseq', 'observe', 'unlock', 'lock', 'objst', 'upgrade', 'toast', 'warn', 'sfx', 'music',
   'checkpoint', 'dlg', 'ev', 'comp', 'loc', 'hide', 'explog', 'kill', 'goto', 'end', 'if',
 ]);
@@ -124,7 +124,7 @@ export function validateContent(c: Content, sprites?: Set<string>): string[] {
             checkFx(arg.slice(q + 1).split(';').map((x) => x.trim()).filter(Boolean), where);
             break;
           }
-          case 'set': case 'inc': case 'clr': case 'toast': case 'warn': case 'sfx': case 'music': case 'checkpoint': case 'explog': case 'kill': case 'goto': case 'end':
+          case 'set': case 'inc': case 'clr': case 'toggle': case 'toast': case 'warn': case 'sfx': case 'music': case 'checkpoint': case 'explog': case 'kill': case 'goto': case 'end':
             break;
         }
       } catch (e) {

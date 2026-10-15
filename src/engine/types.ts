@@ -125,7 +125,7 @@ export interface NpcDef {
   council?: Member;
 }
 
-export interface ItemUse { label: string; fx: Fx[]; text?: string; target?: 'self' | 'comp'; if?: Cond }
+export interface ItemUse { label: string | TextVariant; fx: Fx[]; text?: string | TextVariant; target?: 'self' | 'comp'; if?: Cond }
 
 export interface ItemDef {
   id: string;
