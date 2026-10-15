@@ -76,6 +76,7 @@ button { font: inherit; color: inherit; }
 .hud-clock.warn { color: var(--amber); }
 .hud-place { font-family: var(--title); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
 .hud-obj { margin-top: 6px; font-size: 12.5px; line-height: 1.3; color: #d9cdb6; display: flex; gap: 6px; align-items: flex-start; }
+.hud-obj .tx { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hud-obj::before { content: ''; flex: 0 0 auto; width: 6px; height: 6px; background: var(--blue); transform: rotate(45deg); margin-top: 5px; box-shadow: 0 0 5px rgba(143,193,255,.7); }
 .hud-tr {
   position: absolute; top: calc(8px + var(--sat)); right: calc(66px + var(--sar)); display: flex; gap: 10px; align-items: flex-start;
@@ -124,7 +125,15 @@ button { font: inherit; color: inherit; }
 @keyframes fadein { from { opacity: 0; transform: translate(-50%, -90%); } }
 
 /* ---------------------------------------------------------------- toasts */
-.toasts { position: absolute; top: calc(8px + var(--sat)); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 6px; align-items: center; width: min(420px, 46vw); }
+/* Les notifications ne doivent jamais masquer les jauges (coin haut droit) ni l'horloge.
+   Elles se posent donc sous la bande du HUD, à gauche, là où le décor peut être masqué. */
+.toasts { position: absolute; top: calc(80px + var(--sat)); left: calc(10px + var(--sal)); right: auto; transform: none; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; width: min(360px, 43vw); }
+/* Boîte de dialogue ouverte : le bas de l'écran est pris, les messages se replient en haut
+   à gauche, sur l'horloge, plutôt que de passer sur le texte qu'on est en train de lire. */
+.dlg-ouverte .toasts { top: calc(8px + var(--sat)); width: min(280px, 34vw); }
+.dlg-ouverte .toast { font-size: 11.5px; padding: 5px 9px; line-height: 1.35; }
+/* Pendant un dialogue, les onglets ne répondent pas : ils doivent le montrer. */
+.dlg-ouverte .tabs { opacity: .3; pointer-events: none; }
 .toast {
   background: rgba(14,12,10,.93); border: 1px solid var(--line2); border-left: 3px solid var(--muted); padding: 7px 11px; font-size: 12.5px; line-height: 1.35;
   border-radius: 2px; animation: toastin .25s ease-out; width: 100%;

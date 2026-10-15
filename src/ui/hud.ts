@@ -24,6 +24,7 @@ export class Hud {
   private clock: HTMLElement;
   private place: HTMLElement;
   private obj: HTMLElement;
+  private objTx: HTMLElement;
   private gauges: Record<string, HTMLElement> = {};
   private tokens: HTMLElement;
   private dots: Record<TabId, HTMLElement> = {} as Record<TabId, HTMLElement>;
@@ -32,7 +33,10 @@ export class Hud {
   constructor(onTab: (t: TabId) => void, onWait: () => void) {
     this.clock = h('div', { class: 'hud-clock' });
     this.place = h('div', { class: 'hud-place' });
-    this.obj = h('div', { class: 'hud-obj' });
+    // Le texte de l'objectif est dans un span : c'est lui qui porte l'ellipse,
+    // pour que le bloc du HUD ne descende jamais sur la bande des notifications.
+    this.objTx = h('span', { class: 'tx' });
+    this.obj = h('div', { class: 'hud-obj' }, this.objTx);
     const g = h('div', { class: 'gauges' });
     // Le nom de la jauge est écrit en toutes lettres : sur un écran tactile,
     // une infobulle n'existe pas, et une icône seule ne dit rien.
@@ -84,7 +88,7 @@ export class Hud {
     this.clock.classList.toggle('warn', !!late);
     this.set('place', this.place, place.room ? `${place.section} · ${place.room}` : place.section);
     const o = g.currentObjective();
-    this.set('obj', this.obj, o ? o.text : '');
+    this.set('obj', this.objTx, o ? o.text : '');
     this.obj.style.display = o ? '' : 'none';
     for (const [k, el] of Object.entries(this.gauges)) {
       const v = g.state.stats[k as keyof typeof g.state.stats];

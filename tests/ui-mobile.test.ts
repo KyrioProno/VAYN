@@ -128,17 +128,42 @@ describe('Onglets — passer d’un panneau à l’autre doit marcher du premier
   });
 });
 
-describe('Messages — ils ne doivent pas masquer la fiche', () => {
-  it('panneau ouvert : deux messages au maximum, en plus petits', () => {
+describe('Messages — ils ne doivent masquer ni les jauges, ni la fiche, ni le dialogue', () => {
+  it('les messages sont posés sous la bande du HUD, à gauche : jamais sur les jauges', () => {
+    // Avant : top 8 px centré, donc par-dessus les jauges du coin haut droit.
+    expect(CSS).toMatch(/\.toasts \{[^}]*top: calc\(80px \+ var\(--sat\)\)/);
+    expect(CSS).toMatch(/\.toasts \{[^}]*left: calc\(10px \+ var\(--sal\)\)/);
+    expect(CSS).not.toMatch(/\.toasts \{[^}]*left: 50%/);
+  });
+
+  it('le bloc du HUD ne descend pas dans cette bande : objectif sur une ligne', () => {
+    expect(CSS).toMatch(/\.hud-obj \.tx \{[^}]*text-overflow: ellipsis/);
+    expect(src('ui/hud.ts')).toContain("h('span', { class: 'tx' })");
+  });
+
+  it('dialogue ouvert : les messages se replient en haut à gauche, jamais sur le texte', () => {
+    expect(CSS).toContain('.dlg-ouverte .toasts { top: calc(8px + var(--sat));');
+    const dlg = src('ui/dialogue.ts');
+    expect(dlg).toContain("document.body.classList.toggle('dlg-ouverte', dialogueOuverts > 0)");
+    expect(dlg).toContain('dialogueOuverts++;');
+    expect(dlg).toContain('dialogueOuverts = Math.max(0, dialogueOuverts - 1);');
+    expect(src('ui/UI.ts')).toContain("document.body.classList.contains('dlg-ouverte')");
+    // Les onglets sont inactifs pendant un dialogue : ils doivent l'annoncer, pas rester insensibles.
+    expect(CSS).toMatch(/\.dlg-ouverte \.tabs \{[^}]*pointer-events: none/);
+  });
+
+  it('écran plein (panneau, expédition, réglages) : deux messages au maximum, en plus petits', () => {
     const ui = src('ui/UI.ts');
-    expect(ui).toContain('const max = this.hasPanel ? 2 : 4;');
-    expect(ui).toContain("this.toasts.classList.toggle('compact', this.hasPanel)");
+    expect(ui).toContain('const max = this.plein || document.body.classList.contains');
+    expect(ui).toContain("this.toasts.classList.toggle('compact', this.plein)");
+    expect(ui).toContain('while (this.plein && this.toasts.children.length > 2)');
+    expect(ui).toContain('while (this.toasts.children.length > max)');
+    expect(ui).toMatch(/return this\.hasPanel \|\| this\.hasFlow \|\| this\.hasScreen;/);
     expect(CSS).toContain('.toasts.low.compact');
   });
 
-  it('hors panneau, la limite reste à quatre messages', () => {
-    const ui = src('ui/UI.ts');
-    expect(ui).toMatch(/const max = this\.hasPanel \? 2 : 4;/);
-    expect(ui).toContain('while (this.toasts.children.length > max)');
+  it('jeu libre : trois messages au maximum, pour ne pas atteindre le bouton « Attendre »', () => {
+    // La pile part de 80 px ; trois messages de 67 px descendent à 293 px, le bouton commence à 344.
+    expect(src('ui/UI.ts')).toMatch(/\? 2 : 3;/);
   });
 });

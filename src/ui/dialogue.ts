@@ -13,6 +13,16 @@ export interface DialogueBoxOpts {
   sfx?: (k: string) => void;
 }
 
+/**
+ * La classe `dlg-ouverte` permet au reste de l'interface (notifications) de savoir
+ * que la boîte de dialogue occupe le bas de l'écran. Comptée, pas booléenne :
+ * plusieurs boîtes peuvent se chevaucher brièvement (narration puis dialogue).
+ */
+let dialogueOuverts = 0;
+function majEtatDialogue() {
+  document.body.classList.toggle('dlg-ouverte', dialogueOuverts > 0);
+}
+
 export class DialogueBox {
   readonly el: HTMLElement;
   private portraitBox: HTMLElement;
@@ -34,6 +44,8 @@ export class DialogueBox {
     this.cont = h('div', { class: 'cont' }, 'Toucher pour continuer ›');
     this.el = h('div', { class: 'dlg live' }, this.portraitBox, h('div', { class: 'body' }, this.who, this.text, this.choices, this.cont));
     this.el.addEventListener('click', () => this.tap());
+    dialogueOuverts++;
+    majEtatDialogue();
   }
 
   show(v: DialogueView) {
@@ -111,5 +123,7 @@ export class DialogueBox {
   destroy() {
     clearInterval(this.timer);
     this.el.remove();
+    dialogueOuverts = Math.max(0, dialogueOuverts - 1);
+    majEtatDialogue();
   }
 }

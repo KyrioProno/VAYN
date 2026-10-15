@@ -47,8 +47,10 @@ export class UI {
     const el = h('div', { class: `toast ${kind}` }, text);
     this.toasts.append(el);
     // Panneau ouvert : les messages se superposent à la colonne de droite.
-    // On n'en garde alors que deux, en plus petits, pour laisser la fiche lisible.
-    const max = this.hasPanel ? 2 : 4;
+    // Dialogue ouvert : ils se replient en haut à gauche et se font plus rares.
+    // En jeu libre, trois au maximum : au-delà, la pile descend jusqu'au bouton « Attendre »
+    // et le masque. C'est le plus ancien qui s'efface, jamais le plus récent.
+    const max = this.plein || document.body.classList.contains('dlg-ouverte') ? 2 : 3;
     while (this.toasts.children.length > max) this.toasts.firstElementChild?.remove();
     const life = kind === 'warn' ? 5200 : kind === 'entry' || kind === 'quest' ? 4000 : 3200;
     setTimeout(() => el.classList.add('out'), life);
@@ -57,11 +59,15 @@ export class UI {
 
   // ------------------------------------------------------------------ écrans
   private updateToastPos() {
-    const bas = this.hasPanel || this.hasFlow || this.hasScreen;
-    this.toasts.classList.toggle('low', bas);
-    this.toasts.classList.toggle('compact', this.hasPanel);
+    this.toasts.classList.toggle('low', this.plein);
+    this.toasts.classList.toggle('compact', this.plein);
     // Un panneau qui vient de s'ouvrir doit respecter la limite basse.
-    while (this.hasPanel && this.toasts.children.length > 2) this.toasts.firstElementChild?.remove();
+    while (this.plein && this.toasts.children.length > 2) this.toasts.firstElementChild?.remove();
+  }
+
+  /** Un écran plein (panneau, préparation d'expédition, réglage, titre) occupe tout l'écran. */
+  private get plein(): boolean {
+    return this.hasPanel || this.hasFlow || this.hasScreen;
   }
 
   setScreen(el: HTMLElement | null) {
