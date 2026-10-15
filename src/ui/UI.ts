@@ -55,6 +55,7 @@ export class UI {
   setScreen(el: HTMLElement | null) {
     clear(this.screen);
     if (el) this.screen.append(el);
+    this.toasts.classList.toggle('low', !!el);
   }
 
   setFlow(el: HTMLElement | null) {

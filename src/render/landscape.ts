@@ -215,16 +215,42 @@ export function renderTrainExterior(phase: Phase, w: number): PC {
   return pc;
 }
 
-/** Nappe de brume (scène extérieure), bouclable. */
+/** Nappe de brume (scène extérieure), bouclable : volutes douces, densité croissante vers le sol. */
 export function renderHaze(w = 256, h = 180): PC {
   const pc = new PC(w, h);
+  const g = pc.c.getContext('2d')!;
   const r = rng(12);
-  for (let y = 0; y < h; y++) {
-    const d = 0.25 + 0.55 * (y / h);
-    for (let x = 0; x < w; x++) {
-      const n = Math.sin(x / 19 + y / 7) * 0.12 + Math.sin(x / 7 - y / 11) * 0.08 + (r() - 0.5) * 0.1;
-      if (Math.random() < d + n) pc.px(x, y, 'rgba(176,184,150,0.55)');
+  // voile de fond
+  const base = g.createLinearGradient(0, 0, 0, h);
+  base.addColorStop(0, 'rgba(170,178,150,0.18)');
+  base.addColorStop(0.55, 'rgba(176,184,152,0.42)');
+  base.addColorStop(1, 'rgba(186,192,160,0.62)');
+  g.fillStyle = base;
+  g.fillRect(0, 0, w, h);
+  // volutes (dupliquées de part et d'autre pour boucler)
+  for (let i = 0; i < 26; i++) {
+    const x = r() * w;
+    const y = 40 + r() * (h - 40);
+    const rad = 18 + r() * 40;
+    for (const dx of [-w, 0, w]) {
+      const grad = g.createRadialGradient(x + dx, y, 0, x + dx, y, rad);
+      grad.addColorStop(0, `rgba(200,206,176,${0.18 + r() * 0.12})`);
+      grad.addColorStop(1, 'rgba(200,206,176,0)');
+      g.fillStyle = grad;
+      g.fillRect(x + dx - rad, y - rad, rad * 2, rad * 2);
     }
   }
+  return pc;
+}
+
+/** Bord du front de brume (dégradé horizontal). */
+export function renderHazeEdge(h = 180): PC {
+  const pc = new PC(48, h);
+  const g = pc.c.getContext('2d')!;
+  const grad = g.createLinearGradient(0, 0, 48, 0);
+  grad.addColorStop(0, 'rgba(180,188,156,0)');
+  grad.addColorStop(1, 'rgba(180,188,156,0.5)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 48, h);
   return pc;
 }

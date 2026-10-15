@@ -123,7 +123,7 @@ export function carnetPanel(app: App, start: CarnetTab = 'clue'): HTMLElement {
         for (const e of sup.pour) ev.append(h('div', { class: 'pour' }, '+ ', g.content.entries[e].title));
         for (const e of sup.contre) ev.append(h('div', { class: 'contre' }, '− ', g.content.entries[e].title));
         if (!sup.pour.length && !sup.contre.length) ev.append(h('div', { style: 'color:var(--dim)' }, 'Aucun élément pour l’instant.'));
-        col.append(btn([h('h4', null, (chosen === hy.id ? '◆ ' : '') + hy.title), h('p', null, hy.text), ev], () => {
+        col.append(btn([h('h4', { class: chosen === hy.id ? 'dia' : '' }, hy.title), h('p', null, hy.text), ev], () => {
           g.chooseHypothesis(q, hy.id);
           app.sfx('tick');
           render();
@@ -143,12 +143,12 @@ export function carnetPanel(app: App, start: CarnetTab = 'clue'): HTMLElement {
       const d = g.content.quests[id];
       const status = st.status === 'done' ? ' — terminée' : st.status === 'failed' ? ' — compromise' : '';
       const card = h('div', { class: `card${st.status !== 'active' ? ' done' : ''}` },
-        h('h4', null, d.personal ? '★ ' : d.main ? '◆ ' : '', d.title, status),
+        h('h4', { class: d.main ? 'dia' : '' }, d.personal ? 'Personnel — ' : '', d.title, status),
         h('p', null, d.desc));
       for (const o of d.objectives) {
         const done = !!st.obj[o.id];
         if (!done && !g.check(o.if)) continue;
-        card.append(h('div', { style: `font-size:13px;margin:3px 0;color:${done ? 'var(--dim)' : 'var(--text)'}` }, done ? '☑ ' : '☐ ', h('span', { style: done ? 'text-decoration:line-through' : '' }, g.fmt(o.text))));
+        card.append(h('div', { class: done ? 'chk on' : 'chk', style: `font-size:13px;margin:4px 0;color:${done ? 'var(--dim)' : 'var(--text)'}` }, h('span', { style: done ? 'text-decoration:line-through' : '' }, g.fmt(o.text))));
       }
       col.append(card);
     }

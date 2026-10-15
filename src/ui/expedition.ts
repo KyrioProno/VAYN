@@ -60,14 +60,14 @@ export function expeditionPrep(app: App, onGo: (companion: string | null, gear: 
     left.append(h('h4', { style: 'margin:0 0 6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)' }, 'Compagnon'));
     for (const c of comps) {
       const npc = g.content.npcs[c.id];
-      left.append(btn(h('div', { class: 'comp' }, portrait(npc.look, 42, 1, false), h('div', null, h('b', null, (chosen === c.id ? '◆ ' : '') + npc.name), h('small', null, c.ok ? c.note : c.why ?? ''))), () => {
+      left.append(btn(h('div', { class: 'comp' }, portrait(npc.look, 42, 1, false), h('div', null, h('b', { class: chosen === c.id ? 'dia' : '' }, npc.name), h('small', null, c.ok ? c.note : c.why ?? ''))), () => {
         if (!c.ok) return;
         chosen = chosen === c.id ? null : c.id;
         app.sfx('tick');
         draw();
       }, `opt${chosen === c.id ? ' on' : ''}`, { disabled: !c.ok }));
     }
-    left.append(btn([h('b', null, (chosen === null ? '◆ ' : '') + 'Partir seul'), h('small', null, 'Plus rapide, plus discret. Personne pour vous aider.')], () => { chosen = null; draw(); }, `opt${chosen === null ? ' on' : ''}`));
+    left.append(btn([h('b', { class: chosen === null ? 'dia' : '' }, 'Partir seul'), h('small', null, 'Plus rapide, plus discret. Personne pour vous aider.')], () => { chosen = null; draw(); }, `opt${chosen === null ? ' on' : ''}`));
 
     const right = h('div', { class: 'col', style: 'flex:1;border:1px solid var(--line);background:#13100d' });
     right.append(h('h4', { style: 'margin:0 0 6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)' }, 'Matériel de l’expédition'));

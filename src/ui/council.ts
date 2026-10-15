@@ -33,28 +33,30 @@ export function councilFlow(app: App, motions: MotionDef[], opts: { title: strin
     const list = REVELATIONS.filter((r) => g.check(r.if));
     const chosen = new Set<string>();
     const box = h('div', { class: 'council-side' });
+    const go = btn('Ne rien révéler', () => {
+      for (const r of list) if (chosen.has(r.id)) g.applyFx(r.fx, `revelation:${r.id}`);
+      if (chosen.size) app.sfx('fact');
+      startMotion();
+    }, 'btn primary');
     const draw = () => {
       clear(box);
       if (!list.length) box.append(h('div', { class: 'empty' }, 'Vous n’avez rien de plus à révéler devant tout le monde.'));
       for (const r of list) {
-        box.append(btn([h('b', null, (chosen.has(r.id) ? '☑ ' : '☐ ') + r.label), h('small', null, r.desc)], () => {
+        box.append(btn([h('b', { class: chosen.has(r.id) ? 'chk on' : 'chk' }, r.label), h('small', null, r.desc)], () => {
           if (chosen.has(r.id)) chosen.delete(r.id);
           else chosen.add(r.id);
           app.sfx('tick');
           draw();
         }, `opt${chosen.has(r.id) ? ' on' : ''}`));
       }
+      go.textContent = chosen.size ? `Révéler (${chosen.size})` : 'Ne rien révéler';
     };
     draw();
     root.append(
       h('div', { class: 'council-head' }, h('h1', null, 'Révélations'), h('span', { class: 'step' }, 'Avant le vote')),
       h('p', { class: 'council-desc' }, 'Tout le train est réuni dans la cantine. Ce que vous direz maintenant, tout le monde l’aura entendu. Certaines vérités soudent, d’autres brisent.'),
       box,
-      h('div', { class: 'council-foot' }, h('div', { class: 'spacer' }), btn(chosen.size ? 'Parler' : 'Ne rien révéler', () => {
-        for (const r of list) if (chosen.has(r.id)) g.applyFx(r.fx, `revelation:${r.id}`);
-        if (chosen.size) app.sfx('fact');
-        startMotion();
-      }, 'btn primary')),
+      h('div', { class: 'council-foot' }, h('div', { class: 'spacer' }), go),
     );
   };
 
@@ -90,7 +92,7 @@ export function councilFlow(app: App, motions: MotionDef[], opts: { title: strin
     side.append(h('h4', null, result ? 'Résultat' : 'Votre position'));
     if (!result) {
       for (const o of m.options) {
-        side.append(btn([h('b', null, (s.position === o.id ? '◆ ' : '') + o.label), h('small', null, o.desc)], () => {
+        side.append(btn([h('b', { class: s.position === o.id ? 'dia' : '' }, o.label), h('small', null, o.desc)], () => {
           s.position = o.id;
           app.sfx('tick');
           draw();

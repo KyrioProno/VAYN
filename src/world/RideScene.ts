@@ -125,7 +125,7 @@ export class RideScene extends Phaser.Scene {
     ];
     looks.forEach(([id, look, v], i) => {
       const key = charTexture(this, `ride_${id}`, look);
-      const s = this.add2(this.add.sprite(-60 - i * 46, 170 + (i % 3) * 5, key, 'walk0').setOrigin(0.5, FEET_Y / FRAME_H).setDepth(20 + (i % 3)));
+      const s = this.add2(this.add.sprite(20 + i * 52, 170 + (i % 3) * 5, key, 'walk0').setOrigin(0.5, FEET_Y / FRAME_H).setDepth(20 + (i % 3)));
       this.walkers.push({ s, vx: v * 0.6, t: Math.random() });
     });
     // l'homme en gris, immobile

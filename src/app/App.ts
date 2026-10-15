@@ -264,7 +264,7 @@ export class App implements WorldHost {
       await this.autosave(true);
     } else if (state.chapterDone) {
       this.enqueue(() => this.showEnding());
-    }
+    } else this.resumePending();
   }
 
   private enterWorld() {
@@ -273,6 +273,17 @@ export class App implements WorldHost {
     if (this.pg.scene.isActive('world')) this.pg.scene.stop('world');
     this.pg.scene.start('world', { host: this, zone: g.state.zone });
     this.updateAmbience();
+  }
+
+  /** Après un chargement : relance une séquence obligatoire interrompue (conseil, expédition, départ, assemblée). */
+  private resumePending() {
+    const g = this.game!;
+    const f = (id: string) => g.state.fired.includes(id);
+    if (!g.flag('intro_vu')) this.enqueue(() => this.startDialogue(`start_${g.state.char}`));
+    if (f('conseil') && g.flag('vote_expedition') === undefined) this.enqueue(() => this.councilFlow());
+    if (f('reveil') && !f('expedition_depart') && g.state.zone === 'train') this.enqueue(() => this.expeditionPrepFlow());
+    if (f('depart') && !g.flag('train_roule')) this.enqueue(() => this.departureFlow());
+    if (f('assemblee') && !g.state.chapterDone && g.state.zone === 'train') this.enqueue(() => this.assemblyFlow());
   }
 
   private updateAmbience() {
@@ -355,7 +366,7 @@ export class App implements WorldHost {
         if (!v.o.important || !g.check(v.o.important)) continue;
         if (!this.availableActions(v.o.actions).length) continue;
         const p = scene.worldToScreen(v.abs.x, v.abs.y - (v.o.elev ?? 0) - v.img.height - 2);
-        items.push({ key: `o:${v.o.id}`, x: p.x, y: p.y, html: '◆', cls: 'obj-mark' });
+        items.push({ key: `o:${v.o.id}`, x: p.x, y: p.y, html: '', cls: 'obj-mark' });
       }
     }
     this.ui.syncLabels(items);
@@ -550,6 +561,7 @@ export class App implements WorldHost {
       w.setFocus(null);
       for (const a of w.npcs.values()) a.talking = false;
       if (w.companion) w.companion.talking = false;
+      w.syncNpcs(false);
     }
     void r;
     void this.autosave();
@@ -599,6 +611,7 @@ export class App implements WorldHost {
   async autosave(force = false): Promise<boolean> {
     const g = this.game;
     if (!g || g.state.dead) return false;
+    if (this.flowOpen || this.transitioning) return false;
     if (!force && performance.now() - this.lastAutosave < 4000) return false;
     this.lastAutosave = performance.now();
     return this.save.save(g.state);
@@ -685,11 +698,13 @@ export class App implements WorldHost {
 
   private openFlow(el: HTMLElement) {
     this.flowOpen = true;
+    this.ui.toasts.classList.add('low');
     this.ui.setFlow(el);
   }
 
   private closeFlow() {
     this.flowOpen = false;
+    this.ui.toasts.classList.remove('low');
     this.ui.setFlow(null);
     this.refreshHud();
     this.pump();
@@ -855,6 +870,7 @@ export class App implements WorldHost {
 
   private closeFlowSilently() {
     this.flowOpen = false;
+    this.ui.toasts.classList.remove('low');
     this.ui.setFlow(null);
   }
 

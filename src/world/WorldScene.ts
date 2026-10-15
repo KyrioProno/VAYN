@@ -12,7 +12,7 @@ import {
   renderSection, renderGangway, renderPartition, renderDoorLeaf, renderGate, sectionLights, sectionAmbient,
 } from '../render/sections';
 import {
-  renderSky, renderHills, renderTrees, renderStation, renderGround, renderForeground, renderTrainExterior, renderHaze,
+  renderSky, renderHills, renderTrees, renderStation, renderGround, renderForeground, renderTrainExterior, renderHaze, renderHazeEdge,
   PHASE_TINT, type Phase,
 } from '../render/landscape';
 import { Actor } from './Actor';
@@ -78,6 +78,7 @@ export class WorldScene extends Phaser.Scene {
   private focus: { x: number; zoom: number } | null = null;
   private dim!: Phaser.GameObjects.Rectangle;
   private haze: Phaser.GameObjects.TileSprite | null = null;
+  private hazeEdge: Phaser.GameObjects.Image | null = null;
   private dark: Phaser.GameObjects.RenderTexture | null = null;
   private navDirty = true;
   private unsub: (() => void)[] = [];
@@ -108,6 +109,7 @@ export class WorldScene extends Phaser.Scene {
     this.layers = [];
     this.companion = null;
     this.haze = null;
+    this.hazeEdge = null;
     this.dark = null;
     this.focus = null;
     this.freeLook = 0;
@@ -154,7 +156,8 @@ export class WorldScene extends Phaser.Scene {
     this.darkRect = this.add.rectangle(0, 0, 10, 10, 0x020203, 0).setOrigin(0, 0).setDepth(1450).setScrollFactor(0);
     if (this.zone === 'train' && g.flag('train_roule')) this.setMoving(true);
     if (this.zone === 'exterior') {
-      this.haze = this.add.tileSprite(0, 0, 900, GEO.H + 40, canvasTexture(this, 'fx:haze', () => renderHaze())).setOrigin(0, 0).setDepth(1600).setAlpha(0);
+      this.haze = this.add.tileSprite(0, 0, 900, GEO.H + 90, canvasTexture(this, 'fx:haze2', () => renderHaze())).setOrigin(0, 0).setDepth(1600).setAlpha(0);
+      this.hazeEdge = this.add.image(0, 0, canvasTexture(this, 'fx:hazeedge', () => renderHazeEdge(GEO.H + 90))).setOrigin(0, 0).setDepth(1600).setAlpha(0);
     }
     this.tapMarker = this.add.image(0, 0, glowTexture(this)).setDepth(GEO.FLOOR_Y0 - 1).setScale(0.2, 0.08).setAlpha(0).setBlendMode(Phaser.BlendModes.ADD);
 
@@ -175,8 +178,8 @@ export class WorldScene extends Phaser.Scene {
       this.refreshObjects();
     });
     ev('npc', () => this.syncNpcs(false));
-    ev('time', () => {
-      this.syncNpcs(false);
+    ev('time', (t: { before: number; after: number }) => {
+      this.syncNpcs(t && t.after - t.before >= 20);
       const ph = dayPhase(g.state.time);
       if (ph !== this.phase) {
         this.phase = ph;
@@ -407,7 +410,7 @@ export class WorldScene extends Phaser.Scene {
         (a as any).spot = sp.id;
         continue;
       }
-      if ((a as any).spot === sp.id) continue;
+      if ((a as any).spot === sp.id || a.talking) continue;
       (a as any).spot = sp.id;
       const arrive = () => {
         a!.facing = sp.face ?? a!.facing;
@@ -504,36 +507,31 @@ export class WorldScene extends Phaser.Scene {
     return Math.min(3, window.devicePixelRatio || 1);
   }
 
-  /** Point d'entrée d'un toucher (coordonnées monde). */
+  /** Point d'entrée d'un toucher (coordonnées monde). L'élément le plus en avant gagne. */
   tap(x: number, y: number) {
     if (this.host.busy() || this.eng.state.dead) return;
-    // PNJ
-    let best: { id: string; d: number } | null = null;
+    type Hit = { kind: 'npc'; id: string; depth: number; area: number } | { kind: 'obj'; o: ObjectDef; depth: number; area: number };
+    const hits: Hit[] = [];
     for (const [id, a] of this.npcs) {
       if (!a.visible) continue;
       const top = a.pose === 'lie' ? a.y - 12 : a.y - 31;
-      if (x >= a.x - 8 && x <= a.x + 8 && y >= top && y <= a.y + 3) {
-        const d = Math.abs(x - a.x) + Math.abs(y - (a.y - 14)) * 0.5;
-        if (!best || d < best.d) best = { id, d };
-      }
+      if (x >= a.x - 8 && x <= a.x + 8 && y >= top && y <= a.y + 3) hits.push({ kind: 'npc', id, depth: a.y + 0.2, area: 16 * 34 });
     }
-    if (best) {
-      this.walkToNpc(best.id);
-      return;
-    }
-    // Objets (le plus en avant d'abord)
-    const hits: ObjView[] = [];
     for (const v of this.objs.values()) {
       if (!v.img.visible || !v.o.actions.length) continue;
       const b = v.img.getBounds();
-      const pad = 3;
-      if (x >= b.x - pad && x <= b.right + pad && y >= b.y - pad && y <= b.bottom + pad) hits.push(v);
+      const pad = 5;
+      if (x >= b.x - pad && x <= b.right + pad && y >= b.y - pad && y <= b.bottom + pad) {
+        // les objets muraux (elev) restent derrière les personnages
+        hits.push({ kind: 'obj', o: v.o, depth: v.o.elev ? 0 : v.img.depth, area: v.img.width * v.img.height });
+      }
     }
     if (hits.length) {
-      hits.sort((a, b) => b.img.depth - a.img.depth || a.img.width * a.img.height - b.img.width * b.img.height);
-      // Préférer un objet dont la face touchée est petite (ex. registre posé sur un bureau)
-      const small = hits.find((h) => h.img.width * h.img.height < 400);
-      this.walkToObject((small ?? hits[0]).o);
+      // le plus en avant ; à profondeur voisine, le plus petit (registre posé sur un bureau…)
+      hits.sort((a, b) => (Math.abs(b.depth - a.depth) > 3 ? b.depth - a.depth : a.area - b.area));
+      const h0 = hits[0];
+      if (h0.kind === 'npc') this.walkToNpc(h0.id);
+      else this.walkToObject(h0.o);
       return;
     }
     // Portes verrouillées
@@ -625,7 +623,7 @@ export class WorldScene extends Phaser.Scene {
     if (!a) return;
     a.stop();
     const side = this.player.x < a.x ? -1 : 1;
-    const target = { x: a.x + side * 14, y: Phaser.Math.Clamp(a.y + (a.pose === 'lie' ? 10 : 2), WALK.y0, WALK.y1) };
+    const target = { x: a.x + side * 19, y: Phaser.Math.Clamp(a.y + (a.pose === 'lie' ? 10 : 2), WALK.y0, WALK.y1) };
     this.ensureNav();
     const from = { x: this.player.x, y: this.player.y };
     const near = this.nav.nearestReachable(from, target);
@@ -804,8 +802,10 @@ export class WorldScene extends Phaser.Scene {
       const front = this.hazeFront();
       const viewR = left + viewW;
       this.haze.setPosition(Math.max(left - 32, front), top - 10);
-      this.haze.tilePositionX = t * 6;
-      this.haze.setAlpha(front < viewR ? 0.85 : 0);
+      this.haze.tilePositionX = t * 6 + Math.max(left - 32, front) * 0.5;
+      const on = front < viewR;
+      this.haze.setAlpha(on ? 0.9 : 0);
+      this.hazeEdge?.setPosition(front - 48, top - 10).setAlpha(on ? 0.9 : 0);
     }
     if (this.dark) this.updateDark(left, top);
     if (this.navDirty && !this.player.moving) this.rebuildNav();

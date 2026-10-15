@@ -125,7 +125,7 @@ export function buildEpilogue(g: Game): { title: string; lines: string[] }[] {
       else perso.push('La « cabine 0 » reste une énigme. Vous la contrôlerez au prochain arrêt.');
       break;
     case 'passager':
-      if (f('lou_soignee')) perso.push('La fièvre de Lou est tombée dans la nuit. Elle a réclamé de la confiture, qu’il n’y a plus nulle part. Vous avez ri comme une idiote.');
+      if (f('lou_soignee')) perso.push('La fièvre de Lou est tombée dans la nuit. Elle a réclamé de la confiture, qu’il n’y a plus nulle part. Vous avez ri comme un idiot.');
       else perso.push('Lou brûle toujours. Il reste la prochaine gare, la prochaine boîte, la prochaine liste.');
       if (f('antibio_vole')) perso.push('Quelqu’un, plus haut sur la liste, n’a pas eu sa boîte. Vous ne demandez pas qui.');
       break;
