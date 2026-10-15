@@ -588,7 +588,11 @@ export class App implements WorldHost {
 
   // ======================================================================== panneaux
   openTab(t: TabId) {
-    if (!this.game || this.uiBusy()) {
+    if (!this.game) return;
+    // Un panneau ouvert n'interdit pas d'en ouvrir un autre : les onglets restent atteignables
+    // au doigt sur la colonne de droite, et le joueur doit y passer d'un panneau à l'autre.
+    const occupe = !!this.dlg || !!this.narration || this.ui.hasMenu || this.ui.hasScreen || this.flowOpen || this.transitioning;
+    if (occupe) {
       if (this.ui.hasPanel) this.closePanel();
       return;
     }

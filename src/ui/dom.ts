@@ -44,6 +44,22 @@ export function btn(label: Child | Child[], onTap: () => void, cls = 'btn', extr
   return b;
 }
 
+/**
+ * Signale qu'une zone défile. Au doigt, une liste tronquée en bas sans aucun indice
+ * se lit comme une liste complète : on affiche donc un dégradé et une barre fine.
+ */
+export function marquerDefilement(el: HTMLElement) {
+  const maj = () => el.classList.toggle('deroule', el.scrollHeight > el.clientHeight + 2);
+  // L'appel se fait souvent avant l'insertion dans la page : on remesure une fois posée,
+  // une fois la mise en page faite (polices, images), puis à chaque défilement.
+  maj();
+  setTimeout(maj, 0);
+  setTimeout(maj, 250);
+  el.addEventListener('scroll', maj, { passive: true });
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(maj).observe(el);
+  return el;
+}
+
 export function fmtKg(v: number): string {
   return `${(Math.round(v * 10) / 10).toString().replace('.', ',')} kg`;
 }

@@ -4,7 +4,7 @@ import type { EntryKind, ItemCat, ItemDef, ResKey } from '../engine/types';
 import type { Game } from '../engine/game';
 import { MEMBER_LABEL, councilMembers } from '../engine/council';
 import { fmtDateTime, fmtDuration } from '../engine/time';
-import { btn, clear, fmtKg, h } from './dom';
+import { btn, clear, fmtKg, h, marquerDefilement } from './dom';
 import { portrait } from './portraits';
 import { icon } from './icons';
 import { fullscreenButton } from './fullscreen';
@@ -178,6 +178,7 @@ export function carnetPanel(app: App, start: CarnetTab = 'clue'): HTMLElement {
     else if (tab === 'hyp') renderHyp();
     else if (tab === 'quests') renderQuests();
     else renderConseq();
+    for (const c of Array.from(body.children)) marquerDefilement(c as HTMLElement);
     app.refreshHud();
   };
   render();
@@ -198,14 +199,29 @@ const GAUGE_NOM: Record<string, string> = { health: 'Santé', hydration: 'Hydrat
 /** Objets qu'on ne jette pas : la lampe est le seul éclairage du dépôt, et personne n'a les jetons pour la remplacer. */
 const IRREMPLACABLE = new Set(['lampe']);
 
-/** « +30 satiété · +4 hydratation » : l'effet lisible d'utiliser un objet. */
-function effetUsage(g: Game, d: ItemDef): string {
+/**
+ * « +30 satiété · +4 hydratation » : l'effet lisible d'utiliser un objet.
+ * Le gain annoncé est le gain *réel* : une jauge pleine ne rend pas plus que la place qui reste.
+ */
+export function effetUsage(g: Game, d: ItemDef): string {
   const parts: string[] = [];
   for (const fx of d.use?.fx ?? []) {
     const m = /^(?:if:[^?]+\?)?stat:([a-z]+)([+-][0-9.]+)$/.exec(fx);
     if (!m) continue;
+    const nom = GAUGE_NOM[m[1]]?.toLowerCase() ?? m[1];
     const v = Number(m[2]);
-    parts.push(`${v > 0 ? '+' : ''}${v} ${GAUGE_NOM[m[1]]?.toLowerCase() ?? m[1]}`);
+    if (v > 0) {
+      const place = 100 - g.state.stats[m[1] as keyof typeof g.state.stats];
+      if (place <= 0.5) {
+        parts.push(`${nom} au maximum`);
+        continue;
+      }
+      if (v > place) {
+        parts.push(`+${Math.round(place)} ${nom} (réservoir plein)`);
+        continue;
+      }
+    }
+    parts.push(`${v > 0 ? '+' : ''}${v} ${nom}`);
   }
   return parts.join(' · ');
 }
@@ -260,8 +276,10 @@ export function sacPanel(app: App, storage = false): HTMLElement {
     }
     if (sel.id === 'lampe') col.append(h('div', { class: 'src' }, g.lampeAllumee() ? 'Lampe allumée — elle éclaire le dépôt.' : 'Lampe éteinte — elle n’éclaire rien.'));
     if (IRREMPLACABLE.has(sel.id)) col.append(h('p', { class: 'src', style: 'margin:4px 0 0' }, 'La lampe ne se jette pas : c’est le seul endroit noir du jeu, et vous n’avez pas les jetons pour la remplacer.'));
+    // L'effet n'est proposé que là où le bouton existe : dans le rangement, on ne peut pas boire sur place.
     const effet = effetUsage(g, d);
-    if (d.use && effet) col.append(h('div', { class: 'src' }, `À utiliser : ${effet}`));
+    if (d.use && effet && sel.where === 'inv') col.append(h('div', { class: 'src' }, `À utiliser : ${effet}`));
+    else if (d.use && effet) col.append(h('div', { class: 'src' }, `Dans le rangement : à prendre dans le Sac pour l'utiliser — ${effet}.`));
     col.append(h('h3', null, d.name), h('div', { class: 'src' }, `${CAT_LABEL[d.cat]} · ${d.weight ? fmtKg(d.weight) : 'sans poids'}${d.value ? ` · valeur ${d.value} jetons` : ''}${d.quest ? ' · protégé' : ''}`), h('p', null, d.desc));
     const acts = h('div', { style: 'display:flex;gap:8px;flex-wrap:wrap' });
     if (sel.where === 'inv') {
@@ -291,6 +309,7 @@ export function sacPanel(app: App, storage = false): HTMLElement {
     body.append(list('inv'));
     if (storage) body.append(list('sto'));
     body.append(detail());
+    for (const c of Array.from(body.children)) marquerDefilement(c as HTMLElement);
     const w = g.weight();
     clear(weight);
     weight.className = `weight${g.overloaded() ? ' over' : ''}`;
@@ -369,6 +388,7 @@ export function trainPanel(app: App): HTMLElement {
       }
     }
     body.append(col);
+    marquerDefilement(col);
     app.refreshHud();
   };
   render();
@@ -402,5 +422,7 @@ export function menuPanel(app: App): HTMLElement {
   left.append(info, h('p', { class: 'empty', style: 'padding-left:0;margin-top:10px' }, 'Gestes : toucher pour marcher ou interagir · glisser pour regarder · pincer pour zoomer.'));
   col.append(actions, status);
   body.append(left, col);
+  marquerDefilement(left);
+  marquerDefilement(col);
   return sheet('Menu', null, body, () => app.closePanel());
 }

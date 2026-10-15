@@ -83,6 +83,10 @@ button { font: inherit; color: inherit; }
 .gauges { display: grid; grid-template-columns: repeat(2, auto); gap: 4px 10px; background: rgba(10,9,8,.72); border: 1px solid var(--line); padding: 6px 8px; border-radius: 3px; }
 .gauge { display: flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10px; color: var(--muted); }
 .gauge i { font-style: normal; width: 12px; text-align: center; color: var(--text); }
+/* Le nom de la jauge est écrit en permanence : au doigt, il n'y a pas d'infobulle. */
+.gauge .nm { font-size: 9.5px; letter-spacing: .02em; color: var(--muted); white-space: nowrap; }
+.gauge.low .nm { color: var(--amber); }
+.gauge.crit .nm { color: var(--red); }
 .gauge .bar { width: 46px; height: 5px; background: #2a241e; position: relative; overflow: hidden; }
 .gauge .bar b { position: absolute; inset: 0 auto 0 0; background: #c9bea8; }
 .gauge.low .bar b { background: var(--amber); }
@@ -153,7 +157,7 @@ button { font: inherit; color: inherit; }
 .dlg {
   position: absolute; left: calc(10px + var(--sal)); right: calc(66px + var(--sar)); bottom: calc(8px + var(--sab)); pointer-events: auto;
   display: flex; gap: 12px; background: linear-gradient(rgba(16,14,12,.95), rgba(10,9,8,.97)); border: 1px solid var(--line2); border-radius: 3px;
-  padding: 10px 12px; max-height: 58vh; animation: fadein2 .18s ease-out;
+  padding: 10px 12px; max-height: min(74vh, 420px); animation: fadein2 .18s ease-out;
 }
 .dlg .portrait { flex: 0 0 auto; width: 76px; height: 76px; border: 1px solid var(--line2); background: #0e0c0a; image-rendering: pixelated; }
 .dlg .portrait canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
@@ -338,11 +342,26 @@ button { font: inherit; color: inherit; }
 .loading .bar b { position: absolute; inset: 0 auto 0 0; background: var(--blue2); transition: width .2s; }
 .fade { position: absolute; inset: 0; background: #000; pointer-events: none; opacity: 0; transition: opacity .5s; }
 .fade.on { opacity: 1; pointer-events: auto; }
-@media (max-height: 380px) {
-  .dlg .text { font-size: 14px; }
-  .dlg .portrait { width: 60px; height: 60px; }
+@media (max-height: 440px) {
+  .dlg { gap: 9px; padding: 8px 10px; }
+  .dlg .text { font-size: 14px; min-height: 2.2em; }
+  .dlg .portrait { width: 58px; height: 58px; }
+  .dlg .who { font-size: 12px; }
+  .dlg .choices { gap: 4px; margin-top: 6px; }
+  .dlg .choice { min-height: 34px; padding: 6px 10px; font-size: 13.5px; }
   .hud-clock { font-size: 19px; }
 }
+
+/* Panneau ouvert : les messages ne doivent pas masquer la colonne de droite. */
+.toasts.low.compact { width: min(250px, 32vw); bottom: calc(8px + var(--sab)); }
+.toasts.low.compact .toast { font-size: 11.5px; padding: 5px 9px; line-height: 1.35; }
+
+/* Une liste qui défile doit le dire : sans cela, l'élément coupé en bas passe pour le dernier. */
+.deroule { scrollbar-width: thin; scrollbar-color: var(--line2) transparent; }
+.deroule::-webkit-scrollbar { width: 5px; height: 5px; }
+.deroule::-webkit-scrollbar-track { background: rgba(0,0,0,.35); }
+.deroule::-webkit-scrollbar-thumb { background: var(--blue2); border-radius: 3px; }
+.deroule { mask-image: linear-gradient(to bottom, #000 calc(100% - 16px), transparent); -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 16px), transparent); }
 
 .ico { display: inline-flex; vertical-align: middle; line-height: 0; }
 .ico svg { display: block; }

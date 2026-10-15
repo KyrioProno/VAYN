@@ -1,7 +1,7 @@
 // Boîte de dialogue en bas d'écran (portrait, nom, texte progressif, choix).
 import type { DialogueView } from '../engine/dialogue';
 import type { Look } from '../engine/types';
-import { btn, clear, h } from './dom';
+import { btn, clear, h, marquerDefilement } from './dom';
 import { portrait } from './portraits';
 
 export interface DialogueBoxOpts {
@@ -85,6 +85,7 @@ export class DialogueBox {
           this.opts.onChoice(c.index);
         }, 'choice'));
       }
+      marquerDefilement(this.choices);
       this.cont.style.display = 'none';
     } else {
       this.cont.textContent = v.isEnd ? 'Toucher pour terminer ›' : 'Toucher pour continuer ›';

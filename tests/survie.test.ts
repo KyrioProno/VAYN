@@ -206,8 +206,12 @@ describe('Jauges de survie — ce que le temps fait, et le dire', () => {
 
   it('les libellés du HUD nomment ce que la jauge mesure', () => {
     const src = readFileSync(join(RACINE, 'src/ui/hud.ts'), 'utf-8');
-    expect(src).toContain("['satiety', 'food', 'Satiété']");
-    expect(src).toContain("['rest', 'rest', 'Repos']");
+    expect(src).toContain("nom: 'Satiété'");
+    expect(src).toContain("nom: 'Repos'");
+    expect(src).toContain("nom: 'Hydratation'");
+    expect(src).toContain("nom: 'Santé'");
+    // Le nom est écrit dans la page (au doigt, une infobulle n'existe pas).
+    expect(src).toContain("h('span', { class: 'nm' }, AIDE[k].nom)");
     expect(src).not.toContain("'Faim'");
     expect(src).not.toContain("'Fatigue'");
   });

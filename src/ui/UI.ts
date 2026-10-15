@@ -46,7 +46,10 @@ export class UI {
   toast(text: string, kind: ToastKind = 'info') {
     const el = h('div', { class: `toast ${kind}` }, text);
     this.toasts.append(el);
-    while (this.toasts.children.length > 4) this.toasts.firstElementChild?.remove();
+    // Panneau ouvert : les messages se superposent à la colonne de droite.
+    // On n'en garde alors que deux, en plus petits, pour laisser la fiche lisible.
+    const max = this.hasPanel ? 2 : 4;
+    while (this.toasts.children.length > max) this.toasts.firstElementChild?.remove();
     const life = kind === 'warn' ? 5200 : kind === 'entry' || kind === 'quest' ? 4000 : 3200;
     setTimeout(() => el.classList.add('out'), life);
     setTimeout(() => el.remove(), life + 450);
@@ -54,7 +57,11 @@ export class UI {
 
   // ------------------------------------------------------------------ écrans
   private updateToastPos() {
-    this.toasts.classList.toggle('low', this.hasPanel || this.hasFlow || this.hasScreen);
+    const bas = this.hasPanel || this.hasFlow || this.hasScreen;
+    this.toasts.classList.toggle('low', bas);
+    this.toasts.classList.toggle('compact', this.hasPanel);
+    // Un panneau qui vient de s'ouvrir doit respecter la limite basse.
+    while (this.hasPanel && this.toasts.children.length > 2) this.toasts.firstElementChild?.remove();
   }
 
   setScreen(el: HTMLElement | null) {

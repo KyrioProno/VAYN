@@ -4,12 +4,15 @@ import { displayDay, fmtClock } from '../engine/time';
 import { btn, h } from './dom';
 import { icon, type ICON } from './icons';
 
-// Ce que chaque jauge mesure vraiment (la barre pleine = le réservoir plein).
-const AIDE: Record<string, string> = {
-  health: 'Santé. Sous 15 % d\'hydratation ou de satiété, ou 8 % de repos, elle commence à baisser.',
-  hydration: 'Hydratation : ce que vous buvez. Descend avec le temps, deux fois moins vite en dormant.',
-  satiety: 'Satiété : ce que vous mangez. Barre vide, c\'est la faim. Descend avec le temps, deux fois moins vite en dormant.',
-  rest: 'Repos : ce que vous avez dormi. Sous 25 %, vous marchez plus lentement ; une heure de sommeil rend 14 points (18 dans les dortoirs calfeutrés).',
+/**
+ * Le nom affiché en permanence devant chaque jauge, et l'explication complète
+ * (infobulle sur computer : sur téléphone, au doigt, c'est le nom affiché qui joue le rôle d'étiquette).
+ */
+const AIDE: Record<string, { nom: string; texte: string }> = {
+  health: { nom: 'Santé', texte: "ce qu'il vous reste de force. Sous 15 % d'hydratation ou de satiété, ou 8 % de repos, elle commence à baisser." },
+  hydration: { nom: 'Hydratation', texte: 'ce que vous buvez. Descend avec le temps, deux fois moins vite en dormant.' },
+  satiety: { nom: 'Satiété', texte: 'ce que vous mangez. Barre vide, c\'est la faim. Descend avec le temps, deux fois moins vite en dormant.' },
+  rest: { nom: 'Repos', texte: 'ce que vous avez dormi. Sous 25 %, vous marchez plus lentement ; une heure de sommeil rend 14 points (18 dans les dortoirs calfeutrés).' },
 };
 
 const ICON_TOKEN = '<span class="ico" style="margin-right:4px">' + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="8"/><path d="M12 8l3 4-3 4-3-4z"/></svg></span>';
@@ -31,16 +34,15 @@ export class Hud {
     this.place = h('div', { class: 'hud-place' });
     this.obj = h('div', { class: 'hud-obj' });
     const g = h('div', { class: 'gauges' });
-    // Libellés calqués sur ce que la jauge mesure : la barre pleine = reservoir plein.
-    const defs: [string, keyof typeof ICON, string][] = [
-      ['health', 'health', 'Santé'],
-      ['hydration', 'water', 'Hydratation'],
-      ['satiety', 'food', 'Satiété'],
-      ['rest', 'rest', 'Repos'],
-    ];
-    for (const [k, ic, title] of defs) {
+    // Le nom de la jauge est écrit en toutes lettres : sur un écran tactile,
+    // une infobulle n'existe pas, et une icône seule ne dit rien.
+    const defs: [string, keyof typeof ICON][] = [['health', 'health'], ['hydration', 'water'], ['satiety', 'food'], ['rest', 'rest']];
+    for (const [k, ic] of defs) {
       const bar = h('b');
-      const el = h('div', { class: 'gauge', title }, h('i', null, icon(ic)), h('div', { class: 'bar' }, bar));
+      const el = h('div', { class: 'gauge', title: AIDE[k].nom },
+        h('i', null, icon(ic)),
+        h('span', { class: 'nm' }, AIDE[k].nom),
+        h('div', { class: 'bar' }, bar));
       (el as HTMLElement & { bar?: HTMLElement }).bar = bar;
       this.gauges[k] = el;
       g.append(el);
@@ -93,8 +95,9 @@ export class Hud {
         (el as HTMLElement & { bar: HTMLElement }).bar.style.width = `${Math.max(0, Math.min(100, v))}%`;
         el.classList.toggle('low', v < 35 && v >= 15);
         el.classList.toggle('crit', v < 15);
-        const nom = AIDE[k].split(':')[0].split('.')[0];
-        el.title = `${nom} — ${s} %. ${AIDE[k].slice(nom.length + 1).replace(/^\.\s*/, '')}`.trim();
+        el.title = `${AIDE[k].nom} : ${s} %. ${AIDE[k].texte}`;
+        const etiquette = el.querySelector('.nm');
+        if (etiquette) etiquette.textContent = `${AIDE[k].nom} ${s}`;
       }
     }
     this.set('tok', this.tokens, `${ICON_TOKEN}${g.state.tokens}`, true);
