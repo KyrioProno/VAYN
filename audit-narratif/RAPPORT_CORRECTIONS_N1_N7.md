@@ -6,7 +6,7 @@ Aucune réécriture d'histoire, aucun personnage, aucun choix et aucune ambiance
 
 ---
 
-## 1. Fichiers modifiés (11)
+## 1. Fichiers modifiés (12)
 
 | Fichier | Correction |
 |---|---|
@@ -14,10 +14,11 @@ Aucune réécriture d'histoire, aucun personnage, aucun choix et aucune ambiance
 | `src/content/motions.ts` | N3 (`m_mere.fx` réduit à `set:mere_revelee_conseil` ; les effets de réunion passent dans l'option `accueil`), N2 (`set:mara_cellule` ajouté à l'option `cellule`) |
 | `src/content/quests.ts` | N2/N2b (objectif `q_mara.reunion` masqué si `mara_cellule` ou `mara_expulsee`), N6 (`cq_theo_mort` supprimé) |
 | `src/content/npcs.ts` | N6 (`!f:theo_mort` retiré de l'emploi du temps de Théo — drapeau jamais posé) |
-| `src/content/train_objects.ts` | N6 (`f:vasseur_aide` retiré des deux conditions du relais K3 — drapeau posé nulle part) |
+| `src/content/train_objects.ts` | N6 (`f:vasseur_aide` retiré des deux conditions du relais K3 — drapeau posé nulle part), antenne (nouvelle action « Régler l’antenne de toit » sur le poste radio) |
+| `src/content/upgrades.ts` | Antenne : l’effet annoncé est décrit exactement, plus de promesse vide |
 | `src/content/dialogues/council.ts` | N2/N2b (3 gardes : entrée « La fille, dans la cellule… », choix « C'est la fille de la docteure Sorel », choix « Votre fille est vivante »), N4 (routage de Sorel vers `deuil` seulement si `dead:mara & f:mere_reunie`) |
 | `src/content/dialogues/people.ts` | N7 (variants `soigne` sur les drapeaux posés par le nœud : `soin_trousse` / `soin_antibio`) |
-| `tests/consequences.test.ts` | 3 assertions fragiles reprises + 21 tests de régression N1→N7 + garde-fou lexical anti-drapeau-orphan |
+| `tests/consequences.test.ts` | 3 assertions fragiles reprises + 21 tests de régression N1→N7 + 6 tests d’antenne + garde-fou lexical anti-drapeau-orphan |
 | `audit-narratif/outils/parcours.audit.test.ts` | 2 nouveaux parcours joués (C13, C14), assertions associées, honesty-check sur le libellé de C3 |
 | `audit-narratif/outils/harness.ts` | Journal du conseil : mention de l'égalité et de son arbitrage (« égalité tranchée par la position du joueur » / « repli ») |
 | `tsconfig.json` | `"types": ["vite/client", "node"]` — nécessaire aux imports `node:` du test lexical ; aucun code applicatif touché |
@@ -77,7 +78,7 @@ Aucun drapeau n'a été supprimé. Preuve : 1 test de table couvrant les 4 cas.
 - `!f:theo_mort` dans l'emploi du temps de Théo : supprimé — drapeau jamais posé.
 - Branche d'épilogue `else if (f('theo_mort'))` (« Théo n'est jamais revenu… ») : supprimée — inatteignable.
 - `f:vasseur_aide` : le drapeau **n'est posé nulle part** (vérifié : plus aucune occurrence dans `src/`, `tests/`, `audit-narratif/outils/`). Les deux conditions du relais K3 qui le lisaient ont été purgées ; l'aide de Vasseur reste possible par le dialogue (`k3`/`k3_2`), qui est la voie prévue.
-- **Point signalé, non inventé** : `up_antenne` (« Antenne de toit », 1 pièce, 40 min, effet annoncé « Meilleure réception radio, si le poste fonctionne ») pose `set:antenne`, et **`f:antenne` n'est lu nulle part** : l'effet annoncé n'existe pas dans le moteur. La bible ne mentionne l'antenne qu'une fois (C-9, l. 146, « il se fixe sur … les antennes ») et ne documente ni amélioration ni mécanique. Je n'ai donc rien inventé : l'amélioration reste en l'état et **le joueur peut payer une pièce et 40 minutes pour une promesse sans effet**. Décision attendue : (a) retirer l'amélioration, (b) lui donner un effet documenté (écoute plus lointaine ?), ou (c) la laisser en l'état commeollipin de décor. À trancher par l'auteur.
+- **`up_antenne` (« Antenne de toit »)** — ce point était resté ouvert à la fin du premier chantier (le drapeau `set:antenne` n’était lu nulle part : l’amélioration ne coûtait qu’une promesse sans effet). Il est traité dans la section 7 ci-dessous.
 
 ### N7 — « de votre mieux » vs antibiotiques
 
@@ -105,9 +106,9 @@ Aucun drapeau n'a été supprimé. Preuve : 1 test de table couvrant les 4 cas.
 | Commande | Résultat |
 |---|---|
 | `npm run typecheck` | **0 erreur** |
-| `npm test` | **69 / 69** (4 fichiers : consequences 44, engine 17, content 3, playthrough 5) |
+| `npm test` | **75 / 75** (4 fichiers : consequences 50, engine 17, content 3, playthrough 5) |
 | `npx vitest run --config audit-narratif/outils/vitest.config.ts` | **2 / 2** — 30 parcours joués de bout en bout |
-| `npm run build` | **OK**, `✓ built in 5.97s` |
+| `npm run build` | **OK**, `✓ built in 5.65s` |
 
 `audit-narratif/PARCOURS_EXECUTES.md` et les 30 journaux (`audit-narratif/journaux/*.txt`) ont été régénérés par le harnais.
 
@@ -138,7 +139,7 @@ Le parcours `C3` s'appelait `C3-mara-expulsee` alors que son verdict réel est `
 
 - **Le « choix contradictoire » au sens de l'accessibilité des scènes est vérifié au niveau journal** (choix absent dans le journal) et au niveau unitaire (le dialogue lève une erreur si on force le choix). Je n'ai pas joué manuellement le jeu dans un navigateur : toute la validation est faite dans le moteur réel via le harnais d'audit et les tests.
 - **Aucun parcours n'a été joué avec une version qui casse volontairement le contenu** : la contre-épreuve du garde-fou est la seule expérience « négative » menée, et elle est documentée ci-dessus.
-- **L'antenne reste sans effet** (N6 ci-dessus) : décision non inventée, en attente.
+- **L’antenne a désormais un effet réel** (section 7) : aucune intrigue inventée, aucun indice rendu inaccessible — mais **aucun message radio supplémentaire n’a été écrit**, voir la section 7 pour pourquoi la bible l’interdit et ce qu’il faudrait décider pour en ajouter un.
 - Les 30 parcours rejoués à chaque exécution de l'audit ne couvrent pas les 4 personnages × tous les embranchements ; la grille de compréhension (`PARCOURS_EXECUTES.md`) le documente explicitement (colonnes « indices », « préparée », etc. — « non » signifie « jamais obtenu dans ce parcours », pas « impossible »).
 - Le moteur du conseil n'a pas été retouché : `memberScores`, `resolveVote` et `applyResult` sont exactement ceux de la version vérifiée.
 
@@ -149,7 +150,40 @@ Le parcours `C3` s'appelait `C3-mara-expulsee` alors que son verdict réel est `
 ```bash
 npm ci
 npm run typecheck
-npm test                                    # 69 tests
+npm test                                    # 75 tests
 npx vitest run --config audit-narratif/outils/vitest.config.ts   # 30 parcours + xref
 npm run build
 ```
+
+---
+
+## 7. Antenne de toit : l’effet annoncé, et pourquoi pas de message supplémentaire
+
+**Constat initial** : `up_antenne` posait `set:antenne`, drapeau que rien ne lisait. Le joueur payait une pièce et 40 minutes pour une promesse sans effet.
+
+**Systèmes radio existants (examinés avant de choisir)** :
+
+| Où | Objet | Ce qu’il délivre |
+|---|---|---|
+| Train, salle radio | `train_objects.ts` → `radio` | `Examiner le poste` → indice `c_relais_radio` ; `Écouter 4,7 MHz` (≥ 21 h, 20 min) → indice `c_voix_clairval` + `f:clairval_entendu` ; `Écouter` le jour → trois variantes de texte, aucun effet ; `Retirer le K3` → `k3_retire_radio` + `radio_muette` (poste muet) |
+| Saint-Aubin, poste d’aiguillage | `exterior.ts` → `recepteur` | `Écouter` (10 min) → indice `c_emission_clairval` (boucle enregistrée du Jour 96) |
+| Rappel d’horaire | `events.ts` → `soir_radio` (J1 21 h) | un simple toast |
+| Final | `story.ts` → `twistText` | le message du VAYN-2, en salle radio si le poste fonctionne, sinon au pupitre |
+
+**Effet implémenté** — nouvelle action sur le poste du train : `f:antenne & !f:k3_retire_radio & day>=2 & clock<21:00`, 10 minutes, mêmes effets que l’écoute de 21 h (`entry:c_voix_clairval`, `set:clairval_entendu`). L’action n’existe pas avant 21 h (l’écoute normale est déjà disponible), et pas après non plus (elle ne double pas l’écoute de 21 h). La description de l’amélioration est réécrite pour dire exactement cela.
+
+Pourquoi cette condition-là :
+
+- `!f:k3_retire_radio` est le test de « le poste fonctionne » déjà utilisé par l’écoute de 21 h et par la condition d’achat de l’amélioration ;
+- `day>=2` : l’émission ne commence qu’à 21 h (Mara : « chaque soir, à partir de 21 h, on réémet en boucle »), donc l’antenne n’a rien à accrocher avant la première émission ; l’indice du carnet dit « en boucle depuis 21 h », l’entendre à 9 h le jour même serait faux.
+
+**Tests ajoutés (6, dans `tests/consequences.test.ts`, bloc « N6 (suite) ») :**
+
+1. achetée → l’action existe en dehors de 21 h, donne l’indice, coûte 10 minutes et consomme la pièce ;
+2. sans antenne et avant 21 h → l’action n’existe pas, l’écoute de jour ne donne rien ;
+3. sans antenne, à 21 h → l’écoute fonctionne comme avant (aucun indice essentiel n’est réservé à l’achat) ;
+4. avant la première émission → rien à accrocher ;
+5. poste non opérationnel (`k3_retire_radio`) → l’effet disparaît, et l’amélioration n’est même plus proposable ;
+6. à 21 h → c’est l’écoute du poste qui parle (20 minutes), l’antenne ne double rien.
+
+**Pourquoi aucun message supplémentaire n’a été écrit** : la bible l’interdit (§ 0.2 : « une proposition qui exigerait un objet absent du jeu est une mauvaise proposition » ; § 1.3 et § 400/418 : « le mur est une transcription, pas une voix nouvelle » — la boucle de Clairval *est* le message du chapitre). Ajouter une seconde voix sur 4,7 MHz serait inventer une intrigue, et les seuls autres messages radio existants (la boucle du Jour 96 d’Anselme, le J3 « Paris ne répond plus », Sorel-Arnaud) sont soit déjà portés par un autre objet, soit postérieurs au chapitre, soit hors sujet. **Si vous voulez un vrai message supplémentaire, c’est une décision d’écriture** : dites-moi lequel et je le rédige (le récepteur d’Anselme est déjà en place, mais l’antenne du train ne peut pas le déclencher).

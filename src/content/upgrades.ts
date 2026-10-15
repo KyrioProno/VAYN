@@ -44,7 +44,7 @@ export const UPGRADES: Record<string, UpgradeDef> = {
   up_antenne: {
     id: 'up_antenne', name: 'Antenne de toit',
     desc: 'Tirer une antenne sur le toit de la voiture administrative.',
-    effect: 'Meilleure réception radio, si le poste fonctionne.',
+    effect: 'Une fois l’émission de 21 h commencée, le poste tient 4,7 MHz à toute heure — et l’écoute prend dix minutes au lieu de vingt. Sans effet si le K3 repart dans la filtration.',
     cost: { parts: 1 }, time: 40,
     if: 'e:c_relais_radio & !f:k3_retire_radio',
     visible: 'e:c_relais_radio',

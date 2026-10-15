@@ -583,6 +583,12 @@ export const TRAIN_OBJECTS: ObjectDef[] = [
           { if: 'true', text: 'Du souffle sur toutes les fréquences. Rien, à cette heure-ci.' },
         ],
       }),
+      // Antenne de toit (amélioration up_antenne) : le poste tient la boucle une fois l’émission de 21 h commencée.
+      A('Régler l’antenne de toit', {
+        if: 'f:antenne & !f:k3_retire_radio & day>=2 & clock<21:00', time: 10,
+        fx: ['entry:c_voix_clairval', 'set:clairval_entendu'],
+        text: 'L’antenne prend ce que le socle perdait. Le souffle se défait, et la boucle de la veille revient entière : « …Clairval, barrage… nous sommes quarante… venez par la vallée… » Elle recommence, mot pour mot. Rien de neuf — mais à l’heure que vous voulez.',
+      }),
       A('Retirer le K3', {
         if: '!f:k3_retire_radio & !obj:filtration=repare & e:f_k3_radio', danger: true, time: 10,
         fx: ['set:k3_retire_radio', 'give:relais_k3', 'set:radio_muette'],

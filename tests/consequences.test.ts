@@ -9,7 +9,7 @@ import { CONTENT } from '../src/content';
 import { REVELATIONS, buildEpilogue } from '../src/content/story';
 import { applyResult, availableArgs, councilMembers, newSession, resolveVote, useArg } from '../src/engine/council';
 import { absTime } from '../src/engine/time';
-import { newGame, talk } from './helpers';
+import { act, newGame, talk } from './helpers';
 
 function section(g: ReturnType<typeof newGame>, titre: string): string {
   return buildEpilogue(g).find((s) => s.title === titre)!.lines.join(' ');
@@ -554,6 +554,79 @@ describe('N6 / N7 — contenus morts et libellés de soin', () => {
     // Sans trousse et sans être mécanicien, le relais s'installe seulement avec elle.
     talk(g, 'vasseur', ['J’ai un relais K3']);
     expect(g.state.objects['filtration']).toBe('repare');
+  });
+});
+
+describe('N6 (suite) — l’antenne de toit a un effet réel, et seulement si le poste fonctionne', () => {
+  const RADIO = 'radio';
+
+  it('achetée : le poste tient 4,7 MHz même en dehors de la fenêtre de 21 h', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:c_relais_radio', 'res:parts+1']);
+    g.advance(absTime('d2@09:00') - g.state.time);          // retour de l’expédition, avant le départ
+    expect(() => act(g, RADIO, 'antenne')).toThrow();        // sans antenne, aucune action de ce nom
+    const pieces = g.state.res.parts;
+    expect(g.installUpgrade('up_antenne')).toBe(true);
+    expect(g.flag('antenne')).toBe(true);
+    expect(g.state.res.parts).toBe(pieces - 1);              // la pièce a bien été consommée
+    const avant = g.state.time;
+    const texte = act(g, RADIO, 'antenne');
+    expect(texte).toContain('Clairval');
+    expect(g.knows('c_voix_clairval')).toBe(true);
+    expect(g.flag('clairval_entendu')).toBe(true);
+    expect(g.state.time - avant).toBe(10);                   // dix minutes, et non vingt
+  });
+
+  it('sans antenne et avant 21 h : la boucle reste inaudible', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:c_relais_radio']);
+    expect(() => act(g, RADIO, 'antenne')).toThrow();
+    const texte = act(g, RADIO, 'Écouter');                  // l’écoute de jour, sans effet
+    expect(texte).toContain('souffle');
+    expect(g.knows('c_voix_clairval')).toBe(false);
+    expect(g.flag('clairval_entendu')).toBeFalsy();
+  });
+
+  it('sans antenne, l’écoute de 21 h fonctionne comme avant : aucun indice n’est réservé à l’achat', () => {
+    const g = newGame('controleur');
+    g.advance(absTime('d1@21:05') - g.state.time);
+    act(g, RADIO, 'Écouter 4,7 MHz');
+    expect(g.knows('c_voix_clairval')).toBe(true);
+    expect(g.flag('clairval_entendu')).toBe(true);
+  });
+
+  it('avant la première émission de 21 h, l’antenne n’a rien à accrocher', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:c_relais_radio', 'res:parts+1']);
+    g.installUpgrade('up_antenne');
+    expect(() => act(g, RADIO, 'antenne')).toThrow();        // J1 au matin : la boucle n’a pas commencé
+    expect(g.knows('c_voix_clairval')).toBe(false);
+  });
+
+  it('poste non opérationnel : l’effet disparaît, et l’amélioration n’est même plus proposable', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:c_relais_radio', 'res:parts+1']);
+    g.installUpgrade('up_antenne');
+    g.applyFx(['set:k3_retire_radio']);                      // le K3 repart dans la filtration
+    g.advance(absTime('d2@09:00') - g.state.time);
+    expect(() => act(g, RADIO, 'antenne')).toThrow();
+    expect(g.knows('c_voix_clairval')).toBe(false);
+    const neuf = newGame('controleur');
+    neuf.applyFx(['entry:c_relais_radio', 'res:parts+1', 'set:k3_retire_radio']);
+    expect(neuf.installUpgrade('up_antenne')).toBe(false);
+    expect(neuf.upgradeStatus(CONTENT.upgrades.up_antenne).ok).toBe(false);
+  });
+
+  it('à 21 h, c’est l’écoute du poste qui parle : l’antenne ne la double pas', () => {
+    const g = newGame('controleur');
+    g.applyFx(['entry:c_relais_radio', 'res:parts+1']);
+    g.installUpgrade('up_antenne');
+    g.advance(absTime('d1@21:05') - g.state.time);
+    expect(() => act(g, RADIO, 'antenne')).toThrow();
+    const avant = g.state.time;
+    act(g, RADIO, 'Écouter 4,7 MHz');
+    expect(g.state.time - avant).toBe(20);
+    expect(g.knows('c_voix_clairval')).toBe(true);
   });
 });
 
