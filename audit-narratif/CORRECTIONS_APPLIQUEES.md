@@ -45,7 +45,7 @@ Le message final « …ici VAYN-2… ne vous arrêtez pas à Clairval. » est **
 ### Tests et outils d'audit
 | Fichier | Modification |
 |---|---|
-| `tests/consequences.test.ts` | **Nouveau** — 22 tests de non-régression (morts, Théo, Mara, objectifs, promesses, cohérence). |
+| `tests/consequences.test.ts` | **Nouveau** — 23 tests de non-régression (morts, Théo, Mara, objectifs, promesses, cohérence). |
 | `tests/content.test.ts` | Adaptation au nouveau type de libellé de révélation. |
 | `audit-narratif/outils/harness.ts` | Le banc d'essai recopie désormais la logique **corrigée** de l'App ; `checkCompanion()` délègue au moteur ; le rapport tient compte des objectifs « faits si… ». |
 | `audit-narratif/outils/parcours.audit.test.ts` | Deux parcours de plus (C11, C12) et des assertions sur D-01, D-02, D-04. |
@@ -80,7 +80,7 @@ Le message final « …ici VAYN-2… ne vous arrêtez pas à Clairval. » est **
 | **D-22** | Des objectifs ne se cochent que par une seule voie | Plusieurs objectifs acceptent désormais toutes les voies valables (antibiotiques, mère de Mara, sort de Mara, garçon de Madame, carnet de Vasseur, trafic). |
 | **D-23** | Systèmes qui promettent un effet | Le vacarme de la grille alerte désormais les chiens (le drapeau existait, il est enfin lu). |
 | **D-24** | La fiche de Castel annonce une scène inexistante | La promesse a été retirée de la fiche. |
-| **D-26** | « Soigner sa jambe » vide une trousse même sans trousse | On ne consomme que ce qu'on a réellement. |
+| **D-26** | « Soigner sa jambe » vide une trousse même sans trousse | On ne consomme que ce qu'on a réellement (trousse si on en a une, sinon antibiotiques, sinon bandage — jamais les deux). |
 | **D-27** | Desses incohérents, Marchetti, Théo et la pompe | Formulations corrigées, y compris « le même dessin » seulement si le joueur a vu l'atelier. |
 | **D-30** | Le pupitre est signalé à tous alors qu'il est fermé | Le marqueur n'apparaît que si la porte de la cabine est ouverte. |
 
@@ -91,11 +91,11 @@ Le message final « …ici VAYN-2… ne vous arrêtez pas à Clairval. » est **
 ```
 $ npm test                                        (vitest, tests/)
   Test Files  4 passed (4)
-  Tests      47 passed (47)
+  Tests      48 passed (48)
     tests/content.test.ts        3
     tests/engine.test.ts        17
     tests/playthrough.test.ts    5
-    tests/consequences.test.ts  22   ← nouveau
+    tests/consequences.test.ts  23   ← nouveau
 
 $ npx vitest run --config audit-narratif/outils/vitest.config.ts
   Test Files  2 passed (2)

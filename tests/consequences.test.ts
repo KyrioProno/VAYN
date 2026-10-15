@@ -104,6 +104,21 @@ describe('D-02 / D-06 / D-19 — Théo', () => {
     expect(section(g, 'Les gens')).toContain('Le signal, au loin, a regardé passer le train.');
   });
 
+  it('soigner la jambe ne vide que ce qu’on a (D-26)', () => {
+    const g = newGame('mecanicien');
+    g.meet('theo');
+    g.applyFx(['give:bandage_comp', 'give:antibio']);
+    talk(g, 'theo', ['Raconte-moi cette nuit-là', 'Soigner sa jambe']);
+    expect(g.itemQty('bandage_comp')).toBe(0);
+    expect(g.itemQty('antibio')).toBe(1); // la trousse suffit : on ne gaspille pas les antibiotiques
+
+    const g2 = newGame('mecanicien');
+    g2.meet('theo');
+    g2.applyFx(['give:antibio']);
+    talk(g2, 'theo', ['Raconte-moi cette nuit-là', 'Soigner sa jambe']);
+    expect(g2.itemQty('antibio')).toBe(0);
+  });
+
   it('le récit de Théo reste accessible à bord (D-19)', () => {
     const g = newGame('mecanicien');
     g.meet('theo');

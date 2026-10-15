@@ -302,7 +302,7 @@ export const THEO: DialogueDef = {
     soigne: n([
       { if: 'has:bandage_comp', text: 'Vous videz la trousse de secours : antiseptique, gaze, bandage propre. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
       { if: 'true', text: 'Vous faites de votre mieux avec ce que vous avez. Théo serre les dents, puis souffle, soulagé. Il pourra marcher, avec de l’aide.' },
-    ], undefined, { next: 'hub', fx: ['if:has:bandage_comp?take:bandage_comp', 'if:!has:bandage_comp & has:antibio?take:antibio', 'if:!has:bandage_comp & !has:antibio?take:bandage', 'set:theo_soigne', 'time:15'] }),
+    ], undefined, { next: 'hub', fx: ['if:has:bandage_comp?take:bandage_comp;set:soin_trousse', 'if:!f:soin_trousse & has:antibio?take:antibio', 'if:!f:soin_trousse & !has:antibio?take:bandage', 'set:theo_soigne', 'time:15'] }),
     ramener: n([
       { if: 'f:theo_soigne | comp:vasseur | comp:castel', text: 'Il se redresse en serrant les dents. « Allons-y. Doucement. »' },
       { if: 'true', text: 'Je ne tiendrai pas debout sans un vrai pansement, ou quelqu’un de costaud pour me porter.' },
