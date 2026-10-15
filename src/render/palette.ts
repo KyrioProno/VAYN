@@ -1,0 +1,77 @@
+// Palette industrielle sombre, accents bleus discrets, lumières chaudes à l'intérieur.
+export const P = {
+  ink: '#0d0b0a',
+  ink2: '#17120f',
+  rim: '#2b2420',
+  night: '#0b0e13',
+
+  steel0: '#14181d',
+  steel1: '#20262d',
+  steel2: '#2f3740',
+  steel3: '#465260',
+  steel4: '#6a7784',
+  steel5: '#97a3ad',
+
+  rust0: '#2e1912',
+  rust1: '#4f2a1b',
+  rust2: '#7a4024',
+  rust3: '#a55f33',
+
+  wood0: '#24160d',
+  wood1: '#3a2516',
+  wood2: '#55381f',
+  wood3: '#74502d',
+  wood4: '#946a3d',
+
+  red0: '#2f0c0e',
+  red1: '#561519',
+  red2: '#7e2025',
+  red3: '#a83236',
+  gold: '#c9a25a',
+  gold2: '#e6c47d',
+
+  green0: '#141f1b',
+  green1: '#203229',
+  green2: '#2f4a3c',
+  green3: '#46685a',
+  plant: '#5d8a4a',
+  plant2: '#86b864',
+
+  blue0: '#121a24',
+  blue1: '#1b2836',
+  blue2: '#2a3d52',
+  blue3: '#436079',
+  blue4: '#7397b8',
+  blue5: '#a9c6df',
+
+  cream0: '#5a5244',
+  cream1: '#8d8571',
+  cream2: '#bfb59a',
+  cream3: '#e5dcc2',
+  paper: '#d9cfb2',
+
+  tile0: '#3c4646',
+  tile1: '#55625f',
+  tile2: '#71807b',
+  tile3: '#93a39b',
+
+  conc0: '#2f2c28',
+  conc1: '#45403a',
+  conc2: '#5f5850',
+  conc3: '#7c746a',
+
+  brick0: '#2c1610',
+  brick1: '#4a2519',
+  brick2: '#6a3825',
+  brick3: '#8a5034',
+
+  warm: '#ffb565',
+  warm2: '#ffd79b',
+  warm3: '#ff9a3d',
+  cold: '#9ec6ff',
+  cold2: '#d6e8ff',
+  alarm: '#ff4d3d',
+  ok: '#5fe08a',
+  amber: '#ffb03b',
+  glass: '#2b3d4f',
+};

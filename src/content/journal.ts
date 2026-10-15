@@ -1,0 +1,108 @@
+import type { DeductionDef, EntryDef, HypothesisDef, QuestionDef } from '../engine/types';
+
+const E = (id: string, kind: EntryDef['kind'], title: string, text: string, source?: string): EntryDef => ({ id, kind, title, text, source });
+
+export const ENTRIES: Record<string, EntryDef> = Object.fromEntries([
+  // ------------------------------------------------------------------ Indices
+  E('c_alarmes', 'clue', 'Journal d\'alarmes', '23:40 — arrêt de la filtration d\'eau. 23:41 — bascule sur pompe de secours : ÉCHEC. 23:52 — arrêt de sécurité du convoi, gare de Saint-Aubin.', 'Salle des machines'),
+  E('c_socle_vide', 'clue', 'Socle K3 vide', 'Dans l\'armoire de la filtration, l\'emplacement du relais K3 est vide. Pas arraché : retiré proprement, les vis alignées à côté.', 'Salle des machines'),
+  E('c_pompe_secours', 'clue', 'Pompe de secours éventrée', 'Le moteur de la pompe de secours a disparu. La poussière dans le carter dit que ça date de plusieurs semaines.', 'Salle des machines'),
+  E('c_carnet_entretien', 'clue', 'Carnet d\'entretien', '« Pompe de secours : révisée, opérationnelle. » Il y a quinze jours. Signé O. Vasseur, contresigné M. Kerbrat.', 'Atelier'),
+  E('c_bon_sortie', 'clue', 'Bon de sortie n° 112', 'Un moteur de pompe sorti de l\'atelier il y a trois semaines, « pour les bacs hydroponiques ». Paraphe : O.V.', 'Atelier'),
+  E('c_couchette_theo', 'clue', 'Couchette de Théo', 'Lit fait au carré. Son sac de nuit et sa lampe frontale ont disparu. Il est parti en sachant où il allait.', 'Atelier'),
+  E('c_carnet_theo', 'clue', 'Le carnet de Théo', '« M. va mieux. Neuf jours. » — « 21 h, 4,7 MHz : rien. H.C. a coupé le poste. » — « K3 = même référence que la filtration. Une nuit seulement. » — « Dépôt de Saint-Aubin : armoires K ? »', 'Casier de Théo'),
+  E('c_relais_radio', 'clue', 'Un K3 dans la radio', 'Le poste radio a été rafistolé : un relais K3 y est branché avec du fil de récupération. Travail soigné, presque tendre.', 'Salle radio'),
+  E('c_registre_radio', 'clue', 'Journal radio caché', 'Trois nuits d\'écoute : « 4,7 MHz, 21 h. Voix humaine. Clairval, barrage. Demandent des nouvelles. » Tampon rouge : NE PAS DIFFUSER — H.C.', 'Poste de sécurité'),
+  E('c_tableau_rations', 'clue', 'Tableau des rations', 'Les réserves affichées ne baissent pas au rythme des distributions. Il manque de l\'eau quelque part, chaque semaine.', 'Cantine'),
+  E('c_registre_cabine0', 'clue', 'Registre de la réserve', 'Des sorties nocturnes au nom de « cabine 0 » : eau, conserves, deux fois par semaine. Paraphe : P.M.', 'Réserve'),
+  E('c_compteur_eau', 'clue', 'Compteur de la citerne', 'Le compteur mécanique garde la trace d\'un prélèvement chaque nuit vers 23 h, hors de toute distribution. Environ quatre jerricans.', 'Réserve'),
+  E('c_gardemanger_salon', 'clue', 'Le garde-manger du Salon', 'Des jerricans marqués du V de la réserve commune et des rations militaires. Bien plus que pour deux personnes.', 'Salon'),
+  E('c_lettre_marchetti', 'clue', 'Brouillon de Marchetti', '« Madame, comme convenu : quatre jerricans par semaine contre une boîte d\'amoxicilline. La docteure ne sait pas d\'où ils viennent. — P.M. »', 'Marchetti'),
+  E('c_cache', 'clue', 'La cache de la soute', 'Derrière les caisses : une couverture, deux bols, des dessins d\'un grand barrage, un écouteur bricolé. Quelqu\'un vit ici depuis des jours.', 'Soute'),
+  E('c_medaillon_mara', 'clue', 'Le demi-médaillon de Mara', 'Une moitié de médaillon en laiton, gravée « M… ». « C\'est tout ce qui me reste de ma mère », dit Mara.', 'Mara'),
+  E('c_medaillon_sorel', 'clue', 'Le médaillon de la docteure', 'Sur le bureau de Sorel : la photo d\'une fillette au bord d\'un lac, et une moitié de médaillon gravée « …ARA ».', 'Infirmerie'),
+  E('c_billet_cabine0', 'clue', 'Billet « cabine 0 »', 'Un billet de première tamponné « cabine 0 ». Le registre des passagers ne connaît aucune cabine 0.', 'Contrôle'),
+  E('c_registre_passagers', 'clue', 'Registre des passagers', '212 passagers. Théo Lagarde, maintenance, couchette atelier. Aucune cabine 0 — mais une colonne « livraisons » au nom du Salon, raturée.', 'Bureau du Contrôle'),
+  E('c_cabine_horaire', 'clue', 'Le sillon fantôme', 'Dans la cabine, un horaire non publié : le même trajet que le VAYN, mais un mois plus tôt. Indicatif du convoi : « VAYN-2 ».', 'Cabine de conduite'),
+  E('c_lettre_madame', 'clue', 'La lettre de Madame', '« Plus une goutte ne sortira de mon garde-manger tant que ce garçon parlera de ce qu\'il a vu. Arrangez-vous pour qu\'il se taise. » Quel garçon ?', 'Lettre cachetée'),
+  E('c_mur_messages', 'clue', 'Le mur des messages', 'Des dizaines de mots laissés par des réfugiés. L\'un, daté du Jour 101 : « Clairval tient. Barrage. Quarante personnes. Venez par la vallée. »', 'Hall de la gare'),
+  E('c_traces_theo', 'clue', 'Traces dans le dépôt', 'Du sang séché, une lampe frontale brisée sous une poutre affaissée. Des traces qui repartent en boitant vers le talus.', 'Dépôt'),
+  E('c_armoire_k', 'clue', 'L\'armoire K du dépôt', 'Une armoire de relais de signalisation, intacte. Un K3 y dort encore dans sa graisse.', 'Dépôt'),
+  E('c_emission_clairval', 'clue', 'L\'émission de Clairval', 'Sur le récepteur d\'Anselme, une voix enregistrée tourne en boucle : « Ici Clairval, barrage… » Le message est daté du Jour 96. Rien de plus récent.', 'Poste d\'aiguillage'),
+  E('c_vayn2', 'clue', '« Ne vous arrêtez pas à Clairval »', 'Une voix, à travers le souffle : « …ici VAYN-2… ne vous arrêtez pas à Clairval… je répète… » Puis plus rien.', 'Radio'),
+  // ------------------------------------------------------------------ Témoignages
+  E('t_castel_version', 'testimony', 'Castel : « Il a sauté, c\'est tout »', 'Castel affirme n\'avoir pas vu Théo de la nuit. « Un instable. Il a dû paniquer. »', 'Castel'),
+  E('t_castel_aveu', 'testimony', 'Castel avoue l\'altercation', 'Il a surpris Théo sortant de la salle radio vers minuit vingt. Il l\'a menacé de la cellule. Théo s\'est enfui vers l\'arrière.', 'Castel'),
+  E('t_vasseur_theo', 'testimony', 'Vasseur : « Théo ne fuit pas »', '« Théo n\'abandonnerait jamais son poste. S\'il est parti, c\'est qu\'on l\'y a poussé. »', 'Vasseur'),
+  E('t_vasseur_pompe', 'testimony', 'Vasseur avoue pour la pompe', 'Elle a démonté le moteur pour sauver la récolte des bacs hydroponiques, et maquillé le carnet. Elle comptait le remonter « bientôt ».', 'Vasseur'),
+  E('t_noe_saut', 'testimony', 'Noé a vu quelqu\'un sauter', 'Vers minuit et demi, une silhouette avec une lampe a sauté par la porte de la soute et filé vers le dépôt.', 'Noé'),
+  E('t_hotesse_castel', 'testimony', 'Josefa a vu Castel', 'Vers minuit vingt, Castel dans le couloir de l\'administration, matraque à la main, essoufflé.', 'Josefa'),
+  E('t_agathe_soute', 'testimony', 'Agathe : la grille ouverte à 23 h', 'Elle a vu la grille de la réserve ouverte vers 23 h, et quelqu\'un porter des jerricans vers l\'arrière du train.', 'Agathe'),
+  E('t_rosa_portions', 'testimony', 'Rosa : la deuxième portion', 'Depuis une dizaine de jours, Théo prenait une seconde portion « pour le chat de la soute ». Il n\'y a pas de chat à bord.', 'Rosa'),
+  E('t_marchetti_version', 'testimony', 'Marchetti : « Les comptes sont justes »', 'Il jure que chaque litre est inscrit. « L\'évaporation, la casse, les fuites… »', 'Marchetti'),
+  E('t_marchetti_aveu', 'testimony', 'Marchetti avoue l\'échange', 'L\'eau part au Salon ; en retour, Madame fournit des antibiotiques qu\'il remet à l\'infirmerie sans dire d\'où ils viennent.', 'Marchetti'),
+  E('t_villiers_theo', 'testimony', 'Madame de Villiers et Théo', '« Ce garçon réparait mon chauffe-eau. Il posait beaucoup trop de questions sur mon garde-manger. »', 'Mme de Villiers'),
+  E('t_vic_k3', 'testimony', 'Vic : Théo cherchait un K3', 'Il y a trois jours, Théo lui a demandé un relais K3. Vic n\'en avait pas. « Il avait l\'air de quelqu\'un qui prépare une bêtise. »', 'Vic'),
+  E('t_mara_theo', 'testimony', 'Mara : Théo la nourrissait', 'Théo l\'a trouvée il y a neuf jours. Il lui apportait à manger et voulait l\'aider à entendre Clairval à la radio.', 'Mara'),
+  E('t_mara_clairval', 'testimony', 'Mara : « Clairval existe »', 'Des survivants vivraient au barrage de Clairval et émettraient chaque soir à 21 h sur 4,7 MHz. Personne d\'autre ne l\'a confirmé.', 'Mara'),
+  E('t_mara_mere', 'testimony', 'Mara cherche sa mère', 'Sa mère serait à bord. Mara ne connaît que son prénom, Hélène, et un visage vieux de quatre ans.', 'Mara'),
+  E('t_sorel_fille', 'testimony', 'Sorel et sa fille', 'Sorel croit sa fille morte dans l\'effondrement de Lyon, le premier jour. « Elle s\'appelait Mara. »', 'Dre Sorel'),
+  E('t_theo_recit', 'testimony', 'Le récit de Théo', 'Il a pris le K3 pour réparer la radio, pour Mara. Castel l\'a surpris. Il est parti chercher un relais au dépôt pour réparer sa faute. La poutre a cédé.', 'Théo'),
+  E('t_anselme', 'testimony', 'Anselme et le train fantôme', 'Il y a un mois, un train est passé sans s\'arrêter. Même livrée, même nom sur la caisse. « Un VAYN, pareil que le vôtre. »', 'Anselme'),
+  // ------------------------------------------------------------------ Faits établis (déductions)
+  E('f_pompe_morte', 'fact', 'La pompe de secours était morte', 'Depuis trois semaines, la pompe de secours n\'avait plus de moteur — et le carnet d\'entretien mentait.'),
+  E('f_k3_radio', 'fact', 'Le K3 de la filtration est dans la radio', 'Le relais manquant n\'a pas quitté le train : quelqu\'un l\'a déplacé pour faire revivre le poste radio.'),
+  E('f_panne', 'fact', 'La panne, expliquée', 'Un relais emprunté, une pompe de secours sans moteur : la filtration s\'est arrêtée et le train avec elle.'),
+  E('f_chronologie', 'fact', 'La nuit de Théo', 'Théo a croisé Castel vers 00:20, puis a quitté le train par la soute vers 00:30, en direction du dépôt.'),
+  E('f_theo_cachait', 'fact', 'Théo cachait quelqu\'un', 'Les portions en trop, la cache derrière les caisses : Théo nourrissait une personne clandestine dans la soute.'),
+  E('f_detournement', 'fact', 'L\'eau part vers le Salon', 'Chaque nuit, de l\'eau de la réserve commune part vers le Salon, inscrite au nom d\'une « cabine 0 » qui n\'existe pas.'),
+  E('f_echange_antibio', 'fact', 'L\'eau contre les antibiotiques', 'Marchetti échange l\'eau commune contre les antibiotiques de Madame, qu\'il remet à l\'infirmerie. Un vol qui soigne.'),
+  E('f_mere', 'fact', 'Mara est la fille de Sorel', 'Les deux moitiés du médaillon s\'emboîtent : « MARA ». La clandestine est la fille que la docteure croit morte.'),
+  E('f_signal_cache', 'fact', 'Castel a caché Clairval', 'Castel a entendu Clairval, a tamponné le journal « NE PAS DIFFUSER » et a mis la radio hors service.'),
+  E('f_depot', 'fact', 'Un K3 au dépôt de Saint-Aubin', 'Les armoires de signalisation du dépôt utilisent des relais K3. Il y a peut-être de quoi réparer la filtration sans toucher à la radio.'),
+].map((e) => [e.id, e]));
+
+export const QUESTIONS: Record<string, QuestionDef> = {
+  q_panne: { id: 'q_panne', title: 'Pourquoi la filtration s\'est-elle arrêtée ?', unlock: 'e:c_alarmes' },
+  q_theo: { id: 'q_theo', title: 'Qu\'est-il arrivé à Théo Lagarde ?', unlock: 'f:intro_vu' },
+  q_reserves: { id: 'q_reserves', title: 'Où passe l\'eau de la réserve ?', unlock: 'e:c_tableau_rations | e:t_agathe_soute | e:c_registre_cabine0' },
+  q_mara: { id: 'q_mara', title: 'Qui est la clandestine ?', unlock: 'e:c_cache | met:mara' },
+};
+
+const H = (id: string, q: string, title: string, text: string, supports: string[], contradicts: string[]): HypothesisDef => ({ id, q, title, text, supports, contradicts });
+
+export const HYPOTHESES: Record<string, HypothesisDef> = Object.fromEntries([
+  H('h_panne_sabotage', 'q_panne', 'Un sabotage', 'Quelqu\'un a voulu immobiliser le train.', ['c_socle_vide', 't_castel_version'], ['f_k3_radio', 'c_carnet_theo', 't_theo_recit']),
+  H('h_panne_usure', 'q_panne', 'L\'usure et la négligence', 'Une machine à bout, mal entretenue, a lâché.', ['c_pompe_secours', 'f_pompe_morte', 'c_carnet_entretien'], ['c_socle_vide', 'f_k3_radio']),
+  H('h_panne_emprunt', 'q_panne', 'Un relais emprunté', 'Le K3 a été déplacé, et rien ne pouvait prendre le relais.', ['f_k3_radio', 'f_pompe_morte', 'c_carnet_theo', 'f_panne'], []),
+  H('h_theo_castel', 'q_theo', 'Castel l\'a fait disparaître', 'Le chef de la sécurité a quelque chose à cacher.', ['t_hotesse_castel', 'c_registre_radio', 'f_signal_cache'], ['t_noe_saut', 't_castel_aveu', 't_theo_recit']),
+  H('h_theo_fuite', 'q_theo', 'Il a fui avec le K3', 'Théo a saboté la filtration et pris la fuite.', ['c_socle_vide', 't_noe_saut', 't_castel_version'], ['c_relais_radio', 'f_k3_radio', 'c_carnet_theo']),
+  H('h_theo_salon', 'q_theo', 'Le Salon l\'a fait taire', 'Il en savait trop sur le garde-manger.', ['t_villiers_theo', 'f_detournement', 'c_lettre_madame'], ['t_noe_saut', 'f_chronologie']),
+  H('h_theo_dehors', 'q_theo', 'Il est sorti chercher une pièce', 'Théo a voulu réparer ce qu\'il avait cassé.', ['c_carnet_theo', 't_noe_saut', 'f_chronologie', 't_vic_k3', 'c_couchette_theo'], []),
+  H('h_res_vol', 'q_reserves', 'Un voleur parmi les passagers', 'Quelqu\'un se sert la nuit, dans la réserve.', ['t_agathe_soute', 'c_tableau_rations'], ['c_registre_cabine0', 'f_detournement']),
+  H('h_res_clandestin', 'q_reserves', 'La clandestine se sert', 'La personne cachée en soute pioche dans les réserves.', ['c_cache', 't_rosa_portions'], ['c_compteur_eau', 'f_detournement']),
+  H('h_res_marchetti', 'q_reserves', 'L\'intendant détourne', 'Marchetti fait sortir l\'eau commune vers le Salon.', ['c_registre_cabine0', 'f_detournement', 'c_gardemanger_salon', 'c_lettre_marchetti'], []),
+  H('h_mara_menteuse', 'q_mara', 'Une menteuse', 'Elle invente Clairval pour détourner le train.', ['t_mara_clairval'], ['c_registre_radio', 'c_mur_messages', 'c_emission_clairval']),
+  H('h_mara_eclaireuse', 'q_mara', 'Une éclaireuse de Clairval', 'On l\'a envoyée chercher de l\'aide.', ['t_mara_clairval', 'c_registre_radio', 'c_mur_messages'], ['t_mara_mere']),
+  H('h_mara_fille', 'q_mara', 'La fille perdue de Sorel', 'Elle cherche sa mère, et sa mère est à bord.', ['t_mara_mere', 't_sorel_fille', 'f_mere', 'c_medaillon_sorel'], []),
+].map((h) => [h.id, h]));
+
+export const DEDUCTIONS: DeductionDef[] = [
+  { a: 'c_pompe_secours', b: 'c_bon_sortie', result: 'f_pompe_morte', text: 'Le moteur sorti de l\'atelier, c\'est celui de la pompe de secours.' },
+  { a: 'c_pompe_secours', b: 'c_carnet_entretien', result: 'f_pompe_morte', text: 'Le carnet dit « révisée » ; la poussière dit « éventrée depuis des semaines ».' },
+  { a: 'c_socle_vide', b: 'c_relais_radio', result: 'f_k3_radio', text: 'Même référence, même travail soigné : le K3 de la filtration a été greffé sur la radio.' },
+  { a: 'c_socle_vide', b: 'c_carnet_theo', result: 'f_k3_radio', text: '« K3 = même référence que la filtration. Une nuit seulement. » Théo a emprunté le relais.' },
+  { a: 'f_pompe_morte', b: 'f_k3_radio', result: 'f_panne', text: 'Le relais a été retiré, et la pompe de secours ne pouvait pas prendre le relais.' },
+  { a: 't_noe_saut', b: 't_hotesse_castel', result: 'f_chronologie', text: 'Castel à 00:20, le saut à 00:30 : Théo fuyait quelqu\'un.' },
+  { a: 't_noe_saut', b: 't_castel_aveu', result: 'f_chronologie', text: 'Castel l\'a menacé, Théo a sauté dix minutes plus tard.' },
+  { a: 't_rosa_portions', b: 'c_cache', result: 'f_theo_cachait', text: 'La « portion pour le chat » finissait dans les bols de la cache.' },
+  { a: 'c_carnet_theo', b: 'c_cache', result: 'f_theo_cachait', text: '« M. va mieux. Neuf jours. » M. vivait derrière les caisses.' },
+  { a: 'c_registre_cabine0', b: 'c_compteur_eau', result: 'f_detournement', text: 'Les sorties « cabine 0 » tombent pile sur les prélèvements de 23 h.' },
+  { a: 'c_registre_cabine0', b: 'c_gardemanger_salon', result: 'f_detournement', text: 'Les jerricans « cabine 0 » dorment dans le garde-manger du Salon.' },
+  { a: 'c_billet_cabine0', b: 'c_gardemanger_salon', result: 'f_detournement', text: 'La « cabine 0 », c\'est le garde-manger du Salon.' },
+  { a: 'f_detournement', b: 'c_lettre_marchetti', result: 'f_echange_antibio', text: 'L\'eau part au Salon, les antibiotiques arrivent à l\'infirmerie.' },
+  { a: 'c_medaillon_mara', b: 'c_medaillon_sorel', result: 'f_mere', text: '« M… » et « …ARA » : les deux moitiés disent MARA.' },
+  { a: 'c_registre_radio', b: 'c_relais_radio', result: 'f_signal_cache', text: 'Castel a coupé le poste après avoir entendu Clairval ; Théo l\'a réparé en cachette.' },
+  { a: 'c_registre_radio', b: 't_mara_clairval', result: 'f_signal_cache', text: 'Mara disait vrai sur la fréquence : Castel l\'avait entendue avant tout le monde.' },
+  { a: 'c_carnet_theo', b: 't_vic_k3', result: 'f_depot', text: 'Théo cherchait un K3 à bord, n\'en a pas trouvé, et pensait au dépôt de Saint-Aubin.' },
+];

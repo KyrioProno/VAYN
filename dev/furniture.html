@@ -1,0 +1,17 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Mobilier</title>
+<style>body{margin:0;background:#2a2622;color:#ddd;font:10px monospace} #g{display:flex;flex-wrap:wrap;gap:6px;padding:6px} .c{display:flex;flex-direction:column;align-items:center;background:#3a342e;padding:3px} canvas{image-rendering:pixelated}</style></head>
+<body><div id="g"></div><script type="module">
+import { SPRITES } from '../src/render/furniture.ts';
+const g = document.getElementById('g');
+const S = Number(new URLSearchParams(location.search).get('s') || 2);
+const only = new URLSearchParams(location.search).get('only');
+for (const [k, f] of Object.entries(SPRITES)) {
+  if (only && !only.split(',').includes(k)) continue;
+  const pc = f();
+  const c = document.createElement('canvas');
+  c.width = pc.c.width * S; c.height = pc.c.height * S;
+  const x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(pc.c, 0, 0, c.width, c.height);
+  const d = document.createElement('div'); d.className = 'c';
+  d.append(c); const l = document.createElement('div'); l.textContent = `${k} ${pc.c.width}x${pc.c.height}`; d.append(l); g.append(d);
+}
+</script></body></html>

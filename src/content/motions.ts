@@ -1,0 +1,132 @@
+import type { MotionDef } from '../engine/types';
+
+export const MOTIONS: Record<string, MotionDef> = {
+  expedition: {
+    id: 'expedition',
+    title: 'Le mandat de l’expédition',
+    desc: 'À l’aube, une petite équipe sortira dans Saint-Aubin. Le pilote automatique repartira à 12:00, avec ou sans elle. Que doit-elle ramener en priorité ?',
+    options: [
+      { id: 'pieces', label: 'Les pièces d’abord', desc: 'Fouiller le dépôt pour un relais K3 et des pièces détachées.', fx: ['set:mandat=pieces'] },
+      { id: 'theo', label: 'Retrouver Théo', desc: 'Suivre la piste de Théo, vivant ou mort.', fx: ['set:mandat=theo', 'give:bandage_comp'] },
+      { id: 'eau', label: 'L’eau du château d’eau', desc: 'Remplir des jerricans à la cuve de la gare.', fx: ['set:mandat=eau', 'give:jerrican'] },
+      { id: 'prudence', label: 'Une sortie éclair', desc: 'Aller au plus près, ne prendre aucun risque.', fx: ['set:mandat=prudence', 'give:masque'] },
+    ],
+    base: {
+      castel: { prudence: 2, pieces: 1 },
+      vasseur: { pieces: 2, theo: 1 },
+      marchetti: { eau: 2, prudence: 1 },
+      sorel: { theo: 1.5, eau: 1 },
+      rosa: { eau: 2, theo: 1 },
+    },
+    fallback: 'pieces',
+    args: [
+      { id: 'e_k3_depot', label: 'Théo pensait trouver un K3 au dépôt de la gare.', if: 'e:f_depot | e:c_carnet_theo | e:t_vic_k3', target: 'vasseur', toward: 'pieces', strength: 2, reply: 'Vasseur : « S’il y a un K3 à Saint-Aubin, il est au dépôt. Je vote les pièces. »' },
+      { id: 'e_filtration', label: 'Avec un seul relais, la filtration repart : plus besoin de compter les gouttes.', if: 'e:f_panne | e:f_k3_radio | e:c_socle_vide', target: 'marchetti', toward: 'pieces', strength: 2, reply: 'Marchetti : « Un relais vaut mieux que dix jerricans. Soit. »' },
+      { id: 'e_theo_vivant', label: 'Théo a sauté vers le dépôt. Il est peut-être blessé, quelque part.', if: 'e:f_chronologie | e:t_noe_saut', target: 'sorel', toward: 'theo', strength: 2, reply: 'Sorel : « Un blessé, à quelques centaines de mètres ? On ne le laisse pas. »' },
+      { id: 'e_theo_castel', label: 'Vous lui devez bien ça, Castel. Vous savez pourquoi.', if: 'e:t_castel_aveu', target: 'castel', toward: 'theo', strength: 2.5, reply: 'Castel serre les mâchoires. « … D’accord. Je lui dois ça. »' },
+      { id: 'e_eau_citerne', label: 'La citerne baisse plus vite que les distributions.', if: 'e:c_compteur_eau | e:c_tableau_rations', target: 'castel', toward: 'eau', strength: 1.5, reply: 'Castel : « Sans eau, pas d’ordre. L’eau, alors. »' },
+      { id: 'e_mara_guide', label: 'Mara connaît le terrain : elle est passée par Saint-Aubin.', if: 'met:mara & trust:mara>=1 & !f:mara_expulsee', target: 'castel', toward: 'theo', strength: 1, reply: 'Castel : « Une clandestine comme guide… On aura tout vu. »' },
+    ],
+  },
+  rationnement: {
+    id: 'rationnement',
+    title: 'Le rationnement',
+    desc: 'Sans filtration, l’eau baisse. Les vivres aussi. Comment partager ce qui reste ?',
+    options: [
+      { id: 'egal', label: 'Parts égales', desc: 'Tout le monde, Salon compris, reçoit la même ration réduite.', fx: ['set:rationnement=egal', 'conseq:cq_rationnement_egal', 'trust:villiers-1'] },
+      { id: 'quota', label: 'Parts au mérite', desc: 'Ceux qui travaillent mangent davantage.', fx: ['set:rationnement=quota', 'conseq:cq_rationnement_quota', 'trust:rosa-1'] },
+      {
+        id: 'audit', label: 'Audit des réserves', desc: 'Recompter tout, et savoir où passe ce qui manque.',
+        fx: ['set:rationnement=audit', 'conseq:cq_rationnement_audit', 'if:e:f_detournement | f:audit_preuves?set:marchetti_destitue;conseq:cq_marchetti_destitue;res:water+1;obj:q_main.reserves'],
+      },
+    ],
+    base: {
+      castel: { quota: 1.5, egal: 1 },
+      vasseur: { quota: 2 },
+      marchetti: { quota: 1.5, egal: 1 },
+      sorel: { egal: 2, audit: 1 },
+      rosa: { egal: 2, audit: 1.5 },
+    },
+    fallback: 'egal',
+    args: [
+      { id: 'r_detournement', label: 'De l’eau commune part chaque nuit vers le Salon. On doit savoir combien.', if: 'e:f_detournement', target: 'sorel', toward: 'audit', strength: 2.5, reply: 'Sorel : « Si c’est vrai, alors oui. Un audit. Tout de suite. »', fx: ['set:revele_detournement'] },
+      { id: 'r_trafic_castel', label: 'Un trafic sous votre nez, Castel. Vous allez laisser faire ?', if: 'e:f_detournement', target: 'castel', toward: 'audit', strength: 2, reply: 'Castel : « Personne ne vole sous mon nez. Audit. »' },
+      { id: 'r_antibio', label: 'Ce trafic achète des antibiotiques. Il faut le régler au grand jour.', if: 'e:f_echange_antibio', target: 'vasseur', toward: 'audit', strength: 1.5, reply: 'Vasseur : « Des secrets, ça finit toujours par casser quelque chose. Audit. »' },
+      { id: 'r_quota_injuste', label: 'Les vieux et les enfants ne portent rien. Ils mangent quand même.', if: 'char:passager | trust:rosa>=1', target: 'vasseur', toward: 'egal', strength: 1.5, reply: 'Vasseur soupire. « D’accord. Des parts égales. »' },
+      { id: 'r_dette', label: 'Marchetti, souvenez-vous de ce que vous me devez.', if: 'debt:marchetti>=2', target: 'marchetti', toward: 'egal', strength: 2.5, reply: 'Marchetti baisse les yeux. « Parts égales. Évidemment. »' },
+    ],
+  },
+  clandestin: {
+    id: 'clandestin',
+    title: 'Le sort de la clandestine',
+    desc: 'Castel a trouvé une fille cachée dans la soute. Elle dit s’appeler Mara et venir de Clairval. Que fait-on d’elle ?',
+    if: 'f:mara_capturee & !f:mara_libre',
+    options: [
+      { id: 'cellule', label: 'La garder en cellule', desc: 'Elle reste enfermée jusqu’à ce qu’on en sache plus.', fx: ['conseq:cq_mara_cellule'] },
+      { id: 'expulsion', label: 'La débarquer à Saint-Aubin', desc: 'Une bouche de moins. Elle se débrouillera dehors.', fx: ['set:mara_expulsee', 'hide:mara', 'conseq:cq_mara_expulsee'] },
+      { id: 'accueil', label: 'L’accueillir à bord', desc: 'Une ration, une couchette, une chance.', fx: ['set:mara_libre', 'loc:mara=', 'conseq:cq_mara_accueil', 'trust:mara+2'] },
+    ],
+    base: {
+      castel: { cellule: 2, expulsion: 1 },
+      vasseur: { accueil: 1, cellule: 1 },
+      marchetti: { expulsion: 2 },
+      sorel: { accueil: 2 },
+      rosa: { accueil: 1.5 },
+    },
+    fallback: 'cellule',
+    args: [
+      { id: 'm_mere', label: 'C’est la fille de la docteure Sorel. Le médaillon le prouve.', if: 'e:f_mere', target: 'castel', toward: 'accueil', strength: 3, reply: 'Un silence de plomb. Castel : « On ne jette pas la fille de notre médecin dans la brume. Accueil. »', fx: ['set:mere_revelee_conseil'] },
+      { id: 'm_mere_marchetti', label: 'Vous voudriez qu’on jette votre enfant dehors, Marchetti ?', if: 'e:f_mere', target: 'marchetti', toward: 'accueil', strength: 2, reply: 'Marchetti détourne le regard. « … Non. »' },
+      { id: 'm_theo', label: 'Théo l’a protégée pendant neuf jours. Elle n’a rien volé.', if: 'e:t_mara_theo | e:f_theo_cachait', target: 'vasseur', toward: 'accueil', strength: 1.5, reply: 'Vasseur : « Si Théo la protégeait, c’est qu’elle le valait. »' },
+      { id: 'm_clairval', label: 'Elle disait vrai sur Clairval, Castel. Votre journal radio le prouve.', if: 'e:t_mara_clairval & e:c_registre_radio', target: 'castel', toward: 'accueil', strength: 1.5, reply: 'Castel blêmit. « … Gardez votre journal pour vous. Accueil, si vous voulez. »', fx: ['set:radio_revelee', 'conseq:cq_radio_publique'] },
+    ],
+  },
+  k3_radio: {
+    id: 'k3_radio',
+    title: 'Le relais de la radio',
+    desc: 'Le K3 de la filtration a été greffé sur le poste radio. Le remettre en place relance l’eau tout de suite — et rend la radio muette.',
+    if: 'e:f_k3_radio & !obj:filtration=repare & !f:k3_retire_radio',
+    options: [
+      { id: 'filtration', label: 'Remettre le K3 dans la filtration', desc: 'L’eau d’abord. La radio se tait.', fx: ['set:k3_retire_radio', 'set:radio_muette', 'objst:filtration=repare', 'set:filtration_reparee', 'conseq:cq_k3_rendu', 'conseq:cq_filtration', 'obj:q_main.panne'] },
+      { id: 'radio', label: 'Garder la radio', desc: 'Écouter Clairval, et trouver un autre K3 au dépôt.', fx: ['set:radio_gardee'] },
+    ],
+    base: {
+      castel: { filtration: 2 },
+      vasseur: { filtration: 1.5, radio: 0.5 },
+      marchetti: { filtration: 2 },
+      sorel: { filtration: 1, radio: 1 },
+      rosa: { filtration: 1 },
+    },
+    fallback: 'filtration',
+    args: [
+      { id: 'k_clairval', label: 'Des survivants appellent peut-être chaque soir. On ne coupe pas ça.', if: 'e:t_mara_clairval | e:c_registre_radio', target: 'sorel', toward: 'radio', strength: 2, reply: 'Sorel : « Si quelqu’un appelle, je veux l’entendre. La radio. »' },
+      { id: 'k_depot', label: 'Le dépôt de la gare a des armoires K. On y trouvera un autre relais.', if: 'e:f_depot | e:c_carnet_theo', target: 'vasseur', toward: 'radio', strength: 2, reply: 'Vasseur : « Des armoires de signalisation… Possible. Je prends le pari. »' },
+      { id: 'k_castel', label: 'Vous avez déjà coupé cette radio une fois, Castel.', if: 'e:f_signal_cache', target: 'castel', toward: 'radio', strength: 2.5, reply: 'Castel encaisse. Longtemps. « … Gardez votre radio. »', fx: ['set:radio_revelee', 'conseq:cq_radio_publique'] },
+    ],
+  },
+  direction: {
+    id: 'direction',
+    title: 'L’embranchement de Vercel',
+    desc: 'Dans quelques heures, le VAYN atteindra l’embranchement. Au sud, la ligne prévue vers la côte et Port-Sel. À l’est, la vallée et le barrage de Clairval. Le pilote automatique suivra la décision de l’assemblée.',
+    options: [
+      { id: 'sud', label: 'Continuer vers le sud', desc: 'La route prévue. Port-Sel, la côte, l’inconnu connu.', fx: ['set:direction=sud'] },
+      { id: 'clairval', label: 'Bifurquer vers Clairval', desc: 'Le barrage, les quarante survivants — s’ils existent encore.', fx: ['set:direction=clairval'] },
+    ],
+    base: {
+      castel: { sud: 2 },
+      vasseur: { sud: 1, clairval: 1 },
+      marchetti: { sud: 1.5 },
+      sorel: { clairval: 1, sud: 0.5 },
+      rosa: { sud: 1, clairval: 0.5 },
+    },
+    fallback: 'sud',
+    args: [
+      { id: 'd_mur', label: 'Le mur de la gare : « Clairval tient. Quarante personnes. » Jour 101.', if: 'e:c_mur_messages', target: 'vasseur', toward: 'clairval', strength: 1.5, reply: 'Vasseur : « Quarante personnes et des turbines. Ça vaut le détour. »' },
+      { id: 'd_mere', label: 'Mara vient de là-bas. Sa mère est parmi nous.', if: 'f:mere_reunie', target: 'sorel', toward: 'clairval', strength: 2.5, reply: 'Sorel serre la main de sa fille. « Clairval. »' },
+      { id: 'd_boucle', label: 'L’émission de Clairval tourne en boucle depuis le Jour 96. Plus rien de neuf.', if: 'e:c_emission_clairval', target: 'sorel', toward: 'sud', strength: 2, reply: 'Sorel pâlit. « Une boucle… Alors on ne sait pas s’ils sont encore en vie. »' },
+      { id: 'd_vayn2', label: 'Un autre VAYN est passé il y a un mois, vers le sud. Il savait peut-être quelque chose.', if: 'e:t_anselme | e:c_cabine_horaire', target: 'castel', toward: 'sud', strength: 1.5, reply: 'Castel : « Un autre VAYN ? Alors on suit ses rails. »' },
+      { id: 'd_radio_castel', label: 'Castel a entendu Clairval et l’a caché. Ils appelaient au secours.', if: 'e:f_signal_cache & !f:radio_couverte', target: 'marchetti', toward: 'clairval', strength: 2, reply: 'Marchetti, scandalisé : « Vous avez caché ça ? Alors on y va. »', fx: ['set:radio_revelee', 'conseq:cq_radio_publique'] },
+      { id: 'd_theo', label: 'Théo a risqué sa vie pour que Mara entende Clairval.', if: 'f:theo_sauve | e:t_theo_recit', target: 'vasseur', toward: 'clairval', strength: 1.5, reply: 'Vasseur : « Pour Théo, alors. »' },
+    ],
+  },
+};
