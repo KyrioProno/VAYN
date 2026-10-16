@@ -251,3 +251,84 @@ personnelle qui se termine) — dans le contrat corrigé.
 2. `cq_lou_cede` (A5).
 3. Le garde `personal` n'est appliqué qu'aux missions ; `qp_controleur` reste affichable dans le
    panneau Missions si `startQuest` était appelé par erreur — désormais impossible.
+---
+
+## 8. Couverture réelle des dialogues (complément d'audit, après correction)
+
+Cette section répond à la seule question utile sur le contenu : **existe-t-il des nœuds ou des
+choix que rien dans le jeu ne peut rendre disponibles ?**
+
+### Méthode, corrigée
+
+Le premier balayage (`sweep.ts`, 16 états fabriqués à la main) annonçait 86 nœuds sur 196 atteints.
+Ce chiffre **n'était pas trustworthy** : l'outil saturait à la profondeur 9 sur les dialogues à
+boucle (192 chemins abandonnés sur le seul `castel`), et il excluait les scripts d'ouverture
+(`start_*`, `depart_quai`, `reveil_infirmerie`), soit 20 nœuds hors champ. Une seconde version
+« BFS sur l'espace des états » a été écartée : elle explosait (39 561 états) tout en explorant
+moins. La méthode retenue est un BFS sur les **chemins de choix**, exact par rejeu déterministe,
+alimenté par des **états réels** :
+
+- `harvest.ts` sous-classe le harnais et capture l'état complet après chaque action, chaque
+  dialogue et chaque événement, sur 8 parcours (4 personnages × 2 jeux de matériel), en suivant
+  les objectifs et en parlant à tous les PNJ ;
+- **856 états réels capturés**, ramenés à **152 états distincts** (les doublons ne différaient que
+  par l'heure ou la position) ;
+- balayage de **tous** les dialogues, scripts d'ouverture compris, profondeur 12.
+
+### Résultat
+
+| Mesure | Valeur |
+|---|---|
+| Dialogues | 19 |
+| Nœuds déclarés | 196, dont **6 nœuds de routage** (`{ route: […] }`) jamais visitables directement — exclus du dénominateur |
+| Nœuds réellement visitables | **190** |
+| Nœuds atteints en jeu réel | **133 (70 %)** |
+| Nœuds jamais atteints | **57** |
+| Choix affichés en jeu réel | **123 / 203 (61 %)** |
+| **Nœuds morts (aucune arête entrante dans tout le corpus)** | **0** |
+
+L'analyse statique des gardes (`gateau.ts`) reconstitue, pour chacun des 57 nœuds jamais atteints,
+les arêtes qui y mènent et la condition qui les protège. **Aucun n'est mort** : tous sont
+conditionnels, et leurs gardes sont des faits de jeu ordinaires — `e:f_mere` (relier les deux
+moitiés du médaillon), `f:ration_coupable`, `f:mare_reunie`, `char:majordome`,
+`f:marchetti_destitue`, `f:noe_puni`, `f:vic_rancune`, `f:lettre_revelee`, `e:c_pompe_secours`,
+`dead:mara & f:mere_reunie`, `has:relais_k3`, `trust:villiers>=1`, etc.
+
+Extrait de la cartographie des gardes (le fichier complet est produit par `gateau.ts`) :
+
+```
+mara.secret        ↳ choix depuis mara.hub (n°5)                « e:f_mere & !f:mere_reunie & !f:mere_tue »
+sorel.mere         ↳ choix depuis sorel.hub (n°3)               « e:f_mere & !f:mere_reunie & !f:mara_cellule & !f:mara_expulsee & !dead:mara »
+sorel.deuil        ↳ start                                      « dead:mara & f:mere_reunie »
+marchetti.destitue ↳ start                                      « f:marchetti_destitue »
+rosa.interim       ↳ start                                      « f:marchetti_destitue & !seen:rosa.interim »
+villiers.ouvrir    ↳ choix depuis villiers.hub (n°2)            « char:majordome & has:lettre_madame »
+vasseur.malo_aveu  ↳ choix depuis vasseur.pompe_aveu2 (n°0)     « char:mecanicien »
+castel.cafe        ↳ choix depuis castel.hub (n°4)              « char:majordome & !has:cle_radio & !f:cafe_castel »
+```
+
+**Conclusion : aucun contenu mort dans le Chapitre I.** Les 57 nœuds non atteints par ces parcours
+sont des contenus conditionnels, tous atteignables par un autre parcours — plusieurs ont d'ailleurs
+été atteints explicitement pendant cet audit (Mara cachée puis révélée à l'assemblée, Vasseur
+morte, Marchetti destitué, la lettre portée au conseil).
+
+### Vérification anti-spoiler sur le corpus réel
+
+200 000 textes réellement joués (15,9 millions de caractères), collectés après correction :
+
+| Motif | Occurrences |
+|---|---|
+| `C-9`, `RTC`, « dispersant », « ordre de service » | 0 |
+| « les quarante sont morts », « père de Mara », « secret de VAYN‑1 » | 0 |
+| `Sorel-Arnaud` | 0 |
+| `VAYN‑2` | 0 |
+| `Clairval` | 4 853 — le nom apparaît partout (mission « La voix de Clairval », message du récepteur d'aiguillage) |
+
+**Aucune résolution prématurée.** Conformément aux bornes du Chapter I.
+
+### Ce que ce travail ne prouve pas
+
+- Un test moteur n'est pas une validation visuelle à l'écran.
+- La récolte d'états suit des parcours guidés par les objectifs ; un parcours humain très différent
+  ouvrirait probablement encore quelques branches. Le résultat important n'est pas le pourcentage,
+  c'est le **zéro nœud mort**.
