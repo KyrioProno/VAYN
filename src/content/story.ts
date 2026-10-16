@@ -197,7 +197,7 @@ export const REVELATIONS: Revelation[] = [
       { if: 'f:mere_tue', text: 'Vous avez promis à Mara de ne rien dire à personne. Elle est là, dans la salle, et elle le sait déjà.' },
       { if: 'true', text: 'Réunir publiquement la mère et la fille.' },
     ],
-    fx: ['set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'trust:sorel+3', 'trust:mara+2', 'if:f:mere_tue?trust:mara-4;conseq:cq_mere_trahie', 'qdone:q_mara'],
+    fx: ['set:mere_reunie', 'set:mara_libre', 'loc:mara=', 'conseq:cq_mere_reunie', 'trust:sorel+3', 'trust:mara+2', 'if:f:mere_tue?trust:mara-4;conseq:cq_mere_trahie', 'obj:q_mara.reunion', 'qdone:q_mara'],
   },
   {
     id: 'rev_theo', if: 'e:t_theo_recit & !f:theo_public',

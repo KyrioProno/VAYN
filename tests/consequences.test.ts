@@ -191,24 +191,33 @@ describe('D-07 / D-21 / D-22 — objectifs et missions', () => {
   it('un objectif se coche par sa condition « fait si… »', () => {
     const g = newGame('controleur');
     g.startQuest('q_main');
-    expect(g.objectiveDone('q_main', 'panne')).toBe(false);
     g.applyFx(['entry:t_theo_recit']);
+    // Tant que « machines » n'est pas fait, « panne » n'est pas visible : elle ne peut pas être
+    // cochée d'avance (audit Ch. I, A1). L'affichage reste donc sur le premier objectif.
+    expect(g.objectiveDone('q_main', 'panne')).toBe(false);
+    expect(g.currentObjective()?.text).toBe(CONTENT.quests.q_main.objectives[0].text);
+    // Dès que « machines » est fait, « panne » apparaît — et se trouve déjà accomplie.
+    g.completeObjective('q_main', 'machines');
     expect(g.objectiveDone('q_main', 'panne')).toBe(true);
     expect(g.check('o:q_main.panne')).toBe(true);
-    // « panne » est accompli sans jamais avoir été coché à la main ; l'affichage reste sur le premier objectif.
-    expect(g.currentObjective()?.text).toBe(CONTENT.quests.q_main.objectives[0].text);
-    // Et dès que celui-ci est fait, l'affichage passe à la suite — rien ne reste bloqué sur « panne ».
-    g.completeObjective('q_main', 'machines');
+    // Rien ne reste bloqué sur « panne » : l'affichage passe à la suite.
     expect(g.currentObjective()?.text).toBe(CONTENT.quests.q_main.objectives[2].text);
   });
 
   it('les réserves et la trace de Théo se cochent par leurs autres voies', () => {
     const g = newGame('controleur');
     g.startQuest('q_main');
+    // « réserves » reste invisible — et donc inachevée — tant que sa condition n'est pas remplie (audit Ch. I, A1).
     g.applyFx(['entry:f_detournement']);
+    expect(g.objectiveDone('q_main', 'reserves')).toBe(false);
+    g.applyFx(['entry:c_tableau_rations']);
     expect(g.objectiveDone('q_main', 'reserves')).toBe(true);
     g.meet('theo');
     expect(g.objectiveDone('q_main', 'theo')).toBe(true);
+    // « Retrouver Théo » hors les murs ne se coche que depuis l'expédition (audit Ch. I, A1).
+    expect(g.objectiveDone('q_main', 'theo_dehors')).toBe(false);
+    g.fireScripted('expedition_depart');
+    g.state.zone = 'exterior';
     expect(g.objectiveDone('q_main', 'theo_dehors')).toBe(true);
   });
 
@@ -223,11 +232,11 @@ describe('D-07 / D-21 / D-22 — objectifs et missions', () => {
     g2.applyFx(['entry:f_detournement', 'obj:qp_controleur.choix', 'if:char:controleur?qdone:qp_controleur']);
     expect(g2.state.quests.qp_controleur?.status).toBe('done');
 
-    // pour un autre personnage, l'effet conditionnel ne crée pas de mission fantôme
+    // pour un autre personnage, ni l'effet conditionnel ni startQuest ne créent de mission fantôme
     const g3 = newGame('passager');
     g3.startQuest('qp_controleur');
     g3.applyFx(['entry:f_detournement', 'obj:qp_controleur.choix', 'if:char:controleur?qdone:qp_controleur']);
-    expect(g3.state.quests.qp_controleur?.status).toBe('active');
+    expect(g3.state.quests.qp_controleur).toBeUndefined();
   });
 
   it('le tableau des rations ne démarre plus la mission de Rosa (D-16)', () => {

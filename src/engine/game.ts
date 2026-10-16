@@ -659,9 +659,16 @@ export class Game extends Emitter {
   }
 
   // ------------------------------------------------------------------ missions
+  /** Les missions personnelles des autres personnages ne s'activent jamais. */
+  private foreignPersonal(id: string): boolean {
+    const def = this.content.quests[id];
+    return !!def?.personal && def.personal !== this.state.char;
+  }
+
   startQuest(id: string) {
     const def = this.content.quests[id];
     if (!def) throw new Error(`Mission inconnue : ${id}`);
+    if (this.foreignPersonal(id)) return;
     if (this.state.quests[id]) return;
     this.state.quests[id] = { status: 'active', obj: {}, at: this.state.time };
     this.toast(`Nouvelle mission : ${def.title}`, 'quest');
@@ -671,8 +678,7 @@ export class Game extends Emitter {
   completeObjective(q: string, o: string) {
     const def = this.content.quests[q];
     if (!def || !def.objectives.some((x) => x.id === o)) throw new Error(`Objectif inconnu : ${q}.${o}`);
-    // Les missions personnelles des autres personnages ne s'activent jamais.
-    if (def.personal && def.personal !== this.state.char) return;
+    if (this.foreignPersonal(q)) return;
     if (!this.state.quests[q]) this.startQuest(q);
     if (this.state.quests[q].obj[o]) return;
     this.state.quests[q].obj[o] = true;
@@ -681,6 +687,7 @@ export class Game extends Emitter {
 
   completeQuest(id: string) {
     if (!this.content.quests[id]) throw new Error(`Mission inconnue : ${id}`);
+    if (this.foreignPersonal(id)) return;
     const q = this.state.quests[id] ?? (this.state.quests[id] = { status: 'active', obj: {}, at: this.state.time });
     if (q.status === 'done') return;
     q.status = 'done';
@@ -690,6 +697,7 @@ export class Game extends Emitter {
 
   failQuest(id: string) {
     if (!this.content.quests[id]) throw new Error(`Mission inconnue : ${id}`);
+    if (this.foreignPersonal(id)) return;
     const q = this.state.quests[id] ?? (this.state.quests[id] = { status: 'active', obj: {}, at: this.state.time });
     if (q.status !== 'active') return;
     q.status = 'failed';
@@ -713,7 +721,10 @@ export class Game extends Emitter {
   objectiveDone(q: string, o: string): boolean {
     if (this.state.quests[q]?.obj[o]) return true;
     const od = this.content.quests[q]?.objectives.find((x) => x.id === o);
-    return !!od?.doneIf && this.check(od.doneIf);
+    // Un objectif qui n'est pas visible ne peut pas s'achever tout seul : sans cette
+    // garde, « Expédition » était barrée dès la réparation de la filtration, et
+    // « Retrouver la trace de Théo » dès 07:05 pour le seul Mécanicien.
+    return !!od?.doneIf && (!od.if || this.check(od.if)) && this.check(od.doneIf);
   }
 
   // ------------------------------------------------------------------ relations
